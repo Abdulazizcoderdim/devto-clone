@@ -1,4 +1,5 @@
 import { Search } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
 const Header = () => {
@@ -9,7 +10,13 @@ const Header = () => {
           {/* Left section with logo */}
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center">
-              <img src="logo.png" alt="DEV Community" className="h-8 w-12" />
+              <Image
+                width={48}
+                height={32}
+                src="/logo.png"
+                alt="DEV Community"
+                className="h-8 w-12"
+              />
             </Link>
 
             <div className="flex-1 max-w-xl">
@@ -28,12 +35,18 @@ const Header = () => {
 
           {/* Second section with buttons */}
           <div className="flex items-center gap-3">
-            <button className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors">
+            <Link
+              href={'/login'}
+              className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
+            >
               Log in
-            </button>
-            <button className="px-3 py-2 text-blue-600 bg-white border border-blue-600 hover:bg-blue-50 hover:underline rounded-lg transition-colors">
+            </Link>
+            <Link
+              href={'/sign-up'}
+              className="px-3 py-2 text-blue-600 bg-white border border-blue-600 hover:bg-blue-50 hover:underline rounded-lg transition-colors"
+            >
               Create account
-            </button>
+            </Link>
           </div>
         </div>
       </div>
