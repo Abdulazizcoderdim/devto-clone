@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function SignUpPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({    
     email: '',
     password: '',
     username: '',
@@ -20,7 +20,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div className="min-h-screen flex items-center justify-center">
       <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-2xl">
         <div>
           <h2 className="mt-6 text-center text-4xl font-bold text-gray-900 tracking-tight">
