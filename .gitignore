@@ -1,4 +1,4 @@
-node-modules/
+node-modules
 .env*
-admin-panel/
+admin-panel
 

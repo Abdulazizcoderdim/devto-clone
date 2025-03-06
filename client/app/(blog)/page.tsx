@@ -1,5 +1,5 @@
 import FirstPanel from './_components/first-panel';
-import SecondPanel from './_components/second-panel';
+import SecondPanel from './_components/blogs';
 import ThreePanel from './_components/three-panel';
 
 export default function Home() {
