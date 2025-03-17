@@ -17,8 +17,10 @@ class AuthController {
       });
 
       if (user) {
-        return next(BaseError.BadRequest('User not found'));
+        return next(BaseError.BadRequest('User already exists'));
       }
+      
+
     } catch (error) {
       next(error);
     }
