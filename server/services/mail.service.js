@@ -35,6 +35,32 @@ class MailService {
       html: `<h1>Your OTP is ${otp}</h1>`,
     });
   }
+
+  async verifyOtp(email, otp) {
+    const otpData = await prisma.otp.findFirst({
+      where: {
+        email,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    if (!otpData) throw BaseError.BadRequest('Otp not found');
+
+    if (new Date() > otpData.expireAt)
+      throw BaseError.BadRequest('Otp expired');
+
+    const isValid = await bcrypt.compare(otp.toString(), otpData.otp);
+    if (!isValid) throw BaseError.BadRequest('Invalid Otp entered');
+
+    await prisma.otp.deleteMany({
+      where: {
+        email,
+      },
+    });
+    return true;
+  }
 }
 
 module.exports = new MailService();

@@ -33,10 +33,11 @@ model Comment {
 }
 
 model Otp {
-  id       String    @id @default(uuid()) @map("_id")
-  email    String    @db.String
-  otp      String    @db.String
-  expireAt DateTime?
+  id        String    @id @default(uuid()) @map("_id")
+  email     String    @db.String
+  otp       String    @db.String
+  expireAt  DateTime?
+  createdAt DateTime  @default(now()) @map("createdAt") // Qo‘shildi
 
   @@map("Otp")
 }
