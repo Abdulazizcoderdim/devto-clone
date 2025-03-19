@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
+const mailService = require('../services/mail.service');
 const prisma = new PrismaClient();
 
 class AuthController {
@@ -10,17 +11,16 @@ class AuthController {
         return next(BaseError.BadRequest('Email and password are required'));
       }
 
-      const user = await prisma.user.findUnique({
+      const existUser = await prisma.user.findUnique({
         where: {
           email,
         },
       });
 
-      if (user) {
-        return next(BaseError.BadRequest('User already exists'));
+      if (existUser) {
+        await mailService.sendOtp(existUser.email);
+        return res.status(200).json({ email: existUser.email });
       }
-      
-
     } catch (error) {
       next(error);
     }

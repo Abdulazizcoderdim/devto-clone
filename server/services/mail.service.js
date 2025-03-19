@@ -1,5 +1,7 @@
 const nodemailer = require('nodemailer');
-const bcrypt = require('bcryptjs');
+const prisma = new PrismaClient();
+const bcrypt = require('bcrypt');
+const { PrismaClient } = require('@prisma/client');
 
 class MailService {
   constructor() {
@@ -19,5 +21,20 @@ class MailService {
     console.log(otp);
 
     const hashedOtp = await bcrypt.hash(otp.toString(), 10);
+    await prisma.otp.create({
+      data: {
+        email: to,
+        otp: hashedOtp,
+        expireAt: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes
+      },
+    });
+    await this.transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to,
+      subject: `OTP for verification ${new Date().toLocaleString()}`,
+      html: `<h1>Your OTP is ${otp}</h1>`,
+    });
   }
 }
+
+module.exports = new MailService();

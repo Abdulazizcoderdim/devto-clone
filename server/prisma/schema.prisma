@@ -31,3 +31,12 @@ model Comment {
   postId String
   post   Post   @relation(fields: [postId], references: [id])
 }
+
+model Otp {
+  id       String    @id @default(uuid()) @map("_id")
+  email    String    @db.String
+  otp      String    @db.String
+  expireAt DateTime?
+
+  @@map("Otp")
+}
