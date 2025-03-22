@@ -1,7 +1,7 @@
-const nodemailer = require('nodemailer');
-const prisma = new PrismaClient();
-const bcrypt = require('bcrypt');
 const { PrismaClient } = require('@prisma/client');
+const nodemailer = require('nodemailer');
+const bcrypt = require('bcrypt');
+const prisma = new PrismaClient();
 
 class MailService {
   constructor() {
