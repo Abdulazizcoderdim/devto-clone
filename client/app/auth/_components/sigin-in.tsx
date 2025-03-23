@@ -26,12 +26,10 @@ export default function SignIn() {
         throw new Error("Login xatolik");
       }
 
-      console.log("res>>", data);
-
       setEmail(data.email);
       setStep("verify");
-      toast("Email sent");
 
+      toast.success("A verification code has been sent to your email.");
       return data;
     } catch (error) {
       console.error(error);
@@ -96,20 +94,18 @@ export default function SignIn() {
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex items-center">
+          <label
+            htmlFor="remember-me"
+            className="ml-2 gap-2 select-none text-sm text-gray-900 flex items-center"
+          >
             <input
               id="remember-me"
               name="remember-me"
               type="checkbox"
               className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             />
-            <label
-              htmlFor="remember-me"
-              className="ml-2 block text-sm text-gray-900"
-            >
-              Remember me
-            </label>
-          </div>
+            Remember me
+          </label>
         </div>
 
         <Button

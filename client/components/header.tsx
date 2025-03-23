@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 const Header = () => {
   return (
@@ -35,12 +36,9 @@ const Header = () => {
 
           {/* Second section with buttons */}
           <div className="flex items-center gap-3">
-            <Link
-              href={"/auth"}
-              className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
-            >
-              Log in
-            </Link>
+            <Button variant={"default"} asChild>
+              <Link href={"/auth"}>Log in</Link>
+            </Button>
           </div>
         </div>
       </div>
