@@ -4,9 +4,21 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 const Header = () => {
-  const token = localStorage.getItem("accessToken");
+  let token = localStorage.getItem("accessToken");
+
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    redirect("/auth");
+  };
+
+  useEffect(() => {
+    token = localStorage.getItem("accessToken");
+  }, [token]);
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
@@ -39,11 +51,17 @@ const Header = () => {
           </div>
 
           {/* Second section with buttons */}
-          <div className={`flex items-center gap-3 ${token && "hidden"}`}>
+          {!token && (
             <Button variant={"default"} asChild>
               <Link href={"/auth"}>Log in</Link>
             </Button>
-          </div>
+          )}
+          {/* logout */}
+          {token && (
+            <Button onClick={handleLogout} variant={"destructive"}>
+              Logout
+            </Button>
+          )}
         </div>
       </div>
     </header>
