@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/http/axios";
 import { FileLock, Mail } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 import toast from "react-hot-toast";
 

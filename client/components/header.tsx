@@ -1,6 +1,6 @@
-import { Search } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { Search } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -36,16 +36,10 @@ const Header = () => {
           {/* Second section with buttons */}
           <div className="flex items-center gap-3">
             <Link
-              href={'/login'}
+              href={"/auth"}
               className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
             >
               Log in
-            </Link>
-            <Link
-              href={'/sign-up'}
-              className="px-3 py-2 text-blue-600 bg-white border border-blue-600 hover:bg-blue-50 hover:underline rounded-lg transition-colors"
-            >
-              Create account
             </Link>
           </div>
         </div>

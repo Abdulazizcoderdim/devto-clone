@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type Store = {
   step: "login" | "verify";
-  setStep: (step: "login") => void;
+  setStep: (step: "login" | "verify") => void;
   email: string;
   setEmail: (email: string) => void;
 };

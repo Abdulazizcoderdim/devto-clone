@@ -66,3 +66,14 @@
     @apply bg-[#F6F6F6] text-foreground;
   }
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
