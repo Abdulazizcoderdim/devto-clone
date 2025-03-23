@@ -59,8 +59,22 @@ class AuthController {
         const tokens = tokenService.generateToken({ ...userDto });
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-        return res.status(200).json({ userDto, ...tokens });
+        res.cookies("refreshToken", tokens.refreshToken, {
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
+        return res.status(200).json({ userDto });
       }
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async refresh(req, res, next) {
+    try {
+      const { refreshToken } = req.cookies;
+      console.log(req.cookies); // Cookie-larni ko‘ramiz
     } catch (error) {
       next(error);
     }

@@ -44,7 +44,6 @@ const Verify = () => {
         accessToken: string;
       }>("/auth/verify", values);
 
-      console.log("verify>>>", data);
       if (!data) {
         throw new Error("Login xatolik");
       }
