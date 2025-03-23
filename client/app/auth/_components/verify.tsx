@@ -15,11 +15,15 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
+import { api } from "@/http/axios";
 import { otpSchema } from "@/lib/validation";
+import { User } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { z } from "zod";
 
 const Verify = () => {
@@ -31,9 +35,24 @@ const Verify = () => {
     defaultValues: { email, otp: "" },
   });
 
-  function onSubmit(values: z.infer<typeof otpSchema>) {
+  async function onSubmit(values: z.infer<typeof otpSchema>) {
     try {
-      console.log(values);
+      setLoading(true);
+      const { data } = await api.post<{
+        user: User;
+        refreshToken: string;
+        accessToken: string;
+      }>("/auth/verify", values);
+
+      if (!data) {
+        throw new Error("Login xatolik");
+      }
+
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+
+      toast.success("Successfully verified");
+      redirect("/");
     } catch (error) {
       console.log(error);
     }
