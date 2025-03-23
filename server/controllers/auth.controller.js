@@ -1,7 +1,9 @@
-const mailService = require('../services/mail.service');
-const prisma = require('../config/prismaClient');
-const BaseError = require('../errors/base.error');
-const bcrypt = require('bcrypt')
+const mailService = require("../services/mail.service");
+const prisma = require("../config/prismaClient");
+const BaseError = require("../errors/base.error");
+const bcrypt = require("bcrypt");
+const UserDto = require("../dtos/user.dto");
+const tokenService = require("../services/token.service");
 
 class AuthController {
   async login(req, res, next) {
@@ -9,10 +11,10 @@ class AuthController {
       const { email, password } = req.body;
 
       if (!email || !password) {
-        return next(BaseError.BadRequest('Email and password are required'));
+        return next(BaseError.BadRequest("Email and password are required"));
       }
 
-      const hashedPassword = await bcrypt.hash(password, 10)
+      const hashedPassword = await bcrypt.hash(password, 10);
 
       const existUser = await prisma.user.findUnique({
         where: {
@@ -22,15 +24,17 @@ class AuthController {
 
       if (existUser) {
         await mailService.sendOtp(existUser.email);
+
         return res.status(200).json({ email: existUser.email });
       }
 
       const newUser = await prisma.user.create({
         data: {
           email,
-          password: hashedPassword
+          password: hashedPassword,
         },
       });
+
       await mailService.sendOtp(newUser.email);
       return res.status(200).json({ email: newUser.email });
     } catch (error) {
@@ -51,7 +55,11 @@ class AuthController {
             isVerified: true,
           },
         });
-        return res.status(200).json({ user });
+        const userDto = new UserDto(user);
+        const tokens = tokenService.generateToken({ ...userDto });
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+        return res.status(200).json({ user, ...tokens });
       }
     } catch (error) {
       next(error);
