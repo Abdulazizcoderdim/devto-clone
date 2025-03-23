@@ -59,7 +59,7 @@ class AuthController {
         const tokens = tokenService.generateToken({ ...userDto });
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-        return res.status(200).json({ user, ...tokens });
+        return res.status(200).json({ userDto, ...tokens });
       }
     } catch (error) {
       next(error);

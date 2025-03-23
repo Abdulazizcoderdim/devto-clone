@@ -1,9 +1,13 @@
+"use client";
+
 import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
 const Header = () => {
+  const token = localStorage.getItem("accessToken");
+
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
       <div className="container mx-auto px-4">
@@ -35,7 +39,7 @@ const Header = () => {
           </div>
 
           {/* Second section with buttons */}
-          <div className="flex items-center gap-3">
+          <div className={`flex items-center gap-3 ${token && "hidden"}`}>
             <Button variant={"default"} asChild>
               <Link href={"/auth"}>Log in</Link>
             </Button>
