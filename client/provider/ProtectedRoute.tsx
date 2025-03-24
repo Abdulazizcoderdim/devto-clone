@@ -1,7 +1,8 @@
+import { useAuth } from "@/hooks/use-auth";
 import { api } from "@/http/axios";
 import { useEffect } from "react";
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ children }) => {
   const { setIsAuth, setLoading, setUser } = useAuth();
 
   const checkAuth = async () => {
