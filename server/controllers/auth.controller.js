@@ -4,6 +4,7 @@ const BaseError = require("../errors/base.error");
 const bcrypt = require("bcrypt");
 const UserDto = require("../dtos/user.dto");
 const tokenService = require("../services/token.service");
+const authService = require("../services/auth.service");
 
 class AuthController {
   async login(req, res, next) {
@@ -73,12 +74,31 @@ class AuthController {
 
   async refresh(req, res, next) {
     try {
-      const { refreshToken } = req.cookies;
       console.log(req.cookies); // Cookie-larni ko‘ramiz
+      const { refreshToken } = req.cookies;
+      const data = await authService.refresh(refreshToken);
+      res.cookie("refreshToken", data.refreshToken, {
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+      return res.json({ accessToken: data.accessToken });
     } catch (error) {
       next(error);
     }
   }
+
+  async logout(req, res, next) {
+    try {
+      const { refreshToken } = req.cookies;
+      const token = await authService.logout(refreshToken);
+      res.clearCookie("refreshToken");
+      return res.json({ message: "Successfully logged out" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  
 }
 
 module.exports = new AuthController();

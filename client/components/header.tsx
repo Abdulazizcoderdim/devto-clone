@@ -17,17 +17,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Header = () => {
-  let token = localStorage.getItem("accessToken");
+  const token = localStorage.getItem("accessToken");
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    redirect("/auth");
-  };
-
-  useEffect(() => {
-    token = localStorage.getItem("accessToken");
-  }, [token]);
+  const handleLogout = () => {};
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
