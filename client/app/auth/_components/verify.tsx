@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/http/axios";
+import api from "@/http/axios";
 import { otpSchema } from "@/lib/validation";
 import { User } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,7 +40,6 @@ const Verify = () => {
       setLoading(true);
       const { data } = await api.post<{
         user: User;
-        refreshToken: string;
         accessToken: string;
       }>("/auth/verify", values);
 
@@ -49,8 +48,6 @@ const Verify = () => {
       }
 
       localStorage.setItem("accessToken", data.accessToken);
-      localStorage.setItem("refreshToken", data.refreshToken);
-
       toast.success("Successfully verified");
       redirect("/");
     } catch (error) {

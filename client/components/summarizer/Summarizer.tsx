@@ -1,4 +1,4 @@
-import { api } from "@/http/axios";
+import api from "@/http/axios";
 import { useState } from "react";
 
 const Summarizer = ({ articleText }: { articleText: string }) => {

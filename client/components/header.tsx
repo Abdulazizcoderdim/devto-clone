@@ -15,8 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { api } from "@/http/axios";
 import toast from "react-hot-toast";
+import api from "@/http/axios";
 
 const Header = () => {
   const token = localStorage.getItem("accessToken");

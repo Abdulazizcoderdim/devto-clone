@@ -60,16 +60,17 @@ class AuthController {
         const tokens = tokenService.generateToken({ ...userDto });
         await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-        res.cookies("refreshToken", tokens.refreshToken, {
+        res.cookie("refreshToken", tokens.refreshToken, {
           httpOnly: true,
           maxAge: 30 * 24 * 60 * 60 * 1000,
         });
 
         return res
           .status(200)
-          .json({ userDto, accessToken: tokens.accessToken });
+          .json({ user: userDto, accessToken: tokens.accessToken });
       }
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -79,10 +80,12 @@ class AuthController {
       console.log(req.cookies); // Cookie-larni ko‘ramiz
       const { refreshToken } = req.cookies;
       const data = await authService.refresh(refreshToken);
+
       res.cookie("refreshToken", data.refreshToken, {
         httpOnly: true,
         maxAge: 30 * 24 * 60 * 60 * 1000,
       });
+
       return res.json({ accessToken: data.accessToken });
     } catch (error) {
       next(error);

@@ -1,5 +1,5 @@
 import { useAuth } from "@/hooks/use-auth";
-import { api } from "@/http/axios";
+import api from "@/http/axios";
 import { useEffect } from "react";
 
 const ProtectedRoute = ({ children }) => {
