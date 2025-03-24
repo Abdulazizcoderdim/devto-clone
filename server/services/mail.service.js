@@ -1,6 +1,7 @@
-const { PrismaClient } = require('@prisma/client');
-const nodemailer = require('nodemailer');
-const bcrypt = require('bcrypt');
+const { PrismaClient } = require("@prisma/client");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcrypt");
+const BaseError = require("../errors/base.error");
 const prisma = new PrismaClient();
 
 class MailService {
@@ -42,17 +43,17 @@ class MailService {
         email,
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
-    if (!otpData) throw BaseError.BadRequest('Otp not found');
+    if (!otpData) throw BaseError.BadRequest("Otp not found");
 
     if (new Date() > otpData.expireAt)
-      throw BaseError.BadRequest('Otp expired');
+      throw BaseError.BadRequest("Otp expired");
 
     const isValid = await bcrypt.compare(otp.toString(), otpData.otp);
-    if (!isValid) throw BaseError.BadRequest('Invalid Otp entered');
+    if (!isValid) throw BaseError.BadRequest("Invalid Otp entered");
 
     await prisma.otp.deleteMany({
       where: {

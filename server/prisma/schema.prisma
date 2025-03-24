@@ -8,27 +8,36 @@ datasource db {
 }
 
 model User {
-  id         String  @id @default(uuid()) @map("_id")
+  id         String   @id @default(uuid()) @map("_id")
   name       String?
-  email      String  @unique
+  email      String   @unique
   password   String
-  isVerified Boolean @default(false)
-  posts      Post[]
-  token      Token[]
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  posts Post[]
+  token Token[]
 }
 
 model Post {
-  id       String    @id @default(uuid()) @map("_id")
-  title    String
-  content  String
-  authorId String
+  id        String   @id @default(uuid()) @map("_id")
+  title     String
+  content   String
+  authorId  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   author   User      @relation(fields: [authorId], references: [id])
   comments Comment[]
 }
 
 model Comment {
-  id     String @id @default(uuid()) @map("_id")
-  text   String
+  id        String   @id @default(uuid()) @map("_id")
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   postId String
   post   Post   @relation(fields: [postId], references: [id])
 }
@@ -39,6 +48,7 @@ model Otp {
   otp       String    @db.String
   expireAt  DateTime?
   createdAt DateTime  @default(now()) @map("createdAt")
+  updatedAt DateTime  @updatedAt
 
   @@map("Otp")
 }

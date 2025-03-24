@@ -1,5 +1,6 @@
 const authController = require("../controllers/auth.controller");
 const sumController = require("../controllers/sum.controller");
+const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = require("express").Router();
 
@@ -8,6 +9,7 @@ require("express-group-routes");
 router.group("/auth", (router) => {
   router.post("/login", authController.login);
   router.post("/verify", authController.verify);
+  router.get("/me", authMiddleware, authController.me);
 });
 
 router.group("/users", (router) => {

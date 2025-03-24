@@ -98,7 +98,30 @@ class AuthController {
     }
   }
 
-  
+  async me(req, res, next) {
+    try {
+      const userId = req.user.id; // Middleware orqali user ID olinadi
+      const user = await prisma.user.findUnique({
+        where: {
+          id: userId,
+        },
+        select: {
+          id: true,
+          email: true,
+          username: true,
+          createdAt: true,
+        },
+      });
+
+      if (!user) {
+        throw BaseError.BadRequest("User not found");
+      }
+
+      return res.json(user);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new AuthController();

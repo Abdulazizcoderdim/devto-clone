@@ -15,11 +15,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { api } from "@/http/axios";
+import toast from "react-hot-toast";
 
 const Header = () => {
   const token = localStorage.getItem("accessToken");
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    try {
+      const { data } = await api.get("/auth/me");
+      console.log("User data:", data);
+      toast.success("Deleted");
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">

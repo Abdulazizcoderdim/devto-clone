@@ -6,14 +6,14 @@ const tokenService = require("./token.service");
 class AuthService {
   async refresh(refreshToken) {
     if (!refreshToken) {
-      throw BaseError.UnauthorizedError("Bad authorization");
+      throw BaseError.Unauthorized("Bad authorization");
     }
 
     const userPayload = tokenService.validateRefreshToken(refreshToken);
     const tokenDb = await tokenService.findToken(refreshToken);
 
     if (!userPayload || !tokenDb) {
-      throw BaseError.UnauthorizedError("Bad authorization");
+      throw BaseError.Unauthorized("Bad authorization");
     }
 
     const user = await prisma.user.findUnique({
