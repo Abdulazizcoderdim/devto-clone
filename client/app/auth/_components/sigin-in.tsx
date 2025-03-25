@@ -29,9 +29,11 @@ export default function SignIn() {
       setEmail(data.email);
       setStep("verify");
 
-      toast.success("A verification code has been sent to your email.");
+      toast.success("Tasdiqlash kodi emailingizga yuborildi.");
       return data;
     } catch (error) {
+      // @ts-ignore
+      toast.error(error.response.data.message + " 😢" || "Login xatolik");
       console.error(error);
     } finally {
       setLoading(false);

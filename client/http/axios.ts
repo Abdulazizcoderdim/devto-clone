@@ -38,7 +38,6 @@ api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        toast.error("Session expired. Please log in again.");
         useAuthStore.getState().logout();
         window.location.href = "/auth";
         return Promise.reject(refreshError);

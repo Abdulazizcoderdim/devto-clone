@@ -24,6 +24,15 @@ class AuthController {
       });
 
       if (existUser) {
+        const checkPassword = await bcrypt.compare(
+          password,
+          existUser.password
+        );
+
+        if (!checkPassword) {
+          return next(BaseError.BadRequest("Password is incorrect"));
+        }
+
         await mailService.sendOtp(existUser.email);
 
         return res.status(200).json({ email: existUser.email });

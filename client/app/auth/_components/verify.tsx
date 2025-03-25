@@ -51,12 +51,14 @@ const Verify = () => {
       }
 
       localStorage.setItem("accessToken", data.accessToken);
-      toast.success("Successfully verified");
       setAccessToken(data.accessToken);
       setIsAuth(true);
 
       router.push("/");
+      toast.success("Welcome to DevTo Clone 👋");
     } catch (error) {
+      // @ts-ignore
+      toast.error(error?.response?.data.message || "OTP xatolik");
       console.log(error);
     } finally {
       setLoading(false);
