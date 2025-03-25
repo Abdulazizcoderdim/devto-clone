@@ -33,8 +33,16 @@ class TokenService {
   }
 
   async removeToken(refreshToken) {
-    return await prisma.token.delete({
+    const tokenData = await prisma.token.findFirst({
       where: { refreshToken },
+    });
+
+    if (!tokenData) {
+      throw new Error("Token not found");
+    }
+
+    return await prisma.token.delete({
+      where: { id: tokenData.id },
     });
   }
 

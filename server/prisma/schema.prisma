@@ -47,7 +47,7 @@ model Otp {
   email     String    @db.String
   otp       String    @db.String
   expireAt  DateTime?
-  createdAt DateTime  @default(now()) @map("createdAt")
+  createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
   @@map("Otp")

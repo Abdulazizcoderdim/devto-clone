@@ -95,10 +95,11 @@ class AuthController {
   async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
-      const token = await authService.logout(refreshToken);
+      await authService.logout(refreshToken);
       res.clearCookie("refreshToken");
       return res.json({ message: "Successfully logged out" });
     } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -113,7 +114,7 @@ class AuthController {
         select: {
           id: true,
           email: true,
-          username: true,
+          name: true,
           createdAt: true,
         },
       });

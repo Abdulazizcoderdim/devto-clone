@@ -9,7 +9,9 @@ require("express-group-routes");
 router.group("/auth", (router) => {
   router.post("/login", authController.login);
   router.post("/verify", authController.verify);
+  router.post("/refresh", authController.refresh);
   router.get("/me", authMiddleware, authController.me);
+  router.delete("/logout", authController.logout);
 });
 
 router.group("/users", (router) => {

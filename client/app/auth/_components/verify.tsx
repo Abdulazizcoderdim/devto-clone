@@ -14,13 +14,14 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Label } from "@/components/ui/label";
+import { useAuthStore } from "@/hooks/auth-store";
 import { useAuth } from "@/hooks/use-auth";
 import api from "@/http/axios";
 import { otpSchema } from "@/lib/validation";
 import { User } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -29,6 +30,8 @@ import { z } from "zod";
 const Verify = () => {
   const { email } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { setIsAuth } = useAuthStore();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
@@ -47,9 +50,11 @@ const Verify = () => {
         throw new Error("Login xatolik");
       }
 
+      setIsAuth(true);
       localStorage.setItem("accessToken", data.accessToken);
       toast.success("Successfully verified");
-      redirect("/");
+
+      router.push("/");
     } catch (error) {
       console.log(error);
     } finally {

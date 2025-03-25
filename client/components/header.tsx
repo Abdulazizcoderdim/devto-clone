@@ -4,8 +4,6 @@ import { Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { redirect } from "next/navigation";
-import { useEffect } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -17,15 +15,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
 import api from "@/http/axios";
+import { useAuthStore } from "@/hooks/auth-store";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const token = localStorage.getItem("accessToken");
+  const { setIsAuth, isAuth } = useAuthStore();
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      const { data } = await api.get("/auth/me");
-      console.log("User data:", data);
-      toast.success("Deleted");
+      const { data } = await api.delete("/auth/logout", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      localStorage.removeItem("accessToken");
+      setIsAuth(false);
+      toast.success(data.message || "Deleted");
+      router.push("/auth");
     } catch (error) {
       console.error("Error fetching user data:", error);
     }
