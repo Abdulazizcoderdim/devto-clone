@@ -4,12 +4,13 @@ import Image from "next/image";
 import StateAuth from "./_components/state-auth";
 import { useEffect } from "react";
 import { redirect } from "next/navigation";
+import { useAuthStore } from "@/hooks/auth-store";
 
 const Page = () => {
-  const token = localStorage.getItem("accessToken");
+  const { isAuth } = useAuthStore();
 
   useEffect(() => {
-    if (token) redirect("/");
+    if (isAuth) redirect("/");
   }, []);
 
   return (

@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 
 const Header = () => {
   const token = localStorage.getItem("accessToken");
-  const { setIsAuth, isAuth } = useAuthStore();
+  const { isAuth } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -29,7 +29,6 @@ const Header = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       localStorage.removeItem("accessToken");
-      setIsAuth(false);
       toast.success(data.message || "Deleted");
       router.push("/auth");
     } catch (error) {
@@ -68,13 +67,13 @@ const Header = () => {
           </div>
 
           {/* Second section with buttons */}
-          {!token && (
+          {!isAuth && (
             <Button variant={"default"} asChild>
               <Link href={"/auth"}>Log in</Link>
             </Button>
           )}
           {/* logout */}
-          {token && (
+          {isAuth && (
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Avatar>

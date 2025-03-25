@@ -30,7 +30,6 @@ import { z } from "zod";
 const Verify = () => {
   const { email } = useAuth();
   const [loading, setLoading] = useState(false);
-  const { setIsAuth } = useAuthStore();
   const router = useRouter();
 
   const form = useForm<z.infer<typeof otpSchema>>({
@@ -50,7 +49,6 @@ const Verify = () => {
         throw new Error("Login xatolik");
       }
 
-      setIsAuth(true);
       localStorage.setItem("accessToken", data.accessToken);
       toast.success("Successfully verified");
 
