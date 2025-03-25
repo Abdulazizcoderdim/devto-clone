@@ -31,6 +31,7 @@ const Verify = () => {
   const { email } = useAuth();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { setAccessToken, setIsAuth } = useAuthStore();
 
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
@@ -51,6 +52,8 @@ const Verify = () => {
 
       localStorage.setItem("accessToken", data.accessToken);
       toast.success("Successfully verified");
+      setAccessToken(data.accessToken);
+      setIsAuth(true);
 
       router.push("/");
     } catch (error) {

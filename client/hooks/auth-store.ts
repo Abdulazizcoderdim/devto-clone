@@ -6,7 +6,10 @@ interface AuthState {
   isAuth: boolean;
   accessToken: string | null;
   loading: boolean;
+  setIsAuth: (isAuth: boolean) => void;
   checkAuth: () => void;
+  logout: () => void;
+  setAccessToken: (token: string) => void;
   setUser: (user: any) => void;
   setLoading: (loading: boolean) => void;
 }
@@ -17,18 +20,55 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuth: !!localStorage.getItem("accessToken"),
   loading: false,
 
+  setIsAuth: (isAuth) => set({ isAuth }),
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
-
+  setAccessToken: (token) => set({ accessToken: token }),
   checkAuth: async () => {
     try {
-      const { data } = await api.get("/auth/refresh");
-      set({ accessToken: data.accessToken, isAuth: true });
-      localStorage.setItem("accessToken", data.accessToken);
-    } catch {
-      set({ isAuth: false });
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        set({ isAuth: false });
+        return;
+      }
+
+      const { data } = await api.get("/auth/me", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (data) {
+        set({ accessToken: token, isAuth: true, user: data });
+      }
+    } catch (error) {
+      console.error("Auth check failed:", error);
+
+      // Faqat refresh tokenni ishga tushirish:
+      try {
+        const { data } = await api.get("/auth/refresh");
+        set({ accessToken: data.accessToken, isAuth: true });
+        localStorage.setItem("accessToken", data.accessToken);
+      } catch {
+        set({ isAuth: false });
+      }
     } finally {
       set({ loading: false });
+    }
+  },
+  logout: async () => {
+    try {
+      const token = useAuthStore.getState().accessToken;
+
+      if (token) {
+        await api.delete("/auth/logout", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      localStorage.removeItem("accessToken");
+      useAuthStore.setState({ accessToken: null, isAuth: false });
+    } catch (error) {
+      console.error("Error during logout:", error);
     }
   },
 }));

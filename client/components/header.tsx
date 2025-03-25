@@ -14,27 +14,20 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import api from "@/http/axios";
 import { useAuthStore } from "@/hooks/auth-store";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const token = localStorage.getItem("accessToken");
-  const { isAuth } = useAuthStore();
+  const { isAuth, logout, user } = useAuthStore();
   const router = useRouter();
 
-  const handleLogout = async () => {
-    try {
-      const { data } = await api.delete("/auth/logout", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      localStorage.removeItem("accessToken");
-      toast.success(data.message || "Deleted");
-      router.push("/auth");
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
+  const handleLogout = () => {
+    logout();
+    router.push("/auth");
+    toast.success("Successfuly logout!");
   };
+
+  console.log("me>>>>>>>>>", user);
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
