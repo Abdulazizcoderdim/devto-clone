@@ -23,7 +23,7 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    router.push("/auth");
+    router.push("/sign-in");
     toast.success("Successfuly logout!");
   };
 
@@ -61,9 +61,14 @@ const Header = () => {
 
           {/* Second section with buttons */}
           {!isAuth && (
-            <Button variant={"default"} asChild>
-              <Link href={"/auth"}>Log in</Link>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button variant={"default"} asChild>
+                <Link href={"/sign-in"}>Log in</Link>
+              </Button>
+              <Button variant={"default"} asChild>
+                <Link href={"/sign-up"}>Sign up</Link>
+              </Button>
+            </div>
           )}
           {/* logout */}
           {isAuth && (

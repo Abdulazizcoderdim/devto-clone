@@ -7,6 +7,44 @@ const tokenService = require("../services/token.service");
 const authService = require("../services/auth.service");
 
 class AuthController {
+  async register(req, res, next) {
+    try {
+      const { name, email, password } = req.body;
+
+      if (!name || !email || !password) {
+        return next(
+          BaseError.BadRequest("Name, email and password are required")
+        );
+      }
+
+      const existUser = await prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (existUser) {
+        return next(BaseError.BadRequest("User already exists"));
+      }
+
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = await prisma.user.create({
+        data: {
+          name,
+          email,
+          password: hashedPassword,
+        },
+      });
+
+      await mailService.sendOtp(newUser.email);
+
+      return res.status(200).json({ email: newUser.email });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
@@ -14,8 +52,6 @@ class AuthController {
       if (!email || !password) {
         return next(BaseError.BadRequest("Email and password are required"));
       }
-
-      const hashedPassword = await bcrypt.hash(password, 10);
 
       const existUser = await prisma.user.findUnique({
         where: {
@@ -33,20 +69,19 @@ class AuthController {
           return next(BaseError.BadRequest("Password is incorrect"));
         }
 
-        await mailService.sendOtp(existUser.email);
+        const userDto = new UserDto(existUser);
+        const tokens = tokenService.generateToken({ ...userDto });
+        await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
-        return res.status(200).json({ email: existUser.email });
+        res.cookie("refreshToken", tokens.refreshToken, {
+          httpOnly: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+        });
+
+        return res.status(200).json({ accessToken: tokens.accessToken });
       }
 
-      const newUser = await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-        },
-      });
-
-      await mailService.sendOtp(newUser.email);
-      return res.status(200).json({ email: newUser.email });
+      return next(BaseError.BadRequest("User not found"));
     } catch (error) {
       next(error);
     }

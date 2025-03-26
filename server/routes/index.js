@@ -7,6 +7,7 @@ const router = require("express").Router();
 require("express-group-routes");
 
 router.group("/auth", (router) => {
+  router.post("/register", authController.register);
   router.post("/login", authController.login);
   router.post("/verify", authController.verify);
   router.get("/refresh", authController.refresh);
