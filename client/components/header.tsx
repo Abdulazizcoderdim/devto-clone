@@ -23,7 +23,6 @@ const Header = () => {
 
   const handleLogout = () => {
     logout();
-    router.push("/sign-in");
     toast.success("Successfuly logout!");
   };
 

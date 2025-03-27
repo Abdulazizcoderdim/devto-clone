@@ -49,7 +49,8 @@ export const useAuthStore = create<AuthState>((set) => ({
         set({ accessToken: data.accessToken, isAuth: true });
         localStorage.setItem("accessToken", data.accessToken);
       } catch {
-        set({ isAuth: false });
+        useAuthStore.setState({ accessToken: null, isAuth: false }); // 🔥 Oldin false qilib qo'yish kerak
+        localStorage.removeItem("accessToken");
       }
     } finally {
       set({ loading: false });
@@ -57,7 +58,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   logout: async () => {
     try {
-      const token = useAuthStore.getState().accessToken;
+      const token = localStorage.getItem("accessToken");
 
       if (token) {
         await api.delete("/auth/logout", {
@@ -69,6 +70,10 @@ export const useAuthStore = create<AuthState>((set) => ({
       useAuthStore.setState({ accessToken: null, isAuth: false });
     } catch (error) {
       console.error("Error during logout:", error);
+    } finally {
+      localStorage.removeItem("accessToken");
+      useAuthStore.setState({ accessToken: null, isAuth: false });
+      window.location.href = "/sing-in"; // 🔥 Foydalanuvchini /auth pagega yuborish
     }
   },
 }));
