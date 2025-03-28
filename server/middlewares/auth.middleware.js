@@ -8,13 +8,15 @@ module.exports = function (req, res, next) {
   try {
     const authorization = req.headers.authorization;
 
-    if (!authorization) {
-      throw BaseError.Unauthorized();
+    if (!authorization || !authorization.startsWith("Bearer ")) {
+      throw BaseError.Unauthorized(
+        "Authorization header is missing or invalid"
+      );
     }
 
     const token = authorization.split(" ")[1];
     if (!token) {
-      throw BaseError.Unauthorized();
+      throw BaseError.Unauthorized("Token is missing");
     }
 
     const userPayload = tokenService.validateAccessToken(token);
@@ -22,19 +24,6 @@ module.exports = function (req, res, next) {
       throw BaseError.Unauthorized("Invalid token");
     }
 
-    // const { userId } = jwt.verify(token, process.env.JWT_SECRET);
-    // if (!userId) {
-    //   return next(BaseError.Unauthorized());
-    // }
-
-    // const user = await prisma.user.findUnique({
-    //   where: {
-    //     id: userId,
-    //   },
-    // });
-    // if (!user) {
-    //   return next(BaseError.Unauthorized());
-    // }
     console.log("userPayload", userPayload);
 
     req.user = userPayload;

@@ -1,6 +1,6 @@
-import FirstPanel from './_components/first-panel';
-import SecondPanel from './_components/blogs';
-import ThreePanel from './_components/three-panel';
+import Blogs from "./_components/blogs";
+import FirstPanel from "./_components/first-panel";
+import ThreePanel from "./_components/three-panel";
 
 export default function Home() {
   return (
@@ -12,7 +12,7 @@ export default function Home() {
 
         {/* SecondPanel - har doim ko‘rinadi */}
         <div className="bg-yellow-100 w-full">
-          <SecondPanel />
+          <Blogs />
         </div>
 
         {/* ThreePanel - md da yashiriladi */}

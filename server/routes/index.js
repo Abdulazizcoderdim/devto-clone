@@ -1,4 +1,5 @@
 const authController = require("../controllers/auth.controller");
+const postController = require("../controllers/post.controller");
 const sumController = require("../controllers/sum.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -13,6 +14,14 @@ router.group("/auth", (router) => {
   router.get("/refresh", authController.refresh);
   router.get("/me", authMiddleware, authController.me);
   router.delete("/logout", authController.logout);
+});
+
+router.group("/posts", (router) => {
+  router.get("/", authMiddleware, postController.getAll);
+  router.get("/:id", authMiddleware, postController.getOne);
+  router.post("/", authMiddleware, postController.create);
+  router.put("/:id", authMiddleware, postController.update);
+  router.delete("/:id", authMiddleware, postController.delete);
 });
 
 router.group("/users", (router) => {
