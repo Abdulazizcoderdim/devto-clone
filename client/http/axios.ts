@@ -1,7 +1,5 @@
 import { useAuthStore } from "@/hooks/auth-store";
 import axios from "axios";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 
 export const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
@@ -10,17 +8,6 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
   withCredentials: true,
 });
-
-api.interceptors.request.use(
-  (config) => {
-    const token = useAuthStore.getState().accessToken;
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
 
 api.interceptors.response.use(
   (response) => response,
@@ -37,7 +24,7 @@ api.interceptors.response.use(
         api.defaults.headers["Authorization"] = `Bearer ${data.accessToken}`;
         return api(originalRequest); // Asl so‘rovni qayta yuborish
       } catch (refreshError) {
-          logout();
+        logout();
         window.location.href = "/sign-in";
         return Promise.reject(refreshError);
       }

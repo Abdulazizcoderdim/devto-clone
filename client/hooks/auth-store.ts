@@ -73,7 +73,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     } finally {
       localStorage.removeItem("accessToken");
       useAuthStore.setState({ accessToken: null, isAuth: false });
-      window.location.href = "/sing-in"; // 🔥 Foydalanuvchini /auth pagega yuborish
+      window.location.href = "/sign-in"; // 🔥 Foydalanuvchini /auth pagega yuborish
     }
   },
 }));

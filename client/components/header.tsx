@@ -26,8 +26,6 @@ const Header = () => {
     toast.success("Successfuly logout!");
   };
 
-  console.log("me>>>>>>>>>", user);
-
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
       <div className="container mx-auto px-4">
