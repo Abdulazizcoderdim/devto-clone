@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { ItemBlog } from "./blogs/ItemBlog";
 import api from "@/http/axios";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
+import { Post } from "@/types";
 
 const fakeBlogs = [{}];
 console.log(fakeBlogs);
@@ -14,7 +17,8 @@ const Blogs = () => {
     totalElements: 0,
     totalPages: 0,
   });
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Sample data for demonstration
   const blogPost = {
@@ -55,6 +59,7 @@ const Blogs = () => {
 
   const fetchPosts = async () => {
     try {
+      setLoading(true);
       const token = localStorage.getItem("accessToken");
       const res = await api.get(
         `/posts?page=${pagination.number}&size=${pagination.size}`,
@@ -69,13 +74,70 @@ const Blogs = () => {
       setPagination(res.data.page);
     } catch (error) {
       console.error("Failed to fetch posts", error);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const formatPostForDisplay = (post) => {
+    const wordCount = post.content.split(/\s+/).length;
+    const readingTime = `${Math.ceil(wordCount / 200)} min`;
+
+    const formattedComments = post.comments.map((comment) => ({
+      id: comment.id,
+      author: {
+        name: comment.user.name,
+        avatar: comment.user.image || "/placeholder-avatar.jpg",
+      },
+      content: comment.content,
+      date: new Date(comment.createdAt).toLocaleDateString(),
+    }));
+
+    // Extract tag names
+    const tagNames = post.tags.map((postTag) => postTag.tag.name);
+
+    return {
+      author: {
+        name: post.author.name,
+        avatar: post.author.image || "/placeholder-avatar.jpg",
+      },
+      date: new Date(post.createdAt).toLocaleDateString(),
+      title: post.title,
+      tags: tagNames,
+      // reactions: post._count.comments, // Reactions o'rniga comment count'ni ishlatamiz
+      comments: formattedComments,
+      readingTime,
+    };
+  };
+
+  if (loading && posts.length === 0) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="animate-spin" size="lg" />
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col gap-3">
-      <ItemBlog {...blogPost} />
-    </div>
+    <>
+      <div className="flex flex-col gap-3">
+        {posts.map((post) => {
+          return (
+            <Link key={post.id} href={`/blog/${post.slug}`}>
+              <ItemBlog {...formatPostForDisplay(post)} />
+            </Link>
+          );
+        })}
+      </div>
+
+      {posts.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-lg text-muted-foreground">
+            Hozircha postlar mavjud emas
+          </p>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -21,8 +21,8 @@ export interface Post {
   title: string;
   content: string;
   authorId: string;
-  author: User;
-  comments: Comment[];
+  user: User;
+  comments?: Comment[];
 }
 
 export interface Comment {
