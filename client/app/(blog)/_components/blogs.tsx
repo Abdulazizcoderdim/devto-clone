@@ -5,7 +5,7 @@ import { ItemBlog } from "./blogs/ItemBlog";
 import api from "@/http/axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { Post } from "@/types";
+import { Comment, Post, PostTag } from "@/types";
 
 const fakeBlogs = [{}];
 console.log(fakeBlogs);
@@ -19,39 +19,6 @@ const Blogs = () => {
   });
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Sample data for demonstration
-  const blogPost = {
-    author: {
-      name: "Anmol Baranwal",
-      avatar: "/placeholder.svg?height=40&width=40",
-    },
-    date: "Mar 24 (4 days ago)",
-    title: "10 common backend tasks and how to automate them",
-    tags: ["backend", "programming", "javascript", "tutorial"],
-    reactions: 236,
-    comments: [
-      {
-        id: "1",
-        author: {
-          name: "Aavash Parajuli",
-          avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Thank you Anmol.",
-        date: "1 day ago",
-      },
-      {
-        id: "2",
-        author: {
-          name: "Zachary Loeber",
-          avatar: "/placeholder.svg?height=40&width=40",
-        },
-        content: "Ok, I may have to check out encore now.",
-        date: "3 days ago",
-      },
-    ],
-    readingTime: "16 min",
-  };
 
   useEffect(() => {
     fetchPosts();
@@ -79,32 +46,32 @@ const Blogs = () => {
     }
   };
 
-  const formatPostForDisplay = (post) => {
+  const formatPostForDisplay = (post: Post) => {
     const wordCount = post.content.split(/\s+/).length;
     const readingTime = `${Math.ceil(wordCount / 200)} min`;
 
-    const formattedComments = post.comments.map((comment) => ({
+    const formattedComments = post.comments.map((comment: Comment) => ({
       id: comment.id,
       author: {
-        name: comment.user.name,
-        avatar: comment.user.image || "/placeholder-avatar.jpg",
+        name: comment.user.name ?? "",
       },
-      content: comment.content,
+      content: comment.text,
       date: new Date(comment.createdAt).toLocaleDateString(),
     }));
 
     // Extract tag names
-    const tagNames = post.tags.map((postTag) => postTag.tag.name);
+    const tagNames = post.tags.map((postTag: PostTag) => postTag.tag.name);
 
     return {
+      id: post.id,
+      slug: post.slug,
       author: {
         name: post.author.name,
-        avatar: post.author.image || "/placeholder-avatar.jpg",
       },
       date: new Date(post.createdAt).toLocaleDateString(),
       title: post.title,
       tags: tagNames,
-      // reactions: post._count.comments, // Reactions o'rniga comment count'ni ishlatamiz
+      reactions: 2, // Reactions o'rniga comment count'ni ishlatamiz
       comments: formattedComments,
       readingTime,
     };
@@ -113,7 +80,7 @@ const Blogs = () => {
   if (loading && posts.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin" size="lg" />
+        <Loader2 className="animate-spin" size={24} />
       </div>
     );
   }
@@ -122,11 +89,7 @@ const Blogs = () => {
     <>
       <div className="flex flex-col gap-3">
         {posts.map((post) => {
-          return (
-            <Link key={post.id} href={`/blog/${post.slug}`}>
-              <ItemBlog {...formatPostForDisplay(post)} />
-            </Link>
-          );
+          return <ItemBlog {...formatPostForDisplay(post)} />;
         })}
       </div>
 

@@ -20,9 +20,13 @@ export interface Post {
   id: string;
   title: string;
   content: string;
+  slug: string;
   authorId: string;
-  user: User;
-  comments?: Comment[];
+  createdAt: string; // ISO format datetime (String)
+  updatedAt: string; // ISO format datetime (String)
+  author: Author;
+  comments: Comment[]; // Agar commentlar bo'lsa, alohida interface yozish kerak
+  tags: PostTag[];
 }
 
 export interface Comment {
@@ -30,6 +34,9 @@ export interface Comment {
   text: string;
   postId: string;
   post: Post;
+  userId: string;
+  user: User;
+  createdAt: string; // ISO format datetime (String)
 }
 
 export interface Otp {
@@ -45,4 +52,21 @@ export interface Token {
   userId: string;
   refreshToken: string;
   user: User;
+}
+
+export interface Author {
+  id: string;
+  name: string;
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+}
+
+export interface PostTag {
+  id: string;
+  postId: string;
+  tagId: string;
+  tag: Tag;
 }

@@ -3,21 +3,22 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bookmark, Heart, MessageCircle } from "lucide-react";
+import Link from "next/link";
 
 interface Comment {
   id: string;
   author: {
     name: string;
-    avatar: string;
   };
   content: string;
   date: string;
 }
 
 interface BlogPostProps {
+  id: string;
+  slug: string;
   author: {
-    name: string;
-    avatar: string;
+    name?: string;
   };
   date: string;
   title: string;
@@ -28,6 +29,8 @@ interface BlogPostProps {
 }
 
 export function ItemBlog({
+  id,
+  slug,
   author,
   date,
   title,
@@ -36,13 +39,25 @@ export function ItemBlog({
   comments,
   readingTime,
 }: BlogPostProps) {
+  // tags lowercase qilish va maxsus belgilarni olib tashlash
+  const formatTag = (tag: string) => {
+    return tag
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-");
+  };
+
   return (
-    <Card className="border rounded-lg overflow-hidden">
+    <Card key={id} className="border rounded-lg overflow-hidden">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <Avatar className="h-10 w-10">
-            <AvatarImage src={author.avatar} alt={author.name} />
-            <AvatarFallback>{author.name.charAt(0)}</AvatarFallback>
+            <AvatarImage src={""} alt={author.name} />
+            <AvatarFallback>
+              {author?.name?.charAt(0).toLocaleUpperCase() || "?"}
+            </AvatarFallback>
           </Avatar>
           <div>
             <p className="font-medium">{author.name}</p>
@@ -50,26 +65,37 @@ export function ItemBlog({
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold mb-3">{title}</h2>
+        <Link
+          href={`/blog/${slug}`}
+          className="text-2xl font-bold mb-3 hover:text-blue-800 transition-colors duration-200"
+        >
+          {title}
+        </Link>
 
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-4 mt-2">
           {tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-sm">
-              #{tag}
+            <Badge
+              key={tag}
+              variant="outline"
+              className="text-sm hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+            >
+              <Link href={`/blog/tag/${formatTag(tag)}`} className="text-sm">
+                #{tag}
+              </Link>
             </Badge>
           ))}
         </div>
 
         <div className="flex items-center justify-between mt-6">
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
+            <Button variant="ghost" className="flex items-center gap-2">
               <Heart className="h-5 w-5 text-red-500" />
               <span className="text-sm">{reactions} Reactions</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </Button>
+            <Button variant="ghost" className="flex items-center gap-2">
               <MessageCircle className="h-5 w-5" />
               <span className="text-sm">{comments.length} Comments</span>
-            </div>
+            </Button>
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground">
@@ -89,10 +115,7 @@ export function ItemBlog({
             {comments.slice(0, 2).map((comment) => (
               <div key={comment.id} className="flex gap-3">
                 <Avatar className="h-8 w-8">
-                  <AvatarImage
-                    src={comment.author.avatar}
-                    alt={comment.author.name}
-                  />
+                  <AvatarImage src={""} alt={comment.author.name} />
                   <AvatarFallback>
                     {comment.author.name.charAt(0)}
                   </AvatarFallback>
