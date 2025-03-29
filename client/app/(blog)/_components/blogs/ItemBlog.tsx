@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bookmark, Heart, MessageCircle } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Comment {
   id: string;
@@ -49,18 +50,28 @@ export function ItemBlog({
       .replace(/-+/g, "-");
   };
 
+  const router = useRouter();
+
   return (
     <Card key={id} className="border rounded-lg overflow-hidden">
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-4">
-          <Avatar className="h-10 w-10">
+          <Avatar
+            className="h-10 w-10 cursor-pointer"
+            onClick={() => router.push(`/${author.name}`)}
+          >
             <AvatarImage src={""} alt={author.name} />
             <AvatarFallback>
               {author?.name?.charAt(0).toLocaleUpperCase() || "?"}
             </AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{author.name}</p>
+            <p
+              onClick={() => router.push(`/${author.name}`)}
+              className="font-medium hover:underline cursor-pointer"
+            >
+              {author.name}
+            </p>
             <p className="text-sm text-muted-foreground">{date}</p>
           </div>
         </div>
