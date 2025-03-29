@@ -31,7 +31,6 @@ export default function SignUp() {
       setStep("verify");
 
       toast.success("Tasdiqlash kodi emailingizga yuborildi.");
-      return data;
     } catch (error) {
       // @ts-ignore
       toast.error(error.response.data.message + " 😢" || "Login xatolik");

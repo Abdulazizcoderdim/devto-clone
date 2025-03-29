@@ -18,7 +18,6 @@ class PostController {
         include: {
           author: {
             select: {
-              id: true,
               name: true,
             },
           },
@@ -66,6 +65,16 @@ class PostController {
 
       if (!title || !content || !authorId) {
         return res.status(400).json({ error: "All fields are required" });
+      }
+
+      const author = await prisma.user.findUnique({
+        where: {
+          id: authorId,
+        },
+      });
+
+      if (!author) {
+        return res.status(404).json({ error: "Author not found" });
       }
 
       // Generate a slug if not provided
@@ -164,7 +173,7 @@ class PostController {
       });
 
       return res.status(201).json({
-        success: true,
+        message: "Post created successfully 🎉",
         data: completePost,
       });
     } catch (error) {

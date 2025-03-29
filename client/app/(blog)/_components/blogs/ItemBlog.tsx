@@ -66,7 +66,7 @@ export function ItemBlog({
         </div>
 
         <Link
-          href={`/blog/${slug}`}
+          href={`/${author.name}/${slug}`}
           className="text-2xl font-bold mb-3 hover:text-blue-800 transition-colors duration-200"
         >
           {title}
