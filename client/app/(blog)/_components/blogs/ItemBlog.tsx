@@ -40,7 +40,8 @@ export function ItemBlog({
   comments,
   readingTime,
 }: BlogPostProps) {
-  // tags lowercase qilish va maxsus belgilarni olib tashlash
+  const router = useRouter();
+
   const formatTag = (tag: string) => {
     return tag
       .toLowerCase()
@@ -50,7 +51,15 @@ export function ItemBlog({
       .replace(/-+/g, "-");
   };
 
-  const router = useRouter();
+  const formatDate = (date: string) => {
+    // Mar 30
+    const options: Intl.DateTimeFormatOptions = {
+      month: "short",
+      day: "2-digit",
+    };
+    const formattedDate = new Date(date).toLocaleDateString("en-US", options);
+    return formattedDate;
+  };
 
   return (
     <Card key={id} className="border rounded-lg overflow-hidden">
@@ -72,7 +81,7 @@ export function ItemBlog({
             >
               {author.name}
             </p>
-            <p className="text-sm text-muted-foreground">{date}</p>
+            <p className="text-sm text-muted-foreground">{formatDate(date)}</p>
           </div>
         </div>
 
@@ -125,7 +134,10 @@ export function ItemBlog({
           <div className="px-6 pb-4 space-y-4 w-full">
             {comments.slice(0, 2).map((comment) => (
               <div key={comment.id} className="flex gap-3">
-                <Avatar className="h-8 w-8">
+                <Avatar
+                  onClick={() => router.push(`/${author.name}`)}
+                  className="h-8 w-8 cursor-pointer"
+                >
                   <AvatarImage src={""} alt={comment.author.name} />
                   <AvatarFallback>
                     {comment.author.name.charAt(0)}
@@ -133,9 +145,14 @@ export function ItemBlog({
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-medium">{comment.author.name}</span>
+                    <span
+                      onClick={() => router.push(`/${author.name}`)}
+                      className="font-medium hover:underline cursor-pointer"
+                    >
+                      {comment.author.name}
+                    </span>
                     <span className="text-xs text-muted-foreground">
-                      {comment.date}
+                      {formatDate(comment.date)}
                     </span>
                   </div>
                   <p className="text-sm mt-1">{comment.content}</p>

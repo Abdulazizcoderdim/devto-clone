@@ -18,7 +18,7 @@ import { useAuthStore } from "@/hooks/auth-store";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const { isAuth, logout, user } = useAuthStore();
+  const { isAuth, logout } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -67,24 +67,30 @@ const Header = () => {
               </Button>
             </div>
           )}
+
           {/* logout */}
           {isAuth && (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Profile</DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout}>
-                  <p className="text-red-500">Logout</p>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <div className="flex items-center gap-2">
+              <Button variant={"default"} asChild>
+                <Link href={"/new"}>Create Post</Link>
+              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <p className="text-red-500">Logout</p>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           )}
         </div>
       </div>

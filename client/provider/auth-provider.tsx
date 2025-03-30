@@ -34,8 +34,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await checkAuth();
     } catch (error) {
       console.error("Auth check failed:", error);
-      logout();
-      router.push("/sign-in");
+      refreshToken();
     }
   };
 

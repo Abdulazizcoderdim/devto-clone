@@ -1,15 +1,15 @@
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import {
   Ellipsis,
   Facebook,
   Instagram,
   TableCellsMerge,
   Twitter,
-} from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import PopularTags from './first-panel/popular-tags';
-import UserSelectedTopics from './first-panel/user-selected-topics';
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import PopularTags from "./first-panel/popular-tags";
+import UserSelectedTopics from "./first-panel/user-selected-topics";
 
 const FirstPanel = () => {
   return (
@@ -24,20 +24,6 @@ const FirstPanel = () => {
           We&apos;re a place where coders share, stay up-to-date and grow their
           careers.
         </p>
-        <div className="flex flex-col text-center justify-center gap-2">
-          <Link
-            href={'/sign-up'}
-            className="px-3 py-2 text-blue-600 bg-white border border-blue-600 hover:bg-blue-500 hover:text-white font-medium hover:underline rounded-lg transition-colors"
-          >
-            Create account
-          </Link>
-          <Link
-            href={'/login'}
-            className="px-3 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-50 rounded-lg transition-colors"
-          >
-            Log in
-          </Link>
-        </div>
       </div>
 
       {/* user selected topics  */}
@@ -46,25 +32,25 @@ const FirstPanel = () => {
       {/* socials */}
       <div className="flex items-center my-4 gap-2">
         <Link
-          href={'#'}
+          href={"#"}
           className="p-2 hover:bg-blue-200 hover:text-blue-700 rounded-md"
         >
           <Twitter size={25} />
         </Link>
         <Link
-          href={'#'}
+          href={"#"}
           className="p-2 hover:bg-blue-200 hover:text-blue-700 rounded-md"
         >
           <TableCellsMerge size={25} />
         </Link>
         <Link
-          href={'#'}
+          href={"#"}
           className="p-2 hover:bg-blue-200 hover:text-blue-700 rounded-md"
         >
           <Instagram size={25} />
         </Link>
         <Link
-          href={'#'}
+          href={"#"}
           className="p-2 hover:bg-blue-200 hover:text-blue-700 rounded-md"
         >
           <Facebook size={25} />
@@ -79,7 +65,7 @@ const FirstPanel = () => {
         <div className="border bg-white border-gray-300 rounded-md px-3 py-4">
           <div className="flex justify-between items-center">
             <span className="text-gray-500 text-sm">DEV Community</span>
-            <Button size={'icon'} variant={'outline'}>
+            <Button size={"icon"} variant={"outline"}>
               <Ellipsis />
             </Button>
           </div>
@@ -99,13 +85,13 @@ const FirstPanel = () => {
           With you every step of your journey.
         </p>
         <p className="text-sm text-gray-500">
-          Built on <span className="text-blue-500">Forem</span> — the{' '}
+          Built on <span className="text-blue-500">Forem</span> — the{" "}
           <span className="text-blue-500">open source</span> software that
           powers <span className="text-blue-500">DEV</span> and other inclusive
           communities.
         </p>
         <p className="text-sm text-gray-500">
-          Made with love and Ruby on Rails. DEV Community © 2016 -{' '}
+          Made with love and Ruby on Rails. DEV Community © 2016 -{" "}
           {new Date().toDateString()}.
         </p>
       </div>

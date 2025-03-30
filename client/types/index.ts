@@ -37,6 +37,7 @@ export interface Comment {
   userId: string;
   user: User;
   createdAt: string; // ISO format datetime (String)
+  updatedAt: string; // ISO format datetime (String)
 }
 
 export interface Otp {
