@@ -29,7 +29,6 @@ class PostController {
             include: {
               user: {
                 select: {
-                  id: true,
                   name: true,
                 },
               },

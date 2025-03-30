@@ -1,8 +1,5 @@
-const jwt = require("jsonwebtoken");
 const BaseError = require("../errors/base.error");
-const { PrismaClient } = require("@prisma/client");
 const tokenService = require("../services/token.service");
-const prisma = new PrismaClient();
 
 module.exports = function (req, res, next) {
   try {

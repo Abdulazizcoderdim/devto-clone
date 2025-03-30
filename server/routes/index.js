@@ -1,7 +1,5 @@
 const authController = require("../controllers/auth.controller");
-const {
-  default: commentController,
-} = require("../controllers/comment.controller");
+const commentController = require("../controllers/comment.controller");
 const postController = require("../controllers/post.controller");
 const sumController = require("../controllers/sum.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
@@ -28,8 +26,7 @@ router.group("/posts", (router) => {
 });
 
 router.group("/comments", (router) => {
-  router.get("/", commentController.getAll);
-  router.get("/:id", commentController.getOne);
+  router.get("/post/:postId", commentController.getCommentsByPost);
   router.post("/", authMiddleware, commentController.create);
   router.put("/:id", authMiddleware, commentController.update);
   router.delete("/:id", authMiddleware, commentController.delete);
