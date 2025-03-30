@@ -46,6 +46,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       // Faqat refresh tokenni ishga tushirish:
       try {
         const { data } = await api.get("/auth/refresh");
+        console.log("Refresh token data:", data);
         set({ accessToken: data.accessToken, isAuth: true });
         localStorage.setItem("accessToken", data.accessToken);
       } catch {
