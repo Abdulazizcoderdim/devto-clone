@@ -16,28 +16,28 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const { setAccessToken, setIsAuth } = useAuthStore();
 
   useEffect(() => {
-    const verifyAuth = async () => {
-      try {
-        await checkAuth();
-      } catch (error) {
-        console.error("Auth check failed:", error);
-        logout();
-        router.push("/sign-in");
-      }
-    };
+    verifyAuth();
 
     if (localStorage.getItem("accessToken")) {
       refreshToken();
 
       const interval = setInterval(() => {
         refreshToken();
-      }, 60000); // Check every minute
+      }, 900000); // 15 minutes
 
       return () => clearInterval(interval);
     }
-
-    verifyAuth();
   }, []);
+
+  const verifyAuth = async () => {
+    try {
+      await checkAuth();
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      logout();
+      router.push("/sign-in");
+    }
+  };
 
   const refreshToken = async () => {
     try {
