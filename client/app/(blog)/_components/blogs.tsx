@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { ItemBlog } from "./blogs/ItemBlog";
 import api from "@/http/axios";
 import { Loader2 } from "lucide-react";
-import Link from "next/link";
 import { Comment, Post, PostTag } from "@/types";
 import QuickCreatePost from "./quick-create-post";
 

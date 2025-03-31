@@ -77,7 +77,10 @@ const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar>
-                    <AvatarImage src="" alt={user?.name || ""} />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt={user?.name || ""}
+                    />
                     <AvatarFallback className="bg-gray-200 text-black">
                       {user?.name?.charAt(0).toLocaleUpperCase() || "?"}
                     </AvatarFallback>
