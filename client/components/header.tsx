@@ -18,7 +18,7 @@ import { useAuthStore } from "@/hooks/auth-store";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
-  const { isAuth, logout } = useAuthStore();
+  const { isAuth, logout, user } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -77,8 +77,10 @@ const Header = () => {
               <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarImage src="" alt={user?.name || ""} />
+                    <AvatarFallback className="bg-gray-200 text-black">
+                      {user?.name?.charAt(0).toLocaleUpperCase() || "?"}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>

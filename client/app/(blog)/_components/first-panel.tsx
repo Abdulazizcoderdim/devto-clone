@@ -10,12 +10,13 @@ import Image from "next/image";
 import Link from "next/link";
 import PopularTags from "./first-panel/popular-tags";
 import UserSelectedTopics from "./first-panel/user-selected-topics";
+import { Card } from "@/components/ui/card";
 
 const FirstPanel = () => {
   return (
     <div className="">
       {/* ro'yhatdan o'tmagan bo'lsa ko'rinadi */}
-      <div className="border mb-5 space-y-2 border-gray-200 rounded-md bg-white p-2 break-words">
+      <Card className="border mb-5 space-y-2 border-gray-200 rounded-md bg-white p-2 break-words">
         <h2 className="font-bold text-black text-xl">
           DEV Community is a community of 2,877,223 amazing developers
         </h2>
@@ -24,7 +25,7 @@ const FirstPanel = () => {
           We&apos;re a place where coders share, stay up-to-date and grow their
           careers.
         </p>
-      </div>
+      </Card>
 
       {/* user selected topics  */}
       <UserSelectedTopics />

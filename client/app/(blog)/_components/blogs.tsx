@@ -6,6 +6,7 @@ import api from "@/http/axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { Comment, Post, PostTag } from "@/types";
+import QuickCreatePost from "./quick-create-post";
 
 const fakeBlogs = [{}];
 console.log(fakeBlogs);
@@ -88,6 +89,7 @@ const Blogs = () => {
   return (
     <>
       <div className="flex flex-col gap-3">
+        <QuickCreatePost />
         {posts.map((post) => {
           return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
         })}

@@ -11,7 +11,7 @@ export default function Home() {
         </div>
 
         {/* SecondPanel - har doim ko‘rinadi */}
-        <div className="bg-yellow-100 w-full">
+        <div className="w-full">
           <Blogs />
         </div>
 
