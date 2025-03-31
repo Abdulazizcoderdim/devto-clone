@@ -19,6 +19,7 @@ model User {
   posts    Post[]
   token    Token[]
   comments Comment[]
+  reaction Reaction[]
 }
 
 model Post {
@@ -30,9 +31,22 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  author   User      @relation(fields: [authorId], references: [id])
+  author   User       @relation(fields: [authorId], references: [id])
   comments Comment[]
   tags     PostTag[]
+  reaction Reaction[]
+}
+
+model Reaction {
+  id        String   @id @default(uuid()) @map("_id")
+  type      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, postId, type])
 }
 
 model Tag {

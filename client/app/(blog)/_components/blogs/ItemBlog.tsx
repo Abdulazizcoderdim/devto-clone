@@ -108,11 +108,19 @@ export function ItemBlog({
 
         <div className="flex items-center justify-between mt-6">
           <div className="flex items-center gap-4">
-            <Button variant="ghost" className="flex items-center gap-2">
+            <Button
+              onClick={() => router.push(`/${author.name}/${slug}`)}
+              variant="ghost"
+              className="flex items-center gap-2"
+            >
               <Heart className="h-5 w-5 text-red-500" />
               <span className="text-sm">{reactions} Reactions</span>
             </Button>
-            <Button variant="ghost" className="flex items-center gap-2">
+            <Button
+              onClick={() => router.push(`/${author.name}/${slug}#comments`)}
+              variant="ghost"
+              className="flex items-center gap-2"
+            >
               <MessageCircle className="h-5 w-5" />
               <span className="text-sm">{comments.length} Comments</span>
             </Button>
@@ -135,7 +143,7 @@ export function ItemBlog({
             {comments.slice(0, 2).map((comment) => (
               <div key={comment.id} className="flex gap-3">
                 <Avatar
-                  onClick={() => router.push(`/${author.name}`)}
+                  onClick={() => router.push(`/${comment.author.name}`)}
                   className="h-8 w-8 cursor-pointer"
                 >
                   <AvatarImage src={""} alt={comment.author.name} />
@@ -146,7 +154,7 @@ export function ItemBlog({
                 <div>
                   <div className="flex items-center gap-2">
                     <span
-                      onClick={() => router.push(`/${author.name}`)}
+                      onClick={() => router.push(`/${comment.author.name}`)}
                       className="font-medium hover:underline cursor-pointer"
                     >
                       {comment.author.name}
@@ -162,8 +170,9 @@ export function ItemBlog({
 
             {comments.length > 2 && (
               <Button
+                onClick={() => router.push(`/${author.name}/${slug}#comments`)}
                 variant="ghost"
-                className="text-sm w-full justify-start px-0 hover:bg-transparent"
+                className="text-sm w-fit justify-start hover:bg-gray-100 transition-colors duration-200"
               >
                 See all {comments.length} comments
               </Button>

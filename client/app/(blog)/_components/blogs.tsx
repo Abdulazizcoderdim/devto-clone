@@ -89,7 +89,7 @@ const Blogs = () => {
     <>
       <div className="flex flex-col gap-3">
         {posts.map((post) => {
-          return <ItemBlog {...formatPostForDisplay(post)} />;
+          return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
         })}
       </div>
 

@@ -1,35 +1,44 @@
 import api from "@/http/axios";
 import { create } from "zustand";
 
+interface User {
+  // User tipini aniq belgilang
+  id: string;
+  // boshqa kerakli user maydonlari
+  [key: string]: any;
+}
+
 interface AuthState {
-  user: any | null;
+  user: User | null;
   isAuth: boolean;
   accessToken: string | null;
   loading: boolean;
   setIsAuth: (isAuth: boolean) => void;
-  checkAuth: () => void;
-  logout: () => void;
+  checkAuth: () => Promise<void>;
+  logout: () => Promise<void>;
   setAccessToken: (token: string) => void;
-  setUser: (user: any) => void;
+  setUser: (user: User) => void;
   setLoading: (loading: boolean) => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
-  accessToken: localStorage.getItem("accessToken") || null,
-  isAuth: !!localStorage.getItem("accessToken"),
+  accessToken: localStorage.getItem("accessToken"),
+  isAuth: false,
   loading: false,
 
   setIsAuth: (isAuth) => set({ isAuth }),
   setUser: (user) => set({ user }),
   setLoading: (loading) => set({ loading }),
   setAccessToken: (token) => set({ accessToken: token }),
+
   checkAuth: async () => {
     try {
+      set({ loading: true });
       const token = localStorage.getItem("accessToken");
 
       if (!token) {
-        set({ isAuth: false });
+        set({ isAuth: false, user: null });
         return;
       }
 
@@ -42,23 +51,16 @@ export const useAuthStore = create<AuthState>((set) => ({
       }
     } catch (error) {
       console.error("Auth check failed:", error);
-
-      // Faqat refresh tokenni ishga tushirish:
-      try {
-        const { data } = await api.get("/auth/refresh");
-        console.log("Refresh token data:", data);
-        set({ accessToken: data.accessToken, isAuth: true });
-        localStorage.setItem("accessToken", data.accessToken);
-      } catch {
-        useAuthStore.setState({ accessToken: null, isAuth: false }); // 🔥 Oldin false qilib qo'yish kerak
-        localStorage.removeItem("accessToken");
-      }
+      set({ isAuth: false, user: null });
+      throw error; // Xatoni yuqoriga qaytaramiz
     } finally {
       set({ loading: false });
     }
   },
+
   logout: async () => {
     try {
+      set({ loading: true });
       const token = localStorage.getItem("accessToken");
 
       if (token) {
@@ -66,15 +68,18 @@ export const useAuthStore = create<AuthState>((set) => ({
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-
-      localStorage.removeItem("accessToken");
-      useAuthStore.setState({ accessToken: null, isAuth: false });
     } catch (error) {
       console.error("Error during logout:", error);
     } finally {
-      localStorage.removeItem("accessToken");
-      useAuthStore.setState({ accessToken: null, isAuth: false });
-      window.location.href = "/sign-in"; // 🔥 Foydalanuvchini /auth pagega yuborish
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+      }
+      set({ accessToken: null, isAuth: false, user: null });
+
+      // Router orqali yo'naltirish
+      if (typeof window !== "undefined") {
+        window.location.href = "/sign-in";
+      }
     }
   },
 }));

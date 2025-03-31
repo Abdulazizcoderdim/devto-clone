@@ -3,53 +3,59 @@
 import { useAuthStore } from "@/hooks/auth-store";
 import api from "@/http/axios";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useCallback } from "react";
 
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const checkAuth = useAuthStore((state) => state.checkAuth);
-  const logout = useAuthStore((state) => state.logout);
+  const { checkAuth, logout, setAccessToken, setIsAuth } = useAuthStore();
   const router = useRouter();
-  const { setAccessToken, setIsAuth } = useAuthStore();
 
-  useEffect(() => {
-    verifyAuth();
+  const refreshToken = useCallback(async () => {
+    try {
+      const { data } = await api.get("/auth/refresh");
 
-    if (localStorage.getItem("accessToken")) {
-      refreshToken();
+      if (!data?.accessToken) {
+        throw new Error("No access token received!");
+      }
 
-      const interval = setInterval(() => {
-        refreshToken();
-      }, 900000); // 15 minutes
+      setAccessToken(data.accessToken);
+      localStorage.setItem("accessToken", data.accessToken);
+      setIsAuth(true);
 
-      return () => clearInterval(interval);
+      return data.accessToken;
+    } catch (error) {
+      console.error("Refresh token failed:", error);
+      return null;
     }
-  }, []);
+  }, [setAccessToken, setIsAuth, logout]);
 
-  const verifyAuth = async () => {
+  const verifyAuth = useCallback(async () => {
     try {
       await checkAuth();
     } catch (error) {
       console.error("Auth check failed:", error);
-      refreshToken();
+      await refreshToken();
     }
-  };
+  }, [checkAuth, refreshToken]);
 
-  const refreshToken = async () => {
-    try {
-      const { data } = await api.get("/auth/refresh");
-      setAccessToken(data.accessToken);
-      setIsAuth(true);
-      localStorage.setItem("accessToken", data.accessToken);
-    } catch (error) {
-      console.error("Refresh token failed:", error);
-      logout();
-      router.push("/sign-in");
+  useEffect(() => {
+    verifyAuth();
+
+    const token = localStorage.getItem("accessToken");
+
+    if (token) {
+      refreshToken();
+
+      const interval = setInterval(() => {
+        refreshToken();
+      }, 3600000); // 1 soat
+
+      return () => clearInterval(interval);
     }
-  };
+  }, [verifyAuth, refreshToken]);
 
   return <>{children}</>;
 };

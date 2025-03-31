@@ -1,4 +1,5 @@
 const prisma = require("../config/prismaClient");
+const BaseError = require("../errors/base.error");
 
 class PostController {
   async getAll(req, res, next) {
@@ -186,6 +187,42 @@ class PostController {
   async getOne() {}
   async update() {}
   async delete() {}
+  async like() {
+    try {
+      const { like, id } = req.body;
+      const userId = req.user.id; // Assuming you have user ID in req.user
+      const postId = parseInt(id);
+
+      const post = await prisma.post.findUnique({
+        where: { id: postId },
+      });
+      if (!post) {
+        return next(BaseError.BadRequest("Post not found"));
+      }
+
+      const reaction = await prisma.reaction.upsert({
+        where: {
+          userId_postId_type: {
+            userId,
+            postId,
+            type: like,
+          },
+        },
+        update: {},
+        create: {
+          userId,
+          postId,
+          type: like,
+        },
+      });
+
+      return res.status(200).json({
+        data: reaction,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new PostController();

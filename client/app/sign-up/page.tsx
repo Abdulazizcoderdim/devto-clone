@@ -3,14 +3,15 @@
 import Image from "next/image";
 import StateAuth from "./_components/state-auth";
 import { useEffect } from "react";
-import { redirect } from "next/navigation";
 import { useAuthStore } from "@/hooks/auth-store";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
+  const router = useRouter();
   const { isAuth } = useAuthStore();
 
   useEffect(() => {
-    if (isAuth) redirect("/");
+    if (isAuth) router.push("/");
   }, []);
 
   return (
