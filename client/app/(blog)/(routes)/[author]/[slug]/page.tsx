@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import LikesPost from "./_components/likes-post";
+import PostUser from "./_components/post-user";
+import ReadPost from "./_components/read-post";
 
 export async function generateMetadata({
   params,
@@ -33,7 +36,22 @@ const PostPage = ({ params }: { params: { author: string; slug: string } }) => {
   const { author, slug } = params;
   console.log(author, slug);
 
-  return <div className="pt-14">PostPage</div>;
+  return (
+    <div className="pt-16 min-h-screen container mx-auto px-4">
+      <div className="flex justify-between gap-4">
+        <div className="flex gap-5 w-full">
+          <div className="fixed h-screen max-w-24 w-full p-4">
+            <LikesPost />
+          </div>
+          <div className="flex gap-5 w-full ml-24">
+            <ReadPost />
+          </div>
+        </div>
+
+        <PostUser />
+      </div>
+    </div>
+  );
 };
 
 export default PostPage;
