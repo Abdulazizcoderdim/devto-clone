@@ -78,7 +78,7 @@ const Header = () => {
                 <DropdownMenuTrigger>
                   <Avatar>
                     <AvatarImage
-                      src="https://github.com/shadcn.png"
+                      src={`https://api.dicebear.com/7.x/initials/svg?seed=${user?.name}`}
                       alt={user?.name || ""}
                     />
                     <AvatarFallback className="bg-gray-200 text-black">

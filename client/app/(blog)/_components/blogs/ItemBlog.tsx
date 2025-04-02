@@ -69,7 +69,10 @@ export function ItemBlog({
             className="h-10 w-10 cursor-pointer"
             onClick={() => router.push(`/${author.name}`)}
           >
-            <AvatarImage src={""} alt={author.name} />
+            <AvatarImage
+              src={`https://api.dicebear.com/7.x/initials/svg?seed=${author?.name}`}
+              alt={author.name}
+            />
             <AvatarFallback>
               {author?.name?.charAt(0).toLocaleUpperCase() || "?"}
             </AvatarFallback>
@@ -146,7 +149,10 @@ export function ItemBlog({
                   onClick={() => router.push(`/${comment.author.name}`)}
                   className="h-8 w-8 cursor-pointer"
                 >
-                  <AvatarImage src={""} alt={comment.author.name} />
+                  <AvatarImage
+                    src={`https://api.dicebear.com/7.x/initials/svg?seed=${comment?.author.name}`}
+                    alt={comment.author.name}
+                  />
                   <AvatarFallback>
                     {comment.author.name.charAt(0)}
                   </AvatarFallback>

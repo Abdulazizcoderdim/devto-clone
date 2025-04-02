@@ -184,7 +184,49 @@ class PostController {
       next(error);
     }
   }
-  async getOne() {}
+  async getOne(req, res, next) {
+    try {
+      const { slug } = req.params;
+
+      const post = await prisma.post.findUnique({
+        where: {
+          slug,
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
+          comments: {
+            orderBy: {
+              createdAt: "desc",
+            },
+            include: {
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+      });
+
+      if (!post) {
+        return BaseError.BadRequest("Post not found");
+      }
+
+      return res.status(200).json(post);
+    } catch (error) {
+      next(error);
+    }
+  }
   async update() {}
   async delete() {}
   async like() {

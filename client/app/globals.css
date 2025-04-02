@@ -61,13 +61,12 @@
 @layer base {
   * {
     @apply border-border;
+    @apply scroll-smooth;
   }
   body {
     @apply bg-[#F6F6F6] text-foreground;
   }
 }
-
-
 
 @layer base {
   * {

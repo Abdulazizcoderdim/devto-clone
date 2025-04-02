@@ -19,7 +19,7 @@ router.group("/auth", (router) => {
 
 router.group("/posts", (router) => {
   router.get("/", postController.getAll);
-  router.get("/:id", postController.getOne);
+  router.get("/:slug", postController.getOne);
   router.post("/", authMiddleware, postController.create);
   router.put("/:id", authMiddleware, postController.update);
   router.delete("/:id", authMiddleware, postController.delete);
