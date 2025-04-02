@@ -18,6 +18,8 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const { data } = await api.get("/auth/refresh");
 
       if (!data?.accessToken) {
+        logout(); // Token o'chirilsa ham logout qilish kerak
+        router.push("/login");
         throw new Error("No access token received!");
       }
 
@@ -28,9 +30,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       return data.accessToken;
     } catch (error) {
       console.error("Refresh token failed:", error);
+      logout();
+      router.push("/login");
       return null;
     }
-  }, [setAccessToken, setIsAuth, logout]);
+  }, [setAccessToken, setIsAuth, logout, router]);
 
   const verifyAuth = useCallback(async () => {
     try {

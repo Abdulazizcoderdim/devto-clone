@@ -5,11 +5,12 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import api from "@/http/axios";
-import { Post } from "@/types";
+import { Comment, Post } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import CommentForm from "./comment-form";
 
 const ReadPost = () => {
   const [post, setPost] = useState<Post | null>(null);
@@ -31,6 +32,16 @@ const ReadPost = () => {
       console.error("Failed to fetch post", error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Handle new comment submission
+  const handleCommentAdded = (newComment: Comment) => {
+    if (post) {
+      setPost({
+        ...post,
+        comments: [...post.comments, newComment],
+      });
     }
   };
 
@@ -94,6 +105,10 @@ const ReadPost = () => {
             </h3>
           </div>
           <Separator />
+
+          {/* Add the comment form here */}
+          <CommentForm postId={post.id} onCommentAdded={handleCommentAdded} />
+
           <div className="space-y-4">
             {post.comments.map((comment) => (
               <div key={comment.id} className="bg-muted/50 rounded-lg p-4">
@@ -115,7 +130,11 @@ const ReadPost = () => {
                     </p>
                   </div>
                 </div>
-                <p className="text-sm">{comment.text}</p>
+                {/* Render HTML content from Quill */}
+                <div
+                  className="text-sm"
+                  dangerouslySetInnerHTML={{ __html: comment.text }}
+                />
               </div>
             ))}
           </div>

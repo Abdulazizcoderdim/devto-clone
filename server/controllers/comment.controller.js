@@ -19,6 +19,13 @@ class CommentController {
       }
 
       const newComment = await prisma.comment.create({
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
         data: {
           text,
           post: { connect: { id: postId } },
@@ -26,10 +33,7 @@ class CommentController {
         },
       });
 
-      return res.status(201).json({
-        message: "Comment created successfully",
-        data: newComment,
-      });
+      return res.status(201).json(newComment);
     } catch (error) {
       next(error);
     }
