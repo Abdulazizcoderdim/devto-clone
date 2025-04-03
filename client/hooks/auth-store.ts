@@ -1,12 +1,6 @@
 import api from "@/http/axios";
+import { User } from "@/types";
 import { create } from "zustand";
-
-interface User {
-  // User tipini aniq belgilang
-  id: string;
-  // boshqa kerakli user maydonlari
-  [key: string]: any;
-}
 
 interface AuthState {
   user: User | null;

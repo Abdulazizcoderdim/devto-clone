@@ -7,9 +7,6 @@ import { Loader2 } from "lucide-react";
 import { Comment, Post, PostTag } from "@/types";
 import QuickCreatePost from "./quick-create-post";
 
-const fakeBlogs = [{}];
-console.log(fakeBlogs);
-
 const Blogs = () => {
   const [pagination, setPagination] = useState({
     number: 1,

@@ -8,7 +8,7 @@ export interface IError extends Error {
 
 export interface User {
   id: string;
-  name?: string;
+  name: string;
   email: string;
   password: string;
   isVerified: boolean;
