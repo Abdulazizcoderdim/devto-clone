@@ -16,6 +16,7 @@ const SlugPost = () => {
           <div className="flex gap-5 w-full md:ml-24 max-md:mb-24">
             <ReadPost slug={slug} />
           </div>
+          
         </div>
 
         <PostAuthor />
