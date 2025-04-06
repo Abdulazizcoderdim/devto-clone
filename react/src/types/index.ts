@@ -14,6 +14,7 @@ export interface User {
   isVerified: boolean;
   posts: Post[];
   token: Token[];
+  createdAt: string; // ISO format datetime (String)
 }
 
 export interface Post {
