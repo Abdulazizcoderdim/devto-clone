@@ -8,11 +8,12 @@ interface AuthProviderProps {
 }
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const { checkAuth, logout, setIsAuth } = useAuthStore();
+  const { checkAuth, logout, setIsAuth, setLoading } = useAuthStore();
   const navigate = useNavigate();
 
   const refreshToken = useCallback(async () => {
     try {
+      setLoading(true);
       const { data } = await api.get("/auth/refresh");
       if (!data?.accessToken) throw new Error("No access token");
 
@@ -24,6 +25,8 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       navigate("/sign-in");
       localStorage.removeItem("accessToken");
       return null;
+    } finally {
+      setLoading(false);
     }
   }, []);
 

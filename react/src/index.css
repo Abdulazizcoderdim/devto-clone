@@ -7,6 +7,11 @@
   @apply mx-auto px-4 max-w-[1400px];
 }
 
+.break-words {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);

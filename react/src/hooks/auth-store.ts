@@ -6,6 +6,8 @@ interface AuthState {
   user: User | null;
   isAuth: boolean;
   loading: boolean;
+
+  setLoading: (loading: boolean) => void;
   setIsAuth: (isAuth: boolean) => void;
   setUser: (user: User) => void;
   checkAuth: () => Promise<void>;
@@ -17,6 +19,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuth: false,
   loading: false,
 
+  setLoading: (loading) => set({ loading }),
   setIsAuth: (isAuth) => set({ isAuth }),
   setUser: (user) => set({ user }),
 

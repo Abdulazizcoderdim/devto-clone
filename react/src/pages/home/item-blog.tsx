@@ -89,7 +89,7 @@ export function ItemBlog({
 
         <Link
           to={`/${author.name}/${slug}`}
-          className="text-2xl font-bold mb-3 hover:text-blue-800 transition-colors duration-200"
+          className="text-2xl break-words font-bold mb-3 hover:text-blue-800 transition-colors duration-200"
         >
           {title}
         </Link>
@@ -168,7 +168,10 @@ export function ItemBlog({
                       {formatDate(comment.date)}
                     </span>
                   </div>
-                  <p className="text-sm mt-1">{comment.content}</p>
+                  <div
+                    className="text-sm mt-1 break-words"
+                    dangerouslySetInnerHTML={{ __html: comment.content }}
+                  />
                 </div>
               </div>
             ))}
