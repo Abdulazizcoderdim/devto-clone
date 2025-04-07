@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const PostAuthor = () => {
   const { user } = useAuthStore();
+
   const navigate = useNavigate();
 
   return (

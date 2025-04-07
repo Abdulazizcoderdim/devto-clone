@@ -20,6 +20,7 @@ interface BlogPostProps {
   author: {
     name?: string;
   };
+  coverImageLink?: string;
   date: string;
   title: string;
   tags: string[];
@@ -38,6 +39,7 @@ export function ItemBlog({
   reactions,
   comments,
   readingTime,
+  coverImageLink,
 }: BlogPostProps) {
   const navigate = useNavigate();
 
@@ -63,6 +65,18 @@ export function ItemBlog({
   return (
     <Card key={id} className="border rounded-lg overflow-hidden">
       <CardContent className="p-6">
+        <div
+          onClick={() => navigate(`/${author.name}/${slug}`)}
+          className="cursor-pointer"
+        >
+          {coverImageLink && (
+            <img
+              src={coverImageLink}
+              alt={title}
+              className="w-full h-48 object-cover rounded-lg mb-4"
+            />
+          )}
+        </div>
         <div className="flex items-center gap-2 mb-4">
           <Avatar
             className="h-10 w-10 cursor-pointer"

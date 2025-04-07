@@ -57,6 +57,13 @@ const ReadPost = ({ slug }: { slug: string | undefined }) => {
   return (
     <Card className="w-full rounded-md bg-white shadow-md overflow-hidden">
       <CardHeader className="space-y-6 pb-4">
+        {post.coverImageLink && (
+          <img
+            src={post.coverImageLink}
+            alt={post.title}
+            className="w-full h-72 object-cover rounded-lg mb-4"
+          />
+        )}
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12">
             <AvatarImage
@@ -87,9 +94,10 @@ const ReadPost = ({ slug }: { slug: string | undefined }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-8">
-        <div className="prose max-w-none">
-          <p className="text-lg leading-relaxed">{post.content}</p>
-        </div>
+        <div
+          className="prose max-w-none text-lg leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
 
         <div className="space-y-6" id="comments">
           <div className="flex items-center gap-2">

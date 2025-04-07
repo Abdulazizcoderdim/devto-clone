@@ -36,6 +36,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         await checkAuth();
       } catch {
         await refreshToken();
+        await checkAuth();
       }
     };
 

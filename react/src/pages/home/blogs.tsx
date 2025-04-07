@@ -63,6 +63,7 @@ const Blogs = () => {
       author: {
         name: post.author.name,
       },
+      coverImageLink: post.coverImageLink,
       date: new Date(post.createdAt).toLocaleDateString(),
       title: post.title,
       tags: tagNames,

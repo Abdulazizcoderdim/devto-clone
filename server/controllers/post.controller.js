@@ -59,131 +59,132 @@ class PostController {
       next(error);
     }
   }
-  async create(req, res, next) {
-    try {
-      const { title, content, slug, authorId, tags } = req.body;
+    async create(req, res, next) {
+      try {
+        const { title, content, slug, authorId, tags, coverImageLink } = req.body;
 
-      if (!title || !content || !authorId) {
-        return res.status(400).json({ error: "All fields are required" });
-      }
+        if (!title || !content || !authorId) {
+          return res.status(400).json({ error: "All fields are required" });
+        }
 
-      const author = await prisma.user.findUnique({
-        where: {
-          id: authorId,
-        },
-      });
+        const author = await prisma.user.findUnique({
+          where: {
+            id: authorId,
+          },
+        });
 
-      if (!author) {
-        return res.status(404).json({ error: "Author not found" });
-      }
+        if (!author) {
+          return res.status(404).json({ error: "Author not found" });
+        }
 
-      // Generate a slug if not provided
-      const finalSlug = slug || title.toLowerCase().replace(/\s+/g, "-");
+        // Generate a slug if not provided
+        const finalSlug = slug || title.toLowerCase().replace(/\s+/g, "-");
 
-      // Increase transaction timeout to 15 seconds
-      const result = await prisma.$transaction(
-        async (tx) => {
-          // Create the post
-          const post = await tx.post.create({
-            data: {
-              title,
-              content,
-              slug: finalSlug,
-              authorId,
-            },
-          });
-
-          // If tags are provided, create the post-tag relationships
-          if (tags && Array.isArray(tags) && tags.length > 0) {
-            // Process tags more efficiently by preparing data first
-            const existingTags = await tx.tag.findMany({
-              where: {
-                name: {
-                  in: tags,
-                },
+        // Increase transaction timeout to 15 seconds
+        const result = await prisma.$transaction(
+          async (tx) => {
+            // Create the post
+            const post = await tx.post.create({
+              data: {
+                title,
+                content,
+                slug: finalSlug,
+                authorId,
+                coverImageLink,
               },
             });
 
-            const existingTagNames = existingTags.map((tag) => tag.name);
-            const newTagNames = tags.filter(
-              (tag) => !existingTagNames.includes(tag)
-            );
+            // If tags are provided, create the post-tag relationships
+            if (tags && Array.isArray(tags) && tags.length > 0) {
+              // Process tags more efficiently by preparing data first
+              const existingTags = await tx.tag.findMany({
+                where: {
+                  name: {
+                    in: tags,
+                  },
+                },
+              });
 
-            // Create new tags one by one instead of using createMany
-            const createdTags = [];
-            for (const tagName of newTagNames) {
-              try {
-                const newTag = await tx.tag.create({
-                  data: { name: tagName },
-                });
-                createdTags.push(newTag);
-              } catch (error) {
-                // Skip if tag already exists (handle unique constraint)
-                if (error.code !== "P2002") {
-                  throw error;
+              const existingTagNames = existingTags.map((tag) => tag.name);
+              const newTagNames = tags.filter(
+                (tag) => !existingTagNames.includes(tag)
+              );
+
+              // Create new tags one by one instead of using createMany
+              const createdTags = [];
+              for (const tagName of newTagNames) {
+                try {
+                  const newTag = await tx.tag.create({
+                    data: { name: tagName },
+                  });
+                  createdTags.push(newTag);
+                } catch (error) {
+                  // Skip if tag already exists (handle unique constraint)
+                  if (error.code !== "P2002") {
+                    throw error;
+                  }
+                  // If tag already exists but wasn't found earlier, fetch it
+                  const existingTag = await tx.tag.findUnique({
+                    where: { name: tagName },
+                  });
+                  if (existingTag) {
+                    createdTags.push(existingTag);
+                  }
                 }
-                // If tag already exists but wasn't found earlier, fetch it
-                const existingTag = await tx.tag.findUnique({
-                  where: { name: tagName },
+              }
+
+              // Combine existing and newly created tags
+              const allTags = [...existingTags, ...createdTags];
+
+              // Create PostTag relationships one by one
+              for (const tag of allTags) {
+                await tx.postTag.create({
+                  data: {
+                    postId: post.id,
+                    tagId: tag.id,
+                  },
                 });
-                if (existingTag) {
-                  createdTags.push(existingTag);
-                }
               }
             }
 
-            // Combine existing and newly created tags
-            const allTags = [...existingTags, ...createdTags];
-
-            // Create PostTag relationships one by one
-            for (const tag of allTags) {
-              await tx.postTag.create({
-                data: {
-                  postId: post.id,
-                  tagId: tag.id,
-                },
-              });
-            }
+            // Return the post directly without an additional query
+            return post;
+          },
+          {
+            timeout: 15000, // Set timeout to 15 seconds
           }
+        );
 
-          // Return the post directly without an additional query
-          return post;
-        },
-        {
-          timeout: 15000, // Set timeout to 15 seconds
+        // After transaction completes, fetch the post with all relationships
+        const completePost = await prisma.post.findUnique({
+          where: { id: result.id },
+          include: {
+            author: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+            tags: {
+              include: {
+                tag: true,
+              },
+            },
+          },
+        });
+
+        return res.status(201).json({
+          message: "Post created successfully 🎉",
+          data: completePost,
+        });
+      } catch (error) {
+        if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
+          return res.status(400).json({ error: "Slug already exists" });
         }
-      );
-
-      // After transaction completes, fetch the post with all relationships
-      const completePost = await prisma.post.findUnique({
-        where: { id: result.id },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
-        },
-      });
-
-      return res.status(201).json({
-        message: "Post created successfully 🎉",
-        data: completePost,
-      });
-    } catch (error) {
-      if (error.code === "P2002" && error.meta?.target?.includes("slug")) {
-        return res.status(400).json({ error: "Slug already exists" });
+        console.error("Post creation error:", error);
+        next(error);
       }
-      console.error("Post creation error:", error);
-      next(error);
     }
-  }
   async getOne(req, res, next) {
     try {
       const { slug } = req.params;

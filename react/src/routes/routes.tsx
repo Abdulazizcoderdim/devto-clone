@@ -3,6 +3,7 @@ import SignIn from "@/pages/auth/sign-in";
 import SignUp from "@/pages/auth/sign-up";
 import AuthorPage from "@/pages/author/author-page";
 import Home from "@/pages/home/home";
+import PostCreate from "@/pages/post-create/PostCreate";
 import SlugPost from "@/pages/slug-post/slug-post";
 import TagPage from "@/pages/tag/tag-page";
 import { createBrowserRouter } from "react-router-dom";
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       {
         path: "/t/:tag",
         element: <TagPage />, // Faqat post ma'lumotlari
+      },
+      {
+        path: "new",
+        element: <PostCreate />,
       },
     ],
   },
