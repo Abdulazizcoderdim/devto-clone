@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+"use client";
+
+import type React from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -10,15 +13,16 @@ import Placeholder from "@tiptap/extension-placeholder";
 import {
   Bold,
   Italic,
-  Link as LinkIcon,
+  LinkIcon,
   List,
   ListOrdered,
   Heading,
   Quote,
   Code,
   FileCode,
-  Image as ImageIcon,
+  ImageIcon,
   MoreVertical,
+  X,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -26,6 +30,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 import { useAuthStore } from "@/hooks/auth-store";
 import api from "@/http/axios";
@@ -49,8 +55,6 @@ const PostCreate: React.FC = () => {
     ],
     content: "",
   });
-
-  // Fetch current user ID on component mount
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -90,20 +94,20 @@ const PostCreate: React.FC = () => {
     setCoverImageLink("");
   };
 
-  const createPost = async (isDraft: boolean = false) => {
+  const createPost = async (isDraft = false) => {
     try {
       if (!title.trim()) {
-        toast("Error: Title is required");
+        toast.error("Title is required");
         return;
       }
 
       if (!editor?.getHTML() || editor?.isEmpty) {
-        toast("Error: Content is required");
+        toast.error("Content is required");
         return;
       }
 
       if (!user?.id) {
-        toast("Error: Author ID is required");
+        toast.error("Author ID is required");
         return;
       }
 
@@ -132,7 +136,7 @@ const PostCreate: React.FC = () => {
 
       const result = res.data;
 
-      toast("Post created successfully");
+      toast.success("Post created successfully");
 
       // Clear the form
       setTitle("");
@@ -149,7 +153,7 @@ const PostCreate: React.FC = () => {
       }
     } catch (error) {
       console.error("Error creating post:", error);
-      toast("Error creating post: " + (error as Error).message);
+      toast.error("Error creating post: " + (error as Error).message);
     } finally {
       setIsSubmitting(false);
     }
@@ -170,45 +174,44 @@ const PostCreate: React.FC = () => {
       setCoverImageLink("");
       editor?.commands.clearContent();
 
-      toast("Changes reverted successfully");
+      toast.success("Changes reverted successfully");
     }
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto pt-16">
-      <Card className="border-0 shadow-none">
-        <CardContent className="p-0">
+    <div className="w-full max-w-4xl mx-auto pt-8 px-4 md:px-0">
+      <Card className="border shadow-sm bg-white overflow-hidden">
+        <CardContent className="p-6">
           {/* Cover Image Section */}
-          <div className="mb-6">
+          <div className="mb-8">
+            <h2 className="text-lg font-semibold mb-3">Cover Image</h2>
             <div className="flex flex-col space-y-2">
-              <label htmlFor="cover-image-link" className="text-sm font-medium">
-                Cover Image URL
-              </label>
               <div className="flex gap-2">
                 <Input
                   id="cover-image-link"
                   type="text"
                   value={coverImageLink}
                   onChange={handleCoverImageLinkChange}
-                  placeholder="https://example.com/image.jpg"
+                  placeholder="Paste an image URL here..."
                   className="flex-1"
                 />
                 {coverImageLink && (
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={removeCoverImage}
+                    className="shrink-0"
                   >
-                    Clear
+                    <X className="h-4 w-4" />
                   </Button>
                 )}
               </div>
             </div>
 
             {coverImageLink && (
-              <div className="mt-2 relative w-full h-64 bg-gray-100 rounded-md overflow-hidden">
+              <div className="mt-4 relative w-full h-[300px] bg-gray-50 rounded-md overflow-hidden border">
                 <img
-                  src={coverImageLink}
+                  src={coverImageLink || "/placeholder.svg"}
                   alt="Cover preview"
                   className="w-full h-full object-cover"
                   onError={(e) => {
@@ -220,6 +223,8 @@ const PostCreate: React.FC = () => {
               </div>
             )}
           </div>
+
+          <Separator className="my-6" />
 
           {/* Title Input */}
           <div className="mb-6">
@@ -233,21 +238,23 @@ const PostCreate: React.FC = () => {
           </div>
 
           {/* Tags Input */}
-          <div className="mb-6">
-            <div className="flex flex-wrap gap-2 mb-2">
+          <div className="mb-8">
+            <h2 className="text-sm font-medium text-gray-500 mb-2">Tags</h2>
+            <div className="flex flex-wrap gap-2 mb-3">
               {tags.map((tag) => (
-                <div
+                <Badge
                   key={tag}
-                  className="flex items-center bg-gray-100 rounded-full px-3 py-1 text-sm"
+                  variant="secondary"
+                  className="px-3 py-1 text-sm font-normal"
                 >
-                  <span>{tag}</span>
+                  {tag}
                   <button
                     onClick={() => removeTag(tag)}
                     className="ml-2 text-gray-500 hover:text-gray-700"
                   >
                     ×
                   </button>
-                </div>
+                </Badge>
               ))}
             </div>
             <Input
@@ -257,18 +264,27 @@ const PostCreate: React.FC = () => {
               onKeyDown={handleTagInputKeyDown}
               placeholder="Add up to 4 tags... (Press Space or Enter to add)"
               disabled={tags.length >= 4}
-              className="border-0 p-0 h-auto focus-visible:ring-0 placeholder:text-gray-400 text-sm"
+              className="border-dashed text-sm"
             />
+            {tags.length >= 4 && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Maximum of 4 tags reached
+              </p>
+            )}
           </div>
 
+          <Separator className="my-6" />
+
           {/* Editor Toolbar */}
-          <div className="border-t border-b py-2 mb-6">
-            <div className="flex items-center gap-1">
+          <div className="bg-gray-50 border rounded-md mb-4">
+            <div className="flex items-center gap-1 p-1 flex-wrap">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => editor?.chain().focus().toggleBold().run()}
-                className={editor?.isActive("bold") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("bold") ? "bg-gray-200" : ""
+                }`}
               >
                 <Bold className="h-4 w-4" />
               </Button>
@@ -276,7 +292,9 @@ const PostCreate: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor?.chain().focus().toggleItalic().run()}
-                className={editor?.isActive("italic") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("italic") ? "bg-gray-200" : ""
+                }`}
               >
                 <Italic className="h-4 w-4" />
               </Button>
@@ -289,7 +307,9 @@ const PostCreate: React.FC = () => {
                     editor?.chain().focus().setLink({ href: url }).run();
                   }
                 }}
-                className={editor?.isActive("link") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("link") ? "bg-gray-200" : ""
+                }`}
               >
                 <LinkIcon className="h-4 w-4" />
               </Button>
@@ -297,7 +317,9 @@ const PostCreate: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                className={editor?.isActive("bulletList") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("bulletList") ? "bg-gray-200" : ""
+                }`}
               >
                 <List className="h-4 w-4" />
               </Button>
@@ -307,7 +329,9 @@ const PostCreate: React.FC = () => {
                 onClick={() =>
                   editor?.chain().focus().toggleOrderedList().run()
                 }
-                className={editor?.isActive("orderedList") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("orderedList") ? "bg-gray-200" : ""
+                }`}
               >
                 <ListOrdered className="h-4 w-4" />
               </Button>
@@ -317,9 +341,9 @@ const PostCreate: React.FC = () => {
                 onClick={() =>
                   editor?.chain().focus().toggleHeading({ level: 2 }).run()
                 }
-                className={
-                  editor?.isActive("heading", { level: 2 }) ? "bg-gray-100" : ""
-                }
+                className={`rounded-md ${
+                  editor?.isActive("heading", { level: 2 }) ? "bg-gray-200" : ""
+                }`}
               >
                 <Heading className="h-4 w-4" />
               </Button>
@@ -327,7 +351,9 @@ const PostCreate: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                className={editor?.isActive("blockquote") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("blockquote") ? "bg-gray-200" : ""
+                }`}
               >
                 <Quote className="h-4 w-4" />
               </Button>
@@ -335,7 +361,9 @@ const PostCreate: React.FC = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                className={editor?.isActive("codeBlock") ? "bg-gray-100" : ""}
+                className={`rounded-md ${
+                  editor?.isActive("codeBlock") ? "bg-gray-200" : ""
+                }`}
               >
                 <Code className="h-4 w-4" />
               </Button>
@@ -388,37 +416,41 @@ const PostCreate: React.FC = () => {
           </div>
 
           {/* Editor Content */}
-          <div className="min-h-[300px] mb-8">
+          <div className="min-h-[300px] mb-8 border rounded-md p-4">
             <EditorContent
               editor={editor}
-              className="prose max-w-none focus:outline-none"
+              className="prose max-w-none focus:outline-none min-h-[300px]"
             />
           </div>
 
+          <Separator className="my-6" />
+
           {/* Action Buttons */}
-          <div className="flex gap-4 mb-4">
+          <div className="flex flex-wrap gap-4 mt-6">
             <Button
               onClick={handlePublish}
-              className="bg-primary text-white hover:bg-primary/90"
+              className="bg-emerald-600 text-white hover:bg-emerald-700"
               disabled={isSubmitting}
+              size="lg"
             >
-              {isSubmitting ? "Publishing..." : "Publish"}
+              {isSubmitting ? "Publishing..." : "Publish Post"}
             </Button>
             <Button
               variant="outline"
               onClick={handleSaveDraft}
               disabled={isSubmitting}
+              size="lg"
             >
-              {isSubmitting ? "Saving..." : "Save draft"}
+              {isSubmitting ? "Saving..." : "Save as Draft"}
             </Button>
             <Button
               variant="ghost"
-              className="ml-auto"
+              className="ml-auto text-red-500 hover:text-red-600 hover:bg-red-50"
               onClick={handleRevertChanges}
               disabled={isSubmitting}
             >
               <FileCode className="h-4 w-4 mr-2" />
-              Revert new changes
+              Discard Changes
             </Button>
           </div>
         </CardContent>
