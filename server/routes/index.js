@@ -24,6 +24,7 @@ router.group("/posts", (router) => {
   router.put("/:id", authMiddleware, postController.update);
   router.delete("/:id", authMiddleware, postController.delete);
   router.post("/like", authMiddleware, postController.like);
+  router.get("/tags/filter", authMiddleware, postController.filterByTag);
 });
 
 router.group("/comments", (router) => {

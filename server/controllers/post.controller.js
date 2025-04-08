@@ -267,6 +267,39 @@ class PostController {
       next(error);
     }
   }
+
+  async filterByTag(req, res, next) {
+    try {
+      const { query } = req.query;
+
+      if (!query) {
+        const popularTags = await prisma.tag.findMany({
+          take: 10,
+          orderBy: {
+            posts: {
+              _count: "desc",
+            },
+          },
+        });
+
+        return res.status(200).json({ tags: popularTags });
+      }
+
+      const tags = await prisma.tag.findMany({
+        where: {
+          name: {
+            contains: query,
+            mode: "insensitive",
+          },
+        },
+        take: 10,
+      });
+
+      res.json({ tags });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new PostController();

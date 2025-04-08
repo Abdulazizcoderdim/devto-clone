@@ -1,4 +1,11 @@
-import { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  KeyboardEvent,
+  RefObject,
+} from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,6 +27,8 @@ import {
   ImageIcon,
   MoreVertical,
   X,
+  Tag as TagIcon,
+  Loader2,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -33,6 +42,7 @@ import { useAuthStore } from "@/hooks/auth-store";
 import api from "@/http/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useOnClickOutside } from "@/hooks/use-onclick-outside";
 
 const PostCreate: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -40,8 +50,15 @@ const PostCreate: React.FC = () => {
   const [tagInput, setTagInput] = useState<string>("");
   const [coverImageLink, setCoverImageLink] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [tagSuggestions, setTagSuggestions] = useState<
+    { id: string; name: string }[]
+  >([]);
+  const [isLoadingTags, setIsLoadingTags] = useState<boolean>(false);
+  const tagTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { user } = useAuthStore();
   const navigate = useNavigate();
+  const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
+  const tagInputRef = useRef<HTMLInputElement>(null);
 
   const editor = useEditor({
     extensions: [
@@ -55,16 +72,76 @@ const PostCreate: React.FC = () => {
     content: "",
   });
 
+  const handleClickOutside = () => {
+    if (isTagDropdownOpen) {
+      setIsTagDropdownOpen(false);
+    }
+  };
+
+  const tagDropdownRef = useOnClickOutside(handleClickOutside);
+
+  useEffect(() => {
+    if (tagTimeoutRef.current) {
+      clearTimeout(tagTimeoutRef.current);
+    }
+
+    // Fetch suggestions even when input is empty (to show top tags)
+    tagTimeoutRef.current = setTimeout(() => {
+      fetchTagSuggestions(tagInput);
+    }, 300);
+
+    return () => {
+      if (tagTimeoutRef.current) {
+        clearTimeout(tagTimeoutRef.current);
+      }
+    };
+  }, [tagInput]);
+
+  const fetchTagSuggestions = async (query: string) => {
+    try {
+      setIsLoadingTags(true);
+      const response = await api.get(`/posts/tags/filter`, {
+        params: { query },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setTagSuggestions(response.data.tags || []);
+    } catch (error) {
+      console.error("Error fetching tag suggestions:", error);
+    } finally {
+      setIsLoadingTags(false);
+    }
+  };
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
   };
 
-  const handleTagInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTagInput(e.target.value);
+  const handleTagInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setTagInput(value);
+
+    if (!isTagDropdownOpen) {
+      setIsTagDropdownOpen(true);
+    }
   };
 
-  const handleTagInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Add tag on Enter or Space key
+  const handleTagSelect = (tagName: string) => {
+    if (tags.length < 4 && !tags.includes(tagName)) {
+      setTags([...tags, tagName]);
+    }
+    setTagInput("");
+    setIsTagDropdownOpen(false);
+
+    // Return focus to input after selection
+    setTimeout(() => {
+      tagInputRef.current?.focus();
+    }, 0);
+  };
+
+  const handleTagInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    // Add tag on Enter key
     if (
       (e.key === "Enter" || e.key === " ") &&
       tagInput.trim() &&
@@ -76,11 +153,25 @@ const PostCreate: React.FC = () => {
         setTags([...tags, newTag]);
       }
       setTagInput("");
+      setIsTagDropdownOpen(false);
+    }
+
+    // Close dropdown on Escape
+    if (e.key === "Escape") {
+      setIsTagDropdownOpen(false);
     }
   };
 
   const removeTag = (tagToRemove: string) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
+
+  const handleInputFocus = () => {
+    setIsTagDropdownOpen(true);
+
+    if (!tagInput.trim()) {
+      fetchTagSuggestions("");
+    }
   };
 
   const handleCoverImageLinkChange = (
@@ -105,18 +196,12 @@ const PostCreate: React.FC = () => {
         return;
       }
 
-      // if (!user?.id) {
-      //   toast.error("Author ID is required");
-      //   return;
-      // }
-
       setIsSubmitting(true);
 
       // Prepare the post data based on backend requirements
       const postData = {
         title: title.trim(),
         content: editor.getHTML(),
-        // authorId: user.id,
         tags,
         coverImageLink: coverImageLink.trim() || null,
         // isDraft: isDraft,
@@ -236,7 +321,7 @@ const PostCreate: React.FC = () => {
             />
           </div>
 
-          {/* Tags Input */}
+          {/* Tags Input with custom dropdown */}
           <div className="mb-8">
             <h2 className="text-sm font-medium text-gray-500 mb-2">Tags</h2>
             <div className="flex flex-wrap gap-2 mb-3">
@@ -256,15 +341,61 @@ const PostCreate: React.FC = () => {
                 </Badge>
               ))}
             </div>
-            <Input
-              type="text"
-              value={tagInput}
-              onChange={handleTagInputChange}
-              onKeyDown={handleTagInputKeyDown}
-              placeholder="Add up to 4 tags... (Press Space or Enter to add)"
-              disabled={tags.length >= 4}
-              className="border-dashed text-sm"
-            />
+            <div
+              className="relative"
+              ref={tagDropdownRef as RefObject<HTMLDivElement>}
+            >
+              <div className="flex items-center border rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 ring-offset-background">
+                <TagIcon className="h-4 w-4 ml-3 text-gray-400" />
+                <Input
+                  ref={tagInputRef}
+                  type="text"
+                  value={tagInput}
+                  onChange={handleTagInputChange}
+                  onKeyDown={handleTagInputKeyDown}
+                  onFocus={handleInputFocus}
+                  placeholder="Add up to 4 tags..."
+                  disabled={tags.length >= 4}
+                  className="border-0 text-sm focus-visible:ring-0"
+                />
+              </div>
+
+              {/* Custom tag dropdown */}
+              {isTagDropdownOpen && (
+                <div className="absolute top-full left-0 w-[300px] mt-1 border rounded-md bg-white shadow-md z-10">
+                  <div className="p-2 border-b bg-gray-50">
+                    <h3 className="text-sm font-medium">Top Tags</h3>
+                  </div>
+                  <div className="max-h-[200px] overflow-y-auto">
+                    {isLoadingTags ? (
+                      <div className="flex items-center justify-center p-4">
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        <span className="text-sm text-gray-500">
+                          Loading tags...
+                        </span>
+                      </div>
+                    ) : tagSuggestions.length === 0 ? (
+                      <div className="p-4 text-center text-sm text-gray-500">
+                        No matching tags found
+                      </div>
+                    ) : (
+                      <ul className="py-1">
+                        {tagSuggestions.map((tag) => (
+                          <li
+                            key={tag.id}
+                            className="px-3 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                            onClick={() => handleTagSelect(tag.name)}
+                          >
+                            <TagIcon className="h-4 w-4 mr-2 text-gray-500" />
+                            <span className="text-sm">{tag.name}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
             {tags.length >= 4 && (
               <p className="text-xs text-muted-foreground mt-1">
                 Maximum of 4 tags reached
