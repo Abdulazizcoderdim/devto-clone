@@ -1,6 +1,3 @@
-"use client";
-
-import type React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,9 +29,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import toast from "react-hot-toast";
 import { useAuthStore } from "@/hooks/auth-store";
 import api from "@/http/axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const PostCreate: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -43,6 +41,7 @@ const PostCreate: React.FC = () => {
   const [coverImageLink, setCoverImageLink] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { user } = useAuthStore();
+  const navigate = useNavigate();
 
   const editor = useEditor({
     extensions: [
@@ -106,10 +105,10 @@ const PostCreate: React.FC = () => {
         return;
       }
 
-      if (!user?.id) {
-        toast.error("Author ID is required");
-        return;
-      }
+      // if (!user?.id) {
+      //   toast.error("Author ID is required");
+      //   return;
+      // }
 
       setIsSubmitting(true);
 
@@ -117,7 +116,7 @@ const PostCreate: React.FC = () => {
       const postData = {
         title: title.trim(),
         content: editor.getHTML(),
-        authorId: user.id,
+        // authorId: user.id,
         tags,
         coverImageLink: coverImageLink.trim() || null,
         // isDraft: isDraft,
@@ -147,9 +146,9 @@ const PostCreate: React.FC = () => {
 
       // Redirect to the post or dashboard
       if (result.data?.slug) {
-        window.location.href = `/${user.name}/${result.data.slug}`;
+        navigate(`/${user?.name}/${result.data.slug}`);
       } else {
-        window.location.href = "/dashboard";
+        navigate("/");
       }
     } catch (error) {
       console.error("Error creating post:", error);
@@ -179,7 +178,7 @@ const PostCreate: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto pt-8 px-4 md:px-0">
+    <div className="w-full max-w-4xl mx-auto pt-16 mb-3 px-4 md:px-0">
       <Card className="border shadow-sm bg-white overflow-hidden">
         <CardContent className="p-6">
           {/* Cover Image Section */}
@@ -228,12 +227,12 @@ const PostCreate: React.FC = () => {
 
           {/* Title Input */}
           <div className="mb-6">
-            <Input
+            <input
               type="text"
               value={title}
               onChange={handleTitleChange}
               placeholder="New post title here..."
-              className="border-0 p-0 text-4xl font-bold h-auto focus-visible:ring-0 placeholder:text-gray-400"
+              className="w-full border-0 p-0 text-4xl font-bold h-auto focus-visible:ring-0 outline-none placeholder:text-gray-400"
             />
           </div>
 

@@ -1,5 +1,6 @@
 import Header from "@/components/shared/header";
 import AuthProvider from "@/provider/auth-provider";
+import { Toaster } from "react-hot-toast";
 import { Outlet } from "react-router-dom";
 
 const Layout = () => {
@@ -9,6 +10,7 @@ const Layout = () => {
         <Header />
         <Outlet />
       </main>
+      <Toaster />
     </AuthProvider>
   );
 };

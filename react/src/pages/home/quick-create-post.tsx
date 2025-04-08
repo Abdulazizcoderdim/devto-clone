@@ -50,7 +50,7 @@ const QuickCreatePost = () => {
                 asChild
                 className="w-fit"
               >
-                <Link to={`/${user?.name}/`}>Post</Link>
+                <Link to={"/new"}>Post</Link>
               </Button>
             </div>
           </div>
