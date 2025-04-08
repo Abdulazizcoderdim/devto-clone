@@ -16,17 +16,31 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  posts    Post[]
-  token    Token[]
-  comments Comment[]
-  reaction Reaction[]
+  posts     Post[]
+  token     Token[]
+  comments  Comment[]
+  reaction  Reaction[]
+  followers UserFollow[] @relation("Followers")
+  following UserFollow[] @relation("Following")
+}
+
+model UserFollow {
+  id          String   @id @default(uuid()) @map("_id")
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  follower  User @relation("Following", fields: [followerId], references: [id])
+  following User @relation("Followers", fields: [followingId], references: [id])
+
+  @@unique([followerId, followingId])
 }
 
 model Post {
   id             String   @id @default(uuid()) @map("_id")
   title          String
   content        String
-  coverImageLink String?   @default("")
+  coverImageLink String?  @default("")
   slug           String   @unique
   authorId       String
   createdAt      DateTime @default(now())

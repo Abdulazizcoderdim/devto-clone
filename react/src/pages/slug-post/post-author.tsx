@@ -11,8 +11,8 @@ const PostAuthor = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-96 bg-green-100 w-full max-lg:hidden break-words">
-      <Card className="p-4">
+    <div className="max-w-96 w-full max-lg:hidden break-words">
+      <Card className="p-4 rounded-md">
         <CardHeader className="space-y-3 pb-4">
           <div className="flex items-center gap-2">
             <Avatar

@@ -2,6 +2,7 @@ const authController = require("../controllers/auth.controller");
 const commentController = require("../controllers/comment.controller");
 const postController = require("../controllers/post.controller");
 const sumController = require("../controllers/sum.controller");
+const userController = require("../controllers/user.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
 const router = require("express").Router();
@@ -35,8 +36,10 @@ router.group("/comments", (router) => {
 });
 
 router.group("/users", (router) => {
-  router.get("/");
-  router.get("/:id");
+  router.post("/follow", authMiddleware, userController.follow);
+  router.post("/unfollow", authMiddleware, userController.unfollow);
+  router.get("/following", authMiddleware, userController.getFollowing);
+  router.get("/followers", authMiddleware, userController.getFollowers);
 });
 
 router.group("/summarize", (router) => {

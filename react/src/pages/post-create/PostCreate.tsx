@@ -9,33 +9,6 @@ import React, {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Link from "@tiptap/extension-link";
-import Image from "@tiptap/extension-image";
-import Placeholder from "@tiptap/extension-placeholder";
-import {
-  Bold,
-  Italic,
-  LinkIcon,
-  List,
-  ListOrdered,
-  Heading,
-  Quote,
-  Code,
-  FileCode,
-  ImageIcon,
-  MoreVertical,
-  X,
-  Tag as TagIcon,
-  Loader2,
-} from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { useAuthStore } from "@/hooks/auth-store";
@@ -43,6 +16,8 @@ import api from "@/http/axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useOnClickOutside } from "@/hooks/use-onclick-outside";
+import QuillEditor from "@/components/shared/quil-editor";
+import { FileCode, Loader2, TagIcon, X } from "lucide-react";
 
 const PostCreate: React.FC = () => {
   const [title, setTitle] = useState<string>("");
@@ -59,18 +34,19 @@ const PostCreate: React.FC = () => {
   const navigate = useNavigate();
   const [isTagDropdownOpen, setIsTagDropdownOpen] = useState(false);
   const tagInputRef = useRef<HTMLInputElement>(null);
+  const [content, setContent] = useState("");
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link,
-      Image,
-      Placeholder.configure({
-        placeholder: "Write your post content here...",
-      }),
-    ],
-    content: "",
-  });
+  // const editor = useEditor({
+  //   extensions: [
+  //     StarterKit,
+  //     Link,
+  //     Image,
+  //     Placeholder.configure({
+  //       placeholder: "Write your post content here...",
+  //     }),
+  //   ],
+  //   content: "",
+  // });
 
   const handleClickOutside = () => {
     if (isTagDropdownOpen) {
@@ -191,7 +167,7 @@ const PostCreate: React.FC = () => {
         return;
       }
 
-      if (!editor?.getHTML() || editor?.isEmpty) {
+      if (!content || content.trim().length === 0) {
         toast.error("Content is required");
         return;
       }
@@ -201,7 +177,7 @@ const PostCreate: React.FC = () => {
       // Prepare the post data based on backend requirements
       const postData = {
         title: title.trim(),
-        content: editor.getHTML(),
+        content,
         tags,
         coverImageLink: coverImageLink.trim() || null,
         // isDraft: isDraft,
@@ -227,7 +203,7 @@ const PostCreate: React.FC = () => {
       setTags([]);
       setTagInput("");
       setCoverImageLink("");
-      editor?.commands.clearContent();
+      setContent("");
 
       // Redirect to the post or dashboard
       if (result.data?.slug) {
@@ -256,7 +232,7 @@ const PostCreate: React.FC = () => {
       setTags([]);
       setTagInput("");
       setCoverImageLink("");
-      editor?.commands.clearContent();
+      setContent("");
 
       toast.success("Changes reverted successfully");
     }
@@ -264,8 +240,8 @@ const PostCreate: React.FC = () => {
 
   return (
     <div className="w-full max-w-4xl mx-auto pt-16 mb-3 px-4 md:px-0">
-      <Card className="border shadow-sm bg-white overflow-hidden">
-        <CardContent className="p-6">
+      <Card className="border shadow-sm bg-white overflow-auto h-[calc(100vh-140px)]">
+        <CardContent className="px-6">
           {/* Cover Image Section */}
           <div className="mb-8">
             <h2 className="text-lg font-semibold mb-3">Cover Image</h2>
@@ -317,7 +293,7 @@ const PostCreate: React.FC = () => {
               value={title}
               onChange={handleTitleChange}
               placeholder="New post title here..."
-              className="w-full border-0 p-0 text-4xl font-bold h-auto focus-visible:ring-0 outline-none placeholder:text-gray-400"
+              className="w-full p-0 text-4xl font-bold h-16 focus-visible:ring-0 outline-none placeholder:text-gray-400"
             />
           </div>
 
@@ -405,186 +381,39 @@ const PostCreate: React.FC = () => {
 
           <Separator className="my-6" />
 
-          {/* Editor Toolbar */}
-          <div className="bg-gray-50 border rounded-md mb-4">
-            <div className="flex items-center gap-1 p-1 flex-wrap">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor?.chain().focus().toggleBold().run()}
-                className={`rounded-md ${
-                  editor?.isActive("bold") ? "bg-gray-200" : ""
-                }`}
-              >
-                <Bold className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor?.chain().focus().toggleItalic().run()}
-                className={`rounded-md ${
-                  editor?.isActive("italic") ? "bg-gray-200" : ""
-                }`}
-              >
-                <Italic className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const url = window.prompt("URL");
-                  if (url) {
-                    editor?.chain().focus().setLink({ href: url }).run();
-                  }
-                }}
-                className={`rounded-md ${
-                  editor?.isActive("link") ? "bg-gray-200" : ""
-                }`}
-              >
-                <LinkIcon className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor?.chain().focus().toggleBulletList().run()}
-                className={`rounded-md ${
-                  editor?.isActive("bulletList") ? "bg-gray-200" : ""
-                }`}
-              >
-                <List className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() =>
-                  editor?.chain().focus().toggleOrderedList().run()
-                }
-                className={`rounded-md ${
-                  editor?.isActive("orderedList") ? "bg-gray-200" : ""
-                }`}
-              >
-                <ListOrdered className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() =>
-                  editor?.chain().focus().toggleHeading({ level: 2 }).run()
-                }
-                className={`rounded-md ${
-                  editor?.isActive("heading", { level: 2 }) ? "bg-gray-200" : ""
-                }`}
-              >
-                <Heading className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor?.chain().focus().toggleBlockquote().run()}
-                className={`rounded-md ${
-                  editor?.isActive("blockquote") ? "bg-gray-200" : ""
-                }`}
-              >
-                <Quote className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
-                className={`rounded-md ${
-                  editor?.isActive("codeBlock") ? "bg-gray-200" : ""
-                }`}
-              >
-                <Code className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const url = window.prompt("Image URL");
-                  if (url) {
-                    editor?.chain().focus().setImage({ src: url }).run();
-                  }
-                }}
-              >
-                <ImageIcon className="h-4 w-4" />
-              </Button>
-              <div className="ml-auto">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreVertical className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => editor?.chain().focus().undo().run()}
-                    >
-                      Undo
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => editor?.chain().focus().redo().run()}
-                    >
-                      Redo
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() =>
-                        editor
-                          ?.chain()
-                          .focus()
-                          .clearNodes()
-                          .unsetAllMarks()
-                          .run()
-                      }
-                    >
-                      Clear formatting
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </div>
-
           {/* Editor Content */}
-          <div className="min-h-[300px] mb-8 border rounded-md p-4">
-            <EditorContent
-              editor={editor}
-              className="prose max-w-none focus:outline-none min-h-[300px]"
-            />
-          </div>
+          <h2 className="text-sm font-medium text-gray-500 mb-2">Content</h2>
 
-          <Separator className="my-6" />
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap gap-4 mt-6">
-            <Button
-              onClick={handlePublish}
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
-              disabled={isSubmitting}
-              size="lg"
-            >
-              {isSubmitting ? "Publishing..." : "Publish Post"}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleSaveDraft}
-              disabled={isSubmitting}
-              size="lg"
-            >
-              {isSubmitting ? "Saving..." : "Save as Draft"}
-            </Button>
-            <Button
-              variant="ghost"
-              className="ml-auto text-red-500 hover:text-red-600 hover:bg-red-50"
-              onClick={handleRevertChanges}
-              disabled={isSubmitting}
-            >
-              <FileCode className="h-4 w-4 mr-2" />
-              Discard Changes
-            </Button>
-          </div>
+          <QuillEditor value={content} onChange={setContent} />
         </CardContent>
       </Card>
+      <div className="flex flex-wrap gap-4 mt-6">
+        <Button
+          onClick={handlePublish}
+          className="bg-emerald-600 text-white hover:bg-emerald-700"
+          disabled={isSubmitting}
+          size="lg"
+        >
+          {isSubmitting ? "Publishing..." : "Publish Post"}
+        </Button>
+        <Button
+          variant="outline"
+          onClick={handleSaveDraft}
+          disabled={isSubmitting}
+          size="lg"
+        >
+          {isSubmitting ? "Saving..." : "Save as Draft"}
+        </Button>
+        <Button
+          variant="ghost"
+          className="ml-auto text-red-500 hover:text-red-600 hover:bg-red-50"
+          onClick={handleRevertChanges}
+          disabled={isSubmitting}
+        >
+          <FileCode className="h-4 w-4 mr-2" />
+          Discard Changes
+        </Button>
+      </div>
     </div>
   );
 };

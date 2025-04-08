@@ -64,7 +64,7 @@ export function ItemBlog({
 
   return (
     <Card key={id} className="border rounded-lg overflow-hidden">
-      <CardContent className="p-6">
+      <CardContent className="px-6">
         <div
           onClick={() => navigate(`/${author.name}/${slug}`)}
           className="cursor-pointer"
