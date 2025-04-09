@@ -31,7 +31,7 @@ const Verify = () => {
   const { email } = useAuth();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { setIsAuth } = useAuthStore();
+  const { setIsAuth, checkAuth } = useAuthStore();
 
   const form = useForm<z.infer<typeof otpSchema>>({
     resolver: zodResolver(otpSchema),
@@ -60,11 +60,12 @@ const Verify = () => {
       console.error(error);
     } finally {
       setLoading(false);
+      await checkAuth();
     }
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full max-w-lg">
       <p className="text-center text-muted-foreground text-sm">
         We have sent you an email with a verification code to your email
         address. Please enter the code below.

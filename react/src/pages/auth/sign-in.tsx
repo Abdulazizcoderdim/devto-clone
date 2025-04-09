@@ -20,7 +20,7 @@ import api from "@/http/axios";
 
 export default function SignIn() {
   const navigate = useNavigate();
-  const { setIsAuth } = useAuthStore();
+  const { setIsAuth, checkAuth } = useAuthStore();
 
   const form = useForm<z.infer<typeof signInSchema>>({
     resolver: zodResolver(signInSchema),
@@ -50,6 +50,8 @@ export default function SignIn() {
     } catch (error: any) {
       toast.error(error.response?.data?.message + " 😢" || "Login failed");
       console.error(error);
+    } finally {
+      await checkAuth();
     }
   };
 

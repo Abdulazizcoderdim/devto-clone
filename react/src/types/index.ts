@@ -22,6 +22,7 @@ export interface Post {
   title: string;
   content: string;
   coverImageLink: string;
+  summary: string;
   slug: string;
   authorId: string;
   createdAt: string; // ISO format datetime (String)

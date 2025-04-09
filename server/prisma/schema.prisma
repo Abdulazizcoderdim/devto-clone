@@ -41,6 +41,7 @@ model Post {
   title          String
   content        String
   coverImageLink String?  @default("")
+  summary        String?
   slug           String   @unique
   authorId       String
   createdAt      DateTime @default(now())

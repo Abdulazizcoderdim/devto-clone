@@ -1,5 +1,6 @@
 const prisma = require("../config/prismaClient");
 const BaseError = require("../errors/base.error");
+const { htmlToText } = require("html-to-text");
 
 class PostController {
   async getAll(req, res, next) {
@@ -296,6 +297,49 @@ class PostController {
       });
 
       res.json({ tags });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async summarize(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const post = await prisma.post.findUnique({
+        where: { id },
+      });
+
+      if (!post) {
+        return next(BaseError.BadRequest("Post not found"));
+      }
+
+      const text = htmlToText(post.content);
+
+      // Check isSummary
+      if (post.summary) {
+        return res.json({ summary: post.summary });
+      }
+
+      const HUGGINGFACE_API_KEY = process.env.HUGGINGFACE_API_KEY;
+
+      const response = await axios.post(
+        "https://api-inference.huggingface.co/models/facebook/bart-large-cnn",
+        { inputs: text },
+        {
+          headers: { Authorization: `Bearer ${HUGGINGFACE_API_KEY}` },
+        }
+      );
+
+      const summaryText = response.data[0].summary_text;
+
+      // save db
+      const updatedPost = await prisma.post.update({
+        where: { id },
+        data: { summary: summaryText },
+      });
+
+      res.json({ summary: updatedPost.summary });
     } catch (error) {
       next(error);
     }

@@ -28,7 +28,7 @@ class UserController {
       const { id: followerId } = req.user;
       const { followingId } = req.body;
 
-      const follow = await prisma.userFollow.delete({
+      await prisma.userFollow.delete({
         where: {
           followerId_followingId: {
             followerId,
