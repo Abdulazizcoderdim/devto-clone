@@ -198,6 +198,8 @@ const AuthorPage = () => {
           <div className="space-y-6 md:col-span-2">
             {loading ? (
               <LoadingPost />
+            ) : userPosts.length === 0 ? (
+              <p className="text-muted-foreground text-center">No posts</p>
             ) : (
               userPosts.map((post, i) => {
                 const wordCount = post?.content?.split(/\s+/).length;
