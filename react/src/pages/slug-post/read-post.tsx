@@ -2,33 +2,22 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import api from "@/http/axios";
 import { Comment, Post } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare } from "lucide-react";
-import { useEffect, useState } from "react";
 import CommentForm from "./comment-form";
+import { useNavigate } from "react-router-dom";
 
-const ReadPost = ({ slug }: { slug: string | undefined }) => {
-  const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchPost();
-  }, [slug]);
-
-  const fetchPost = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/posts/${slug}`);
-      setPost(res.data);
-    } catch (error) {
-      console.error("Failed to fetch post", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const ReadPost = ({
+  post,
+  loading,
+  setPost,
+}: {
+  post: Post | null;
+  loading: boolean;
+  setPost: (post: Post) => void;
+}) => {
+  const navigate = useNavigate();
   // Handle new comment submission
   const handleCommentAdded = (newComment: Comment) => {
     if (post) {
@@ -67,6 +56,8 @@ const ReadPost = ({ slug }: { slug: string | undefined }) => {
         <div className="flex items-center gap-4">
           <Avatar className="h-12 w-12">
             <AvatarImage
+              className="cursor-pointer"
+              onClick={() => navigate(`/${post.author.name}`)}
               src={`https://api.dicebear.com/7.x/initials/svg?seed=${post.author.name}`}
             />
             <AvatarFallback>
@@ -74,7 +65,12 @@ const ReadPost = ({ slug }: { slug: string | undefined }) => {
             </AvatarFallback>
           </Avatar>
           <div>
-            <h4 className="text-lg font-semibold">{post.author.name}</h4>
+            <h4
+              onClick={() => navigate(`/${post.author.name}`)}
+              className="text-lg font-semibold hover:text-blue-800 transition-all duration-150 cursor-pointer"
+            >
+              {post.author.name}
+            </h4>
             <p className="text-sm text-muted-foreground">
               {formatDistanceToNow(new Date(post.createdAt), {
                 addSuffix: true,

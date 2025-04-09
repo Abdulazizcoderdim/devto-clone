@@ -30,6 +30,7 @@ export interface Post {
   author: Author;
   comments: Comment[]; // Agar commentlar bo'lsa, alohida interface yozish kerak
   tags: PostTag[];
+  _count: { comments: number };
 }
 
 export interface Comment {
@@ -61,6 +62,7 @@ export interface Token {
 export interface Author {
   id: string;
   name: string;
+  createdAt: string;
 }
 
 export interface Tag {

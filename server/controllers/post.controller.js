@@ -198,6 +198,7 @@ class PostController {
         include: {
           author: {
             select: {
+              createdAt: true,
               name: true,
             },
           },

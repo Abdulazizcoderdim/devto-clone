@@ -4,6 +4,7 @@ import { Loader2 } from "lucide-react";
 import { Comment, Post, PostTag } from "@/types";
 import QuickCreatePost from "./quick-create-post";
 import { ItemBlog } from "./item-blog";
+import LoadingPost from "@/components/shared/loading-post";
 
 const Blogs = () => {
   const [pagination, setPagination] = useState({
@@ -73,24 +74,28 @@ const Blogs = () => {
     };
   };
 
-  if (loading && posts.length === 0) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <Loader2 className="animate-spin" size={24} />
-      </div>
-    );
-  }
+  // if (loading && posts.length === 0) {
+  //   return (
+  //     <div className="flex justify-center items-center min-h-screen">
+  //       <Loader2 className="animate-spin" size={24} />
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
       <div className="flex flex-col gap-3">
         <QuickCreatePost />
-        {posts.map((post) => {
-          return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
-        })}
+        {loading && posts.length === 0 ? (
+          <LoadingPost />
+        ) : (
+          posts.map((post) => {
+            return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
+          })
+        )}
       </div>
 
-      {posts.length === 0 && (
+      {posts.length === 0 && !loading && (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">
             Hozircha postlar mavjud emas

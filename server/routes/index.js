@@ -37,6 +37,7 @@ router.group("/comments", (router) => {
 });
 
 router.group("/users", (router) => {
+  router.get("/:username", userController.getByUsername);
   router.post("/follow", authMiddleware, userController.follow);
   router.post("/unfollow", authMiddleware, userController.unfollow);
   router.get("/following", authMiddleware, userController.getFollowing);
