@@ -76,7 +76,9 @@ class AuthController {
         );
 
         if (!checkPassword) {
-          return next(BaseError.BadRequest("Email or Password incorrect"));
+          return next(
+            BaseError.BadRequest("Email yoki passwordni hato terdingiz")
+          );
         }
 
         const userDto = new UserDto(existUser);

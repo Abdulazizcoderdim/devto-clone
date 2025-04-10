@@ -7,6 +7,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReactionType {
+  like
+  love
+  insightful
+  laugh
+  angry
+}
+
 model User {
   id         String   @id @default(uuid()) @map("_id")
   name       String?  @unique
@@ -44,6 +52,7 @@ model Post {
   summary        String?
   slug           String   @unique
   authorId       String
+  score          Float    @default(0)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -55,7 +64,7 @@ model Post {
 
 model Reaction {
   id        String   @id @default(uuid()) @map("_id")
-  type      String
+  type      ReactionType?
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   post      Post     @relation(fields: [postId], references: [id])

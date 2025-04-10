@@ -18,7 +18,7 @@ const PostCard = ({ post }: Post) => {
   const handleSummarize = async () => {
     try {
       setLoading(true);
-      const { data } = await api.post(`/api/posts/${post.id}/summarize`);
+      const { data } = await api.post(`/posts/${post.id}/summarize`);
       setSummary(data.summary);
       setShowFull(false);
     } catch (err) {

@@ -1,4 +1,5 @@
 const prisma = require("../config/prismaClient");
+const { calculatePostScore } = require("../services/postScoreService");
 
 class CommentController {
   async create(req, res, next) {
@@ -32,6 +33,8 @@ class CommentController {
           user: { connect: { id: userId } },
         },
       });
+
+      await calculatePostScore(prisma, postId);
 
       return res.status(201).json(newComment);
     } catch (error) {

@@ -73,7 +73,9 @@ const Header = () => {
                 <DropdownMenuContent>
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem>Profile</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to={`/${user?.name}`}>Profile</Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout}>
                     <span className="text-red-500">Logout</span>
                   </DropdownMenuItem>

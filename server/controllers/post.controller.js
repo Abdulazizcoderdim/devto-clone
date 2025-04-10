@@ -10,18 +10,24 @@ class PostController {
 
       const pageNumber = parseInt(page);
       const pageSize = parseInt(size);
-      const skip = (parseInt(page) - 1) * parseInt(size);
+      const skip = (pageNumber - 1) * pageSize;
 
       const posts = await prisma.post.findMany({
-        skip: parseInt(skip),
-        take: parseInt(size),
+        skip,
+        take: pageSize,
         orderBy: {
-          createdAt: "desc",
+          score: "desc",
         },
         include: {
           author: {
             select: {
               name: true,
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+              reaction: true,
             },
           },
           comments: {
@@ -61,6 +67,7 @@ class PostController {
       next(error);
     }
   }
+
   async create(req, res, next) {
     try {
       const { title, content, tags, coverImageLink } = req.body;
