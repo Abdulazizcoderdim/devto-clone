@@ -211,9 +211,9 @@ const PostCreate: React.FC = () => {
       } else {
         navigate("/");
       }
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to create post");
       console.error("Error creating post:", error);
-      toast.error("Error creating post: " + (error as Error).message);
     } finally {
       setIsSubmitting(false);
     }

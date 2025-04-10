@@ -1,6 +1,7 @@
 const prisma = require("../config/prismaClient");
 const BaseError = require("../errors/base.error");
 const { htmlToText } = require("html-to-text");
+const generateUniqueSlug = require("../shared/generate.unique.slug");
 
 class PostController {
   async getAll(req, res, next) {
@@ -62,7 +63,7 @@ class PostController {
   }
   async create(req, res, next) {
     try {
-      const { title, content, slug, tags, coverImageLink } = req.body;
+      const { title, content, tags, coverImageLink } = req.body;
       const authorId = req.user.id;
 
       if (!title || !content || !authorId) {
@@ -79,12 +80,11 @@ class PostController {
         return res.status(404).json({ error: "Author not found" });
       }
 
-      // Generate a slug if not provided
-      const finalSlug = slug || title.toLowerCase().replace(/\s+/g, "-");
-
       // Increase transaction timeout to 15 seconds
       const result = await prisma.$transaction(
         async (tx) => {
+          const finalSlug = await generateUniqueSlug(title, tx);
+
           // Create the post
           const post = await tx.post.create({
             data: {
