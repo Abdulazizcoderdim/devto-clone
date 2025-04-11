@@ -28,6 +28,31 @@ const ReadPost = ({
     }
   };
 
+  const formattedReactionCounts = (reactionType: string) => {
+    if (post) {
+      return post.reaction.filter((reaction) => reaction.type === reactionType)
+        .length;
+    }
+    return 0;
+  };
+
+  const reactionType = (reactionType: string) => {
+    switch (reactionType) {
+      case "like":
+        return "👍";
+      case "love":
+        return "❤️";
+      case "insightful":
+        return "💡";
+      case "laugh":
+        return "😂";
+      case "angry":
+        return "😡";
+      default:
+        return "";
+    }
+  };
+
   if (loading) {
     return (
       <div className="w-full flex justify-center items-center min-h-[60vh]">
@@ -43,6 +68,7 @@ const ReadPost = ({
       </div>
     );
   }
+
   return (
     <Card className="w-full rounded-md bg-white shadow-md overflow-hidden">
       <CardHeader className="space-y-6 pb-4">
@@ -78,6 +104,22 @@ const ReadPost = ({
             </p>
           </div>
         </div>
+        {/* reactions */}
+        {Object.keys(post.reactionCounts).length !== 0 && (
+          <div className="flex gap-3 items-center">
+            <div className="flex items-center gap-2">
+              {Object.entries(post.reactionCounts).map(([type, count]) => (
+                <Badge
+                  key={type}
+                  variant="secondary"
+                  className="flex text-xl items-center gap-2"
+                >
+                  {reactionType(type)} <span>{count}</span>
+                </Badge>
+              ))}
+            </div>
+          </div>
+        )}
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
           <div className="flex gap-2 mt-4">

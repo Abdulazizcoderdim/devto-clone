@@ -209,6 +209,7 @@ class PostController {
               name: true,
             },
           },
+          // reaction: true,
           comments: {
             orderBy: {
               createdAt: "desc",
@@ -233,11 +234,30 @@ class PostController {
         return BaseError.BadRequest("Post not found");
       }
 
-      return res.status(200).json(post);
+      const groupedReactions = await prisma.reaction.groupBy({
+        by: ["type"],
+        where: {
+          postId: post.id,
+        },
+        _count: {
+          type: true,
+        },
+      });
+
+      const reactionCounts = groupedReactions.reduce((acc, r) => {
+        acc[r.type] = r._count.type;
+        return acc;
+      }, {});
+
+      return res.status(200).json({
+        ...post,
+        reactionCounts,
+      });
     } catch (error) {
       next(error);
     }
   }
+
   async update() {}
   async delete() {}
   async like() {

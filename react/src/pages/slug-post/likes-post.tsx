@@ -1,104 +1,186 @@
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import {
+  ThumbsUp,
+  Heart,
+  Lightbulb,
+  Laugh,
+  Angry,
+  Save,
+  MessageCircleMore,
+  MoreHorizontal,
+  Loader2,
+} from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { ThumbsUp, MessageCircleMore, Save, Ellipsis } from "lucide-react";
-import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import api from "@/http/axios";
+import { Skeleton } from "@/components/ui/skeleton";
 
-// Emojilarni tanlash uchun komponent
-const ReactionPopover = ({ onSelect }) => {
-  const [selectedReaction, setSelectedReaction] = useState("");
+// Reaksiya ikonkalari
+const ReactionIcons = [
+  { icon: <ThumbsUp className="h-5 w-5" />, emoji: "like" },
+  { icon: <Heart className="h-5 w-5" />, emoji: "love" },
+  { icon: <Lightbulb className="h-5 w-5" />, emoji: "insightful" },
+  { icon: <Laugh className="h-5 w-5" />, emoji: "laugh" },
+  { icon: <Angry className="h-5 w-5" />, emoji: "angry" },
+];
 
-  // Reactionni tanlash
-  const handleSelect = (reaction) => {
-    setSelectedReaction(reaction);
-    onSelect(reaction); // Reactionni parent komponentga jo'natish
+const LikesPost = ({ postId }: { postId: string }) => {
+  const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [reactionCounts, setReactionCounts] = useState({
+    total: 0,
+    comments: 0,
+    saves: 0,
+  });
+  const [popoverOpen, setPopoverOpen] = useState(false);
+
+  // Post reaksiyalarni yuklash
+  const fetchReactions = async () => {
+    try {
+      const response = await api.get(`/reactions/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+
+      setReactionCounts({
+        total: response.data.totalReactions || 0,
+        comments: response.data.commentCount || 0,
+        saves: response.data.saveCount || 0,
+      });
+
+      // Agar foydalanuvchi reaksiya qo'ygan bo'lsa, uni ko'rsatish
+      if (response.data.userReaction) {
+        setSelectedReaction(response.data.userReaction.type);
+      } else {
+        setSelectedReaction(null);
+      }
+    } catch (error) {
+      console.error("Reaksiyalarni yuklashda xatolik:", error);
+    }
   };
 
-  return (
-    <PopoverContent className="p-2">
-      <div className="grid grid-cols-3 gap-2">
-        {["👍", "❤️", "😂", "😢", "😡"].map((emoji) => (
-          <div
-            key={emoji}
-            onClick={() => handleSelect(emoji)}
-            className={`p-2 cursor-pointer hover:bg-gray-200 rounded-full text-center ${
-              selectedReaction === emoji ? "bg-gray-200" : ""
-            }`}
-          >
-            <span className="text-xl">{emoji}</span>
-          </div>
-        ))}
-      </div>
-    </PopoverContent>
-  );
-};
+  // Komponentni ilk yuklashda reaksiyalarni olish
+  useEffect(() => {
+    fetchReactions();
+  }, [postId]);
 
-const LikesPost = () => {
-  const [open, setOpen] = useState(false);
-  const [selectedReaction, setSelectedReaction] = useState(null);
+  // Reaksiyani tanlash va serverga yuborish
+  const handleReactionSelect = async (reaction: string) => {
+    setLoading(true);
+    setPopoverOpen(false);
 
-  // Reaction tanlanganini ko'rsatish
-  const handleReactionSelect = (reaction) => {
-    setSelectedReaction(reaction);
-    setOpen(false); // Popoverni yopish
-    // Bu yerda reactionni serverga jo'natish kodini qo'shishingiz mumkin
-    console.log("Tanlangan reaction:", reaction);
+    try {
+      const response = await api.post(
+        "/reactions",
+        {
+          postId: postId,
+          type: reaction,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+
+      // Agar reaksiya o'chirilgan bo'lsa
+      if (response.data.action === "removed" && selectedReaction === reaction) {
+        setSelectedReaction(null);
+      } else {
+        setSelectedReaction(reaction);
+      }
+
+      // Reaksiyalar sonini yangilash
+      fetchReactions();
+      setLoading(false);
+    } catch (error) {
+      console.error("Reaction yuborishda xatolik:", error);
+      setLoading(false);
+    }
+  };
+
+  // Reaksiya tugmasining ko'rinishi
+  const getReactionButtonIcon = () => {
+    if (selectedReaction) {
+      const selected = ReactionIcons.find((r) => r.emoji === selectedReaction);
+      if (selected) {
+        // Tanlangan reaksiya ikonkasi va rangi
+        return <div className="text-blue-500">{selected.icon}</div>;
+      }
+    }
+    return <ThumbsUp size={24} />;
   };
 
   return (
     <div className="md:pt-16 max-md:px-8">
       <div className="flex md:flex-col max-md:justify-between items-center gap-5">
+        {/* Reaksiya tugmasi */}
         <div className="flex md:flex-col items-center gap-2">
-          <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger
-              onMouseEnter={() => setOpen(true)}
-              onMouseLeave={() => setOpen(false)}
-            >
-              <ThumbsUp
-                size={24}
-                className="hover:text-red-500 cursor-pointer transition-colors duration-200"
-              />
+          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+            <PopoverTrigger>
+              <Button
+                variant="ghost"
+                size="icon"
+                className={selectedReaction ? "text-blue-500" : ""}
+              >
+                {getReactionButtonIcon()}
+              </Button>
             </PopoverTrigger>
-
-            {/* Reaction tanlash popover */}
-            {open && <ReactionPopover onSelect={handleReactionSelect} />}
+            <PopoverContent side="right" className="p-2 w-auto">
+              <div className="flex gap-2">
+                {ReactionIcons.map((reaction, i) => (
+                  <div
+                    key={i}
+                    onClick={() => handleReactionSelect(reaction.emoji)}
+                    className={`p-2 cursor-pointer hover:bg-gray-100 rounded-full ${
+                      selectedReaction === reaction.emoji ? "bg-blue-100" : ""
+                    }`}
+                  >
+                    {reaction.icon}
+                  </div>
+                ))}
+              </div>
+            </PopoverContent>
           </Popover>
+          {loading ? (
+            <Skeleton className="h-4 w-6" />
+          ) : (
+            <span className="text-xs text-muted-foreground">
+              {reactionCounts.total}
+            </span>
+          )}
         </div>
 
-        {/* Commentlar */}
+        {/* Kommentlar */}
         <div className="flex md:flex-col items-center gap-2">
-          <MessageCircleMore
-            size={24}
-            className="hover:text-yellow-500 cursor-pointer transition-colors duration-200"
-          />
-          <span className="text-xs text-muted-foreground select-none">2</span>
+          <Button variant="ghost" size="icon">
+            <MessageCircleMore size={24} />
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {reactionCounts.comments}
+          </span>
         </div>
 
-        {/* Save */}
+        {/* Saqlash */}
         <div className="flex md:flex-col items-center gap-2">
-          <Save
-            size={24}
-            className="hover:text-blue-500 cursor-pointer transition-colors duration-200"
-          />
-          <span className="text-xs text-muted-foreground select-none">2</span>
+          <Button variant="ghost" size="icon">
+            <Save size={24} />
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {reactionCounts.saves}
+          </span>
         </div>
 
-        {/* More options */}
-        <Button variant="ghost" size={"icon"} className="rounded-full p-0">
-          <Ellipsis size={24} />
+        {/* Qo'shimcha opsiyalar */}
+        <Button variant="ghost" size="icon">
+          <MoreHorizontal size={24} />
         </Button>
       </div>
-
-      {/* Tanlangan reactionni ko'rsatish */}
-      {selectedReaction && (
-        <div className="mt-4 text-center">
-          <span className="font-bold">Tanlangan reaction:</span>{" "}
-          <span className="text-xl">{selectedReaction}</span>
-        </div>
-      )}
     </div>
   );
 };

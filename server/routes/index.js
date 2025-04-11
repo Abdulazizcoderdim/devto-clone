@@ -32,6 +32,7 @@ router.group("/posts", (router) => {
 
 router.group("/reactions", (router) => {
   router.post("/", authMiddleware, reactionController.addReaction);
+  router.get("/:postId", authMiddleware, reactionController.getPostReactions);
 });
 
 router.group("/comments", (router) => {

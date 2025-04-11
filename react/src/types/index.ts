@@ -28,9 +28,26 @@ export interface Post {
   createdAt: string; // ISO format datetime (String)
   updatedAt: string; // ISO format datetime (String)
   author: Author;
+  reaction: Reaction[];
+  reactionCounts: ReactionCounts;
   comments: Comment[]; // Agar commentlar bo'lsa, alohida interface yozish kerak
   tags: PostTag[];
-  _count: { comments: number };
+  _count: { comments: number; reaction: number };
+}
+
+export interface ReactionCounts {
+  like: number;
+  love: number;
+  insightful: number;
+  laugh: number;
+  angry: number;
+}
+
+export interface Reaction {
+  id: string;
+  type: string;
+  postId: string;
+  userId: string;
 }
 
 export interface Comment {
@@ -75,4 +92,12 @@ export interface PostTag {
   postId: string;
   tagId: string;
   tag: Tag;
+}
+
+export enum ReactionType {
+  like,
+  love,
+  insightful,
+  laugh,
+  angry,
 }

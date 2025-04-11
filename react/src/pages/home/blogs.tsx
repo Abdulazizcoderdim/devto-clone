@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import api from "@/http/axios";
-import { Loader2 } from "lucide-react";
 import { Comment, Post, PostTag } from "@/types";
 import QuickCreatePost from "./quick-create-post";
 import { ItemBlog } from "./item-blog";
@@ -68,7 +67,7 @@ const Blogs = () => {
       date: new Date(post.createdAt).toLocaleDateString(),
       title: post.title,
       tags: tagNames,
-      reactions: 2, // Reactions o'rniga comment count'ni ishlatamiz
+      reactions: post._count.reaction,
       comments: formattedComments,
       readingTime,
     };
