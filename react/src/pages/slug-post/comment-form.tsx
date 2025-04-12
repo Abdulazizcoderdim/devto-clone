@@ -62,7 +62,11 @@ const CommentForm = ({ postId, onCommentAdded }: CommentFormProps) => {
               dangerouslySetInnerHTML={{ __html: content || "" }}
             />
           ) : (
-            <QuillEditor value={content} onChange={setContent} />
+            <QuillEditor
+              value={content}
+              onChange={setContent}
+              placeholder="Write your comment..."
+            />
           )}
         </div>
 

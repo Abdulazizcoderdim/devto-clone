@@ -384,7 +384,11 @@ const PostCreate: React.FC = () => {
           {/* Editor Content */}
           <h2 className="text-sm font-medium text-gray-500 mb-2">Content</h2>
 
-          <QuillEditor value={content} onChange={setContent} />
+          <QuillEditor
+            value={content}
+            onChange={setContent}
+            placeholder="Write your post here..."
+          />
         </CardContent>
       </Card>
       <div className="flex flex-wrap gap-4 mt-6">

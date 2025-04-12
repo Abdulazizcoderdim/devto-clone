@@ -66,9 +66,10 @@ const formats = [
 interface Props {
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
 }
 
-const QuillEditor = ({ value = "", onChange }: Props) => {
+const QuillEditor = ({ value = "", onChange, placeholder }: Props) => {
   return (
     <div className="w-full">
       <ReactQuill
@@ -78,7 +79,7 @@ const QuillEditor = ({ value = "", onChange }: Props) => {
         modules={modules}
         formats={formats}
         className=""
-        placeholder="Write your problem description here..."
+        placeholder={placeholder || "Matn kiriting..."}
       />
     </div>
   );
