@@ -8,7 +8,6 @@ import {
   Github,
   Heart,
   MessageCircle,
-  MessageSquare,
   MoreHorizontal,
   Twitter,
   Users,
@@ -30,18 +29,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
 import api from "@/http/axios";
 import { Post } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import LoadingPost from "@/components/shared/loading-post";
+import FollowButton from "@/components/shared/follow-button";
+import { followService } from "@/services/followService";
 
 const AuthorPage = () => {
   const [isFollowing, setIsFollowing] = useState(false);
   const { author } = useParams();
   const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
+  const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -51,12 +53,19 @@ const AuthorPage = () => {
   const fetchUserPosts = async () => {
     try {
       setLoading(true);
-      const res = await api.get(`/users/${author}`);
+      const res = await api.get<Post[]>(`/users/${author}`);
 
       if (!res.data) {
         throw new Error("User not found");
       }
 
+      setUserId(res.data[0].author.id);
+
+      const followStatus = await followService.checkFollowStatus(
+        res.data[0].author.id
+      );
+
+      setIsFollowing(followStatus);
       setUserPosts(res.data);
     } catch (error) {
       console.error(error);
@@ -115,22 +124,21 @@ const AuthorPage = () => {
             </div>
           </CardHeader>
           <CardFooter className="flex justify-center pb-6">
-            <Button
-              variant={isFollowing ? "outline" : "default"}
-              className="mr-2 px-8"
-              onClick={() => setIsFollowing(!isFollowing)}
-            >
-              {isFollowing ? "Following" : "Follow"}
-            </Button>
+            <FollowButton
+              userId={userId}
+              initialFollowState={isFollowing}
+              onFollowChange={setIsFollowing}
+            />
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+              <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon">
                   <MoreHorizontal className="h-5 w-5" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent side="bottom">
                 <DropdownMenuItem>Share profile</DropdownMenuItem>
                 <DropdownMenuItem>Report</DropdownMenuItem>
+                <DropdownMenuItem>Block @{author}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </CardFooter>

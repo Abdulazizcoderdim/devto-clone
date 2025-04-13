@@ -1,5 +1,6 @@
 const authController = require("../controllers/auth.controller");
 const commentController = require("../controllers/comment.controller");
+const followController = require("../controllers/follow.controller");
 const postController = require("../controllers/post.controller");
 const reactionController = require("../controllers/reaction.controller");
 const sumController = require("../controllers/sum.controller");
@@ -44,10 +45,13 @@ router.group("/comments", (router) => {
 
 router.group("/users", (router) => {
   router.get("/:username", userController.getByUsername);
-  router.post("/follow", authMiddleware, userController.follow);
-  router.post("/unfollow", authMiddleware, userController.unfollow);
-  router.get("/following", authMiddleware, userController.getFollowing);
-  router.get("/followers", authMiddleware, userController.getFollowers);
+});
+
+router.group("/", (router) => {
+  router.post("/follow", authMiddleware, followController.follow);
+  router.post("/unfollow", authMiddleware, followController.unfollow);
+  router.get("/following", authMiddleware, followController.getFollowing);
+  router.get("/followers", authMiddleware, followController.getFollowers);
 });
 
 router.group("/summarize", (router) => {

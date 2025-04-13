@@ -21,8 +21,6 @@ module.exports = function (req, res, next) {
       throw BaseError.Unauthorized("Invalid token");
     }
 
-    console.log("userPayload", userPayload);
-
     req.user = userPayload;
     next();
   } catch (error) {
