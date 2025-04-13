@@ -36,14 +36,12 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import LoadingPost from "@/components/shared/loading-post";
 import FollowButton from "@/components/shared/follow-button";
-import { followService } from "@/services/followService";
 
 const AuthorPage = () => {
-  const [isFollowing, setIsFollowing] = useState(false);
+  const [userId, setUserId] = useState<string>("");
   const { author } = useParams();
   const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [userId, setUserId] = useState<string>("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -60,12 +58,6 @@ const AuthorPage = () => {
       }
 
       setUserId(res.data[0].author.id);
-
-      const followStatus = await followService.checkFollowStatus(
-        res.data[0].author.id
-      );
-
-      setIsFollowing(followStatus);
       setUserPosts(res.data);
     } catch (error) {
       console.error(error);
@@ -124,11 +116,7 @@ const AuthorPage = () => {
             </div>
           </CardHeader>
           <CardFooter className="flex justify-center pb-6">
-            <FollowButton
-              userId={userId}
-              initialFollowState={isFollowing}
-              onFollowChange={setIsFollowing}
-            />
+            <FollowButton userId={userId} />
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon">

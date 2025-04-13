@@ -22,15 +22,11 @@ export const followService = {
   // Unfollow a user
   unfollow: async (followingId: string) => {
     try {
-      const response = await api.post(
-        `/unfollow`,
-        { followingId },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      const response = await api.post(`/unfollow/:${followingId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
       return response.data;
     } catch (error: any) {
       throw error.response?.data || error.message;

@@ -1,11 +1,15 @@
+const prisma = require("../config/prismaClient");
+
 class FollowController {
   async follow(req, res, next) {
     try {
-      const { id: followerId } = req.user;
+      const { id: followerId } = req.user; // JWT token orqali kim follow qilayotganini bilamiz
       const { followingId } = req.body;
 
       if (followerId === followingId) {
-        return res.status(400).json({ error: "You can't follow yourself" });
+        return res
+          .status(400)
+          .json({ error: "O'zinga follow bosib bo'lmaydi" });
       }
 
       const follow = await prisma.userFollow.create({
@@ -24,7 +28,7 @@ class FollowController {
   async unfollow(req, res, next) {
     try {
       const { id: followerId } = req.user;
-      const { followingId } = req.body;
+      const { followingId } = req.params;
 
       await prisma.userFollow.delete({
         where: {
@@ -35,7 +39,7 @@ class FollowController {
         },
       });
 
-      return res.status(200).json({ message: "Unfollowed" });
+      return res.status(200).json({ message: "Unfollow qilindi!" });
     } catch (error) {
       next(error);
     }
@@ -71,6 +75,21 @@ class FollowController {
       });
 
       return res.status(200).json(following);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async checkFollow(req, res, next) {
+    try {
+      const followerId = req.user.id;
+      const followingId = req.params.userId;
+
+      const existing = await prisma.userFollow.findFirst({
+        where: { followerId, followingId },
+      });
+
+      res.json({ isFollowing: !!existing });
     } catch (error) {
       next(error);
     }

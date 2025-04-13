@@ -1,70 +1,86 @@
-import { followService } from "@/services/followService";
-import { useState, useEffect } from "react";
-import { toast } from "react-hot-toast";
+import api from "@/http/axios";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Skeleton } from "../ui/skeleton";
 
 interface FollowButtonProps {
-  userId: string;
-  initialFollowState?: boolean;
-  onFollowChange?: (isFollowing: boolean) => void;
+  userId: string; // Kimni follow qilmoqchi
 }
 
-const FollowButton = ({
-  userId,
-  initialFollowState = false,
-  onFollowChange,
-}: FollowButtonProps) => {
-  const [isFollowing, setIsFollowing] = useState(initialFollowState);
-  const [isLoading, setIsLoading] = useState(false);
+const FollowButton = ({ userId }: FollowButtonProps) => {
+  const [isFollowed, setIsFollowed] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [checkLoading, setCheckLoading] = useState(true);
 
   useEffect(() => {
-    // Check initial follow status if not provided
-    if (initialFollowState === undefined) {
-      const checkStatus = async () => {
-        try {
-          const status = await followService.checkFollowStatus(userId);
-          setIsFollowing(status);
-        } catch (error) {
-          console.error("Error checking follow status:", error);
-        }
-      };
+    const fetchFollowStatus = async () => {
+      try {
+        const res = await api.get(`/follow/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        });
+        setIsFollowed(res.data.isFollowing);
+      } catch (error) {
+        console.error("Error fetching follow status:", error);
+      } finally {
+        setCheckLoading(false);
+      }
+    };
 
-      checkStatus();
-    }
-  }, [userId, initialFollowState]);
+    fetchFollowStatus();
+  }, [userId]);
 
-  const handleFollowToggle = async () => {
-    setIsLoading(true);
-
+  const handleFollow = async () => {
     try {
-      if (isFollowing) {
-        await followService.unfollow(userId);
-        toast.success("Unfollowed successfully");
-      } else {
-        await followService.follow(userId);
-        toast.success("Following successfully");
-      }
-
-      setIsFollowing(!isFollowing);
-      if (onFollowChange) {
-        onFollowChange(!isFollowing);
-      }
+      setLoading(true);
+      await api.post(
+        "/follow",
+        { followingId: userId },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      setIsFollowed(true);
     } catch (error: any) {
-      console.error("Follow action failed:", error);
-      toast.error(error?.error || "An error occurred");
+      toast.error(error.error || "Failed");
+      console.error("Follow error:", error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  return (
-    <Button
-      variant={isFollowing ? "outline" : "default"}
-      className="mr-2 px-8"
-      onClick={handleFollowToggle}
-      disabled={isLoading}
-    >
-      {isLoading ? "Loading..." : isFollowing ? "Following" : "Follow"}
+  const handleUnfollow = async () => {
+    try {
+      setLoading(true);
+      await api.delete(`/unfollow/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      setIsFollowed(false);
+    } catch (error: any) {
+      toast.error(error.error || "Failed");
+      console.error("Unfollow error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (checkLoading) {
+    return <Skeleton className="w-28 h-10" />;
+  }
+
+  return isFollowed ? (
+    <Button variant={"outline"} disabled={loading} onClick={handleUnfollow}>
+      Unfollow
+    </Button>
+  ) : (
+    <Button disabled={loading} onClick={handleFollow}>
+      Follow
     </Button>
   );
 };

@@ -49,9 +49,14 @@ router.group("/users", (router) => {
 
 router.group("/", (router) => {
   router.post("/follow", authMiddleware, followController.follow);
-  router.post("/unfollow", authMiddleware, followController.unfollow);
+  router.delete(
+    "/unfollow/:followingId",
+    authMiddleware,
+    followController.unfollow
+  );
   router.get("/following", authMiddleware, followController.getFollowing);
   router.get("/followers", authMiddleware, followController.getFollowers);
+  router.get("/follow/:userId", authMiddleware, followController.checkFollow);
 });
 
 router.group("/summarize", (router) => {
