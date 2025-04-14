@@ -10,14 +10,16 @@ class UserController {
           name: username,
         },
         select: {
+          _count: {
+            select: {
+              followers: true, // Userni follow qilganlar soni
+              following: true, // User kimlarni follow qilgan
+            },
+          },
+          id: true,
+          createdAt: true,
           posts: {
             select: {
-              author: {
-                select: {
-                  id: true,
-                  createdAt: true,
-                },
-              },
               slug: true,
               coverImageLink: true,
               title: true,
@@ -45,7 +47,13 @@ class UserController {
         return res.status(404).json({ message: "User not found" });
       }
 
-      res.json(user.posts); // faqat postlar yuboriladi
+      res.json({
+        id: user.id,
+        createdAt: user.createdAt,
+        followers: user._count.followers,
+        following: user._count.following,
+        posts: user.posts,
+      }); // faqat postlar yuboriladi
     } catch (error) {
       next(error);
     }

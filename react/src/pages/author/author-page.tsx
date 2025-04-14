@@ -36,13 +36,28 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import LoadingPost from "@/components/shared/loading-post";
 import FollowButton from "@/components/shared/follow-button";
+import { useAuthStore } from "@/hooks/auth-store";
+
+interface ApiPost {
+  posts: Post[];
+  id: string;
+  createdAt: string;
+  followers: number;
+  following: number;
+}
 
 const AuthorPage = () => {
-  const [userId, setUserId] = useState<string>("");
+  const [user, setUser] = useState<{
+    id: string;
+    createdAt: string;
+    followers: number;
+    following: number;
+  } | null>(null);
   const { author } = useParams();
   const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
+  const { user: currentUser } = useAuthStore();
 
   useEffect(() => {
     fetchUserPosts();
@@ -51,14 +66,19 @@ const AuthorPage = () => {
   const fetchUserPosts = async () => {
     try {
       setLoading(true);
-      const res = await api.get<Post[]>(`/users/${author}`);
+      const res = await api.get<ApiPost>(`/users/${author}`);
 
       if (!res.data) {
         throw new Error("User not found");
       }
 
-      setUserId(res.data[0].author.id);
-      setUserPosts(res.data);
+      setUser({
+        id: res.data.id,
+        createdAt: res.data.createdAt,
+        followers: res.data.followers,
+        following: res.data.following,
+      });
+      setUserPosts(res.data.posts);
     } catch (error) {
       console.error(error);
     } finally {
@@ -85,11 +105,8 @@ const AuthorPage = () => {
             <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
               <span>
-                {userPosts[0]?.author?.createdAt ? (
-                  format(
-                    new Date(userPosts[0].author?.createdAt),
-                    "MMM dd, yyyy"
-                  )
+                {user ? (
+                  format(new Date(user.createdAt), "MMM dd, yyyy")
                 ) : (
                   <Skeleton className="h-4 w-16" />
                 )}
@@ -116,7 +133,9 @@ const AuthorPage = () => {
             </div>
           </CardHeader>
           <CardFooter className="flex justify-center pb-6">
-            <FollowButton userId={userId} />
+            {user?.id && currentUser?.id !== user?.id && (
+              <FollowButton userId={user?.id} />
+            )}
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon">
@@ -182,7 +201,15 @@ const AuthorPage = () => {
                       <Users className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="font-medium">2 members</p>
+                      <p className="font-medium">{user?.followers} members</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                      <Users className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="font-medium">{user?.following} following</p>
                     </div>
                   </div>
                 </div>
