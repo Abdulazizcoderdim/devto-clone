@@ -59,8 +59,6 @@ const formats = [
   "indent",
   "color",
   "background",
-  "script", // ✅ Enables subscript & superscript
-  "formula", // ✅ Enables math equations
 ];
 
 interface Props {

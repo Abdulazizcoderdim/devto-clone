@@ -12,6 +12,15 @@
   overflow-wrap: break-word;
 }
 
+.ql-editor {
+  font-size: 18px; /* yoki 20px, 22px va h.k. */
+  line-height: 1.6;
+}
+.ql-formats button {
+  width: 30px !important;
+  height: 30px !important;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
