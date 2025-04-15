@@ -17,15 +17,13 @@ const modules = {
     container: [
       [{ header: [1, 2, 3, false] }],
       ["bold", "italic", "underline", "strike"],
-      [{ script: "sub" }, { script: "super" }],
+      // [{ script: "sub" }, { script: "super" }],
       [{ list: "ordered" }, { list: "bullet" }],
       ["blockquote", "code-block"],
-      ["link", "image", "video"],
+      ["image", "video"],
       [{ align: [] }],
       [{ indent: "-1" }, { indent: "+1" }],
       [{ color: [] }, { background: [] }],
-      ["formula"],
-      ["clean"],
     ],
     handlers: {
       image: function () {
@@ -52,7 +50,7 @@ const formats = [
   "code-block",
   "list",
   "bullet",
-  "link",
+  // "link",
   "image",
   "video",
   "align",
