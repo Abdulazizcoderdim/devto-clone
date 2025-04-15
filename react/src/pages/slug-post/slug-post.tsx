@@ -4,29 +4,42 @@ import ReadPost from "./read-post";
 import PostAuthor from "./post-author";
 import { useEffect, useState } from "react";
 import { Post } from "@/types";
-import api from "@/http/axios";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 
 const SlugPost = () => {
   const [post, setPost] = useState<Post | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const { slug } = useParams<{ slug: string }>();
 
-  useEffect(() => {
-    fetchPost();
-  }, [slug]);
+  const { data, isLoading, error } = useSWR(`/posts/${slug}`, fetcher);
 
-  const fetchPost = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get(`/posts/${slug}`);
-      setPost(res.data);
-    } catch (error) {
-      console.error("Failed to fetch post", error);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    if (data) {
+      setPost(data);
     }
-  };
+  }, [data]);
+
+  if (error) {
+    console.error("Failed to fetch post", error);
+    return <div className="pt-20 text-center">Failed to fetch post</div>;
+  }
+
+  // useEffect(() => {
+  //   fetchPost();
+  // }, [slug]);
+
+  // const fetchPost = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const res = await api.get(`/posts/${slug}`);
+  //     setPost(res.data);
+  //   } catch (error) {
+  //     console.error("Failed to fetch post", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="pt-16 min-h-screen container mx-auto px-4">
@@ -36,11 +49,11 @@ const SlugPost = () => {
             <LikesPost postId={post?.id || ""} />
           </div>
           <div className="flex gap-5 w-full md:ml-24 max-md:mb-24 max-w-[870px] break-words">
-            <ReadPost post={post} setPost={setPost} loading={loading} />
+            <ReadPost post={post} setPost={setPost} loading={isLoading} />
           </div>
         </div>
 
-        <PostAuthor loading={loading} post={post} />
+        <PostAuthor loading={isLoading} post={post} />
       </div>
     </div>
   );

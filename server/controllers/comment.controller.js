@@ -166,6 +166,30 @@ class CommentController {
       next(error);
     }
   }
+
+  async getActiveDiscussions(req, res, next) {
+    try {
+      const activeDiscussion = await prisma.post.findMany({
+        orderBy: {
+          comments: {
+            _count: "desc",
+          },
+        },
+        take: 5,
+        include: {
+          _count: {
+            select: {
+              comments: true,
+            },
+          },
+        },
+      });
+
+      return res.status(200).json(activeDiscussion);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new CommentController();

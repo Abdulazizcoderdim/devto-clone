@@ -30,13 +30,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
-import api from "@/http/axios";
 import { Post } from "@/types";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import LoadingPost from "@/components/shared/loading-post";
 import FollowButton from "@/components/shared/follow-button";
 import { useAuthStore } from "@/hooks/auth-store";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 
 interface ApiPost {
   posts: Post[];
@@ -53,16 +54,16 @@ interface ApiPost {
 }
 
 const AuthorPage = () => {
-  const [user, setUser] = useState<{
-    id: string;
-    createdAt: string;
-    followers: number;
-    following: number;
-  } | null>(null);
+  // const [user, setUser] = useState<{
+  //   id: string;
+  //   createdAt: string;
+  //   followers: number;
+  //   following: number;
+  // } | null>(null);
   const { author } = useParams();
   const navigate = useNavigate();
-  const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [userPosts, setUserPosts] = useState<Post[]>([]);
+  // const [loading, setLoading] = useState(false);
   const { user: currentUser } = useAuthStore();
   const [pagination, setPagination] = useState({
     number: 1,
@@ -71,35 +72,63 @@ const AuthorPage = () => {
     totalPages: 0,
   });
 
+  // useEffect(() => {
+  //   fetchUserPosts();
+  // }, [pagination.number]);
+
+  // const fetchUserPosts = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await api.get<ApiPost>(
+  //       `/users/${author}?page=${pagination?.number}&size=${pagination?.size}`
+  //     );
+
+  //     if (!res.data) {
+  //       throw new Error("User not found");
+  //     }
+
+  //     setUser({
+  //       id: res.data.id,
+  //       createdAt: res.data.createdAt,
+  //       followers: res.data.followers,
+  //       following: res.data.following,
+  //     });
+  //     setPagination(res.data.page);
+  //     setUserPosts(res.data.posts);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const { data, isLoading, error } = useSWR(
+    author
+      ? `/users/${author}?page=${pagination.number}&size=${pagination.size}`
+      : null,
+    fetcher
+  );
+
   useEffect(() => {
-    fetchUserPosts();
-  }, [pagination.number]);
-
-  const fetchUserPosts = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get<ApiPost>(
-        `/users/${author}?page=${pagination?.number}&size=${pagination?.size}`
-      );
-
-      if (!res.data) {
-        throw new Error("User not found");
-      }
-
-      setUser({
-        id: res.data.id,
-        createdAt: res.data.createdAt,
-        followers: res.data.followers,
-        following: res.data.following,
-      });
-      setPagination(res.data.page);
-      setUserPosts(res.data.posts);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (data) {
+      setPagination(data.page);
     }
-  };
+  }, [data]);
+
+  const user = data
+    ? {
+        id: data.id,
+        createdAt: data.createdAt,
+        followers: data.followers,
+        following: data.following,
+      }
+    : null;
+
+  const posts: Post[] = data ? data.posts : [];
+
+  if (error) {
+    console.error("Xatolik:", error);
+  }
 
   return (
     <div className="flex min-h-screen pt-14 flex-col bg-gray-50 dark:bg-gray-900">
@@ -207,7 +236,7 @@ const AuthorPage = () => {
                     </div>
                     <div>
                       <p className="font-medium">
-                        {userPosts.length} posts published
+                        {posts.length} posts published
                       </p>
                     </div>
                   </div>
@@ -234,12 +263,12 @@ const AuthorPage = () => {
 
           {/* Main content - posts */}
           <div className="space-y-6 md:col-span-2">
-            {loading ? (
+            {isLoading ? (
               <LoadingPost />
-            ) : userPosts.length === 0 ? (
+            ) : posts.length === 0 ? (
               <p className="text-muted-foreground text-center">No posts</p>
             ) : (
-              userPosts.map((post, i) => {
+              posts.map((post, i) => {
                 const wordCount = post?.content?.split(/\s+/).length;
                 const readingTime = `${Math.ceil(wordCount / 200)} min`;
 
@@ -350,9 +379,7 @@ const AuthorPage = () => {
               })
             )}
 
-            <Button className="cursor-pointer">
-              Ko'roq ko'rish
-            </Button>
+            {/* <Button className="cursor-pointer">Ko'roq ko'rish</Button> */}
           </div>
         </div>
       </div>

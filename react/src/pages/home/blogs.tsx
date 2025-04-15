@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import api from "@/http/axios";
 import { Comment, Post, PostTag } from "@/types";
 import QuickCreatePost from "./quick-create-post";
 import { ItemBlog } from "./item-blog";
 import LoadingPost from "@/components/shared/loading-post";
+import useSWR from "swr";
+import { fetcher } from "@/lib/fetcher";
 
 const Blogs = () => {
   const [pagination, setPagination] = useState({
@@ -12,34 +13,51 @@ const Blogs = () => {
     totalElements: 0,
     totalPages: 0,
   });
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [posts, setPosts] = useState<Post[]>([]);
+  // const [loading, setLoading] = useState(true);
+
+  // useEffect(() => {
+  //   fetchPosts();
+  // }, [pagination.number]);
+
+  // const fetchPosts = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const token = localStorage.getItem("accessToken");
+  //     const res = await api.get(
+  //       `/posts?page=${pagination.number}&size=${pagination.size}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     setPosts(res.data.content);
+  //     setPagination(res.data.page);
+  //   } catch (error) {
+  //     console.error("Failed to fetch posts", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const { data, error, isLoading } = useSWR(
+    `/posts?page=${pagination.number}&size=${pagination.size}`,
+    fetcher
+  );
+
+  const posts: Post[] = data?.content || [];
 
   useEffect(() => {
-    fetchPosts();
-  }, [pagination.number]);
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const token = localStorage.getItem("accessToken");
-      const res = await api.get(
-        `/posts?page=${pagination.number}&size=${pagination.size}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setPosts(res.data.content);
-      setPagination(res.data.page);
-    } catch (error) {
-      console.error("Failed to fetch posts", error);
-    } finally {
-      setLoading(false);
+    if (data) {
+      setPagination(data.page);
     }
-  };
+  }, [data]);
+
+  if (error) {
+    console.error("Failed to fetch posts", error);
+  }
 
   const formatPostForDisplay = (post: Post) => {
     const wordCount = post.content.split(/\s+/).length;
@@ -73,19 +91,11 @@ const Blogs = () => {
     };
   };
 
-  // if (loading && posts.length === 0) {
-  //   return (
-  //     <div className="flex justify-center items-center min-h-screen">
-  //       <Loader2 className="animate-spin" size={24} />
-  //     </div>
-  //   );
-  // }
-
   return (
     <>
       <div className="flex flex-col gap-3">
         <QuickCreatePost />
-        {loading && posts.length === 0 ? (
+        {isLoading && posts.length === 0 ? (
           <LoadingPost />
         ) : (
           posts.map((post) => {
@@ -94,7 +104,7 @@ const Blogs = () => {
         )}
       </div>
 
-      {posts.length === 0 && !loading && (
+      {posts.length === 0 && !isLoading && (
         <div className="text-center py-12">
           <p className="text-lg text-muted-foreground">
             Hozircha postlar mavjud emas

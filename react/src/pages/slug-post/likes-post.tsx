@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import useSWR from "swr";
 import {
   ThumbsUp,
   Heart,
@@ -8,7 +9,6 @@ import {
   Save,
   MessageCircleMore,
   MoreHorizontal,
-  Loader2,
 } from "lucide-react";
 import {
   Popover,
@@ -28,57 +28,43 @@ const ReactionIcons = [
   { icon: <Angry className="h-5 w-5" />, emoji: "angry" },
 ];
 
-const LikesPost = ({ postId }: { postId: string }) => {
-  const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [reactionCounts, setReactionCounts] = useState({
-    total: 0,
-    comments: 0,
-    saves: 0,
+// SWR fetcher
+const fetchReactions = async (postId: string) => {
+  const response = await api.get(`/reactions/${postId}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+    },
   });
+  return response.data;
+};
+
+const LikesPost = ({ postId }: { postId: string }) => {
+  const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
-  // Post reaksiyalarni yuklash
-  const fetchReactions = async () => {
-    try {
-      const response = await api.get(`/reactions/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-        },
-      });
+  const {
+    data,
+    isLoading,
+    mutate, // SWR mutatsiya qilish uchun
+  } = useSWR(postId ? [`/reactions/${postId}`, postId] : null, () =>
+    fetchReactions(postId)
+  );
 
-      setReactionCounts({
-        total: response.data.totalReactions || 0,
-        comments: response.data.commentCount || 0,
-        saves: response.data.saveCount || 0,
-      });
+  const selectedReaction = data?.userReaction?.type || null;
+  const totalReactions = data?.totalReactions || 0;
+  const commentCount = data?.commentCount || 0;
+  const saveCount = data?.saveCount || 0;
 
-      // Agar foydalanuvchi reaksiya qo'ygan bo'lsa, uni ko'rsatish
-      if (response.data.userReaction) {
-        setSelectedReaction(response.data.userReaction.type);
-      } else {
-        setSelectedReaction(null);
-      }
-    } catch (error) {
-      console.error("Reaksiyalarni yuklashda xatolik:", error);
-    }
-  };
-
-  // Komponentni ilk yuklashda reaksiyalarni olish
-  useEffect(() => {
-    fetchReactions();
-  }, [postId]);
-
-  // Reaksiyani tanlash va serverga yuborish
+  // Reaksiya yuborish
   const handleReactionSelect = async (reaction: string) => {
     setLoading(true);
     setPopoverOpen(false);
 
     try {
-      const response = await api.post(
+      await api.post(
         "/reactions",
         {
-          postId: postId,
+          postId,
           type: reaction,
         },
         {
@@ -88,28 +74,19 @@ const LikesPost = ({ postId }: { postId: string }) => {
         }
       );
 
-      // Agar reaksiya o'chirilgan bo'lsa
-      if (response.data.action === "removed" && selectedReaction === reaction) {
-        setSelectedReaction(null);
-      } else {
-        setSelectedReaction(reaction);
-      }
-
-      // Reaksiyalar sonini yangilash
-      fetchReactions();
-      setLoading(false);
+      // Ma'lumotni yangilash
+      await mutate(); // serverdan yangi malumot olib keladi
     } catch (error) {
       console.error("Reaction yuborishda xatolik:", error);
+    } finally {
       setLoading(false);
     }
   };
 
-  // Reaksiya tugmasining ko'rinishi
   const getReactionButtonIcon = () => {
     if (selectedReaction) {
       const selected = ReactionIcons.find((r) => r.emoji === selectedReaction);
       if (selected) {
-        // Tanlangan reaksiya ikonkasi va rangi
         return <div className="text-blue-500">{selected.icon}</div>;
       }
     }
@@ -147,11 +124,11 @@ const LikesPost = ({ postId }: { postId: string }) => {
               </div>
             </PopoverContent>
           </Popover>
-          {loading ? (
+          {isLoading || loading ? (
             <Skeleton className="h-4 w-6" />
           ) : (
             <span className="text-xs text-muted-foreground">
-              {reactionCounts.total}
+              {totalReactions}
             </span>
           )}
         </div>
@@ -161,9 +138,7 @@ const LikesPost = ({ postId }: { postId: string }) => {
           <Button variant="ghost" size="icon">
             <MessageCircleMore size={24} />
           </Button>
-          <span className="text-xs text-muted-foreground">
-            {reactionCounts.comments}
-          </span>
+          <span className="text-xs text-muted-foreground">{commentCount}</span>
         </div>
 
         {/* Saqlash */}
@@ -171,9 +146,7 @@ const LikesPost = ({ postId }: { postId: string }) => {
           <Button variant="ghost" size="icon">
             <Save size={24} />
           </Button>
-          <span className="text-xs text-muted-foreground">
-            {reactionCounts.saves}
-          </span>
+          <span className="text-xs text-muted-foreground">{saveCount}</span>
         </div>
 
         {/* Qo'shimcha opsiyalar */}

@@ -203,6 +203,7 @@ class PostController {
           slug,
         },
         include: {
+          reaction: true,
           author: {
             select: {
               createdAt: true,

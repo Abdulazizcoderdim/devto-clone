@@ -41,6 +41,7 @@ router.group("/comments", (router) => {
   router.post("/", authMiddleware, commentController.create);
   router.put("/:id", authMiddleware, commentController.update);
   router.delete("/:id", authMiddleware, commentController.delete);
+  router.get("/active-discussions", commentController.getActiveDiscussions);
 });
 
 router.group("/users", (router) => {
