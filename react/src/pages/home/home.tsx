@@ -16,7 +16,7 @@ export default function Home() {
         </div>
 
         {/* ThreePanel - md da yashiriladi */}
-        <div className="bg-green-100 max-lg:hidden w-full max-w-[340px] break-words">
+        <div className="max-lg:hidden w-full max-w-[340px] break-words">
           <ThreePanel />
         </div>
       </div>

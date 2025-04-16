@@ -12,7 +12,7 @@ const SlugPost = () => {
 
   const { slug } = useParams<{ slug: string }>();
 
-  const { data, isLoading, error } = useSWR(`/posts/${slug}`, fetcher);
+  const { data, isLoading, error, mutate } = useSWR(`/posts/${slug}`, fetcher);
 
   useEffect(() => {
     if (data) {
@@ -46,7 +46,7 @@ const SlugPost = () => {
       <div className="flex justify-between gap-4">
         <div className="flex gap-5 w-full">
           <div className="fixed md:h-screen max-md:z-50 max-md:bg-white max-md:shadow-[0px_0px_10px_0px_rgba(0,0,0,0.2)] max-md:bottom-0 max-md:left-0 max-md:right-0 md:max-w-24 w-full p-4">
-            <LikesPost postId={post?.id || ""} />
+            <LikesPost mutate={mutate} postId={post?.id || ""} />
           </div>
           <div className="flex gap-5 w-full md:ml-24 max-md:mb-24 max-w-[870px] break-words">
             <ReadPost post={post} setPost={setPost} loading={isLoading} />

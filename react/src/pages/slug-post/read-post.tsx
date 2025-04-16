@@ -28,14 +28,6 @@ const ReadPost = ({
     }
   };
 
-  const formattedReactionCounts = (reactionType: string) => {
-    if (post) {
-      return post.reaction.filter((reaction) => reaction.type === reactionType)
-        .length;
-    }
-    return 0;
-  };
-
   const reactionType = (reactionType: string) => {
     switch (reactionType) {
       case "like":

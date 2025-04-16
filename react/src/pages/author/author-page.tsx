@@ -39,19 +39,19 @@ import { useAuthStore } from "@/hooks/auth-store";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 
-interface ApiPost {
-  posts: Post[];
-  id: string;
-  createdAt: string;
-  followers: number;
-  following: number;
-  page: {
-    number: number;
-    size: number;
-    totalElements: number;
-    totalPages: number;
-  };
-}
+// interface ApiPost {
+//   posts: Post[];
+//   id: string;
+//   createdAt: string;
+//   followers: number;
+//   following: number;
+//   page: {
+//     number: number;
+//     size: number;
+//     totalElements: number;
+//     totalPages: number;
+//   };
+// }
 
 const AuthorPage = () => {
   // const [user, setUser] = useState<{
@@ -127,7 +127,7 @@ const AuthorPage = () => {
   const posts: Post[] = data ? data.posts : [];
 
   if (error) {
-    console.error("Xatolik:", error);
+    console.error(error);
   }
 
   return (

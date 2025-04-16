@@ -38,7 +38,13 @@ const fetchReactions = async (postId: string) => {
   return response.data;
 };
 
-const LikesPost = ({ postId }: { postId: string }) => {
+const LikesPost = ({
+  postId,
+  mutate: mutatePost,
+}: {
+  postId: string;
+  mutate: any;
+}) => {
   const [loading, setLoading] = useState(false);
   const [popoverOpen, setPopoverOpen] = useState(false);
 
@@ -76,6 +82,7 @@ const LikesPost = ({ postId }: { postId: string }) => {
 
       // Ma'lumotni yangilash
       await mutate(); // serverdan yangi malumot olib keladi
+      // await mutatePost();
     } catch (error) {
       console.error("Reaction yuborishda xatolik:", error);
     } finally {

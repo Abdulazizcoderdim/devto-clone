@@ -177,6 +177,11 @@ class CommentController {
         },
         take: 5,
         include: {
+          author: {
+            select: {
+              name: true,
+            },
+          },
           _count: {
             select: {
               comments: true,

@@ -35,6 +35,23 @@ export interface Post {
   _count: { comments: number; reaction: number };
 }
 
+export interface IDiscussion {
+  id: string;
+  title: string;
+  content: string;
+  coverImageLink: string | null;
+  summary: string | null;
+  slug: string;
+  authorId: string;
+  score: number;
+  createdAt: string;
+  updatedAt: string;
+  author: Author;
+  _count: {
+    comments: number;
+  };
+}
+
 export interface ReactionCounts {
   like: number;
   love: number;
