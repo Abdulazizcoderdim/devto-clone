@@ -1,7 +1,8 @@
+import FollowButton from "@/components/shared/follow-button";
 import LoadingPost from "@/components/shared/loading-post";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { Card, CardHeader } from "@/components/ui/card";
+import { useAuthStore } from "@/hooks/auth-store";
 import { Post } from "@/types";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ const PostAuthor = ({
   post: Post | null;
   loading: boolean;
 }) => {
+  const { user } = useAuthStore();
   const navigate = useNavigate();
 
   return loading || !post ? (
@@ -40,12 +42,10 @@ const PostAuthor = ({
               {post?.author.name}
             </h4>
           </div>
-          <Button className="w-full cursor-pointer" variant={"default"}>
-            Follow
-          </Button>
-          {/* <Button className="w-full cursor-pointer" variant={"outline"}>
-            Following
-          </Button> */}
+          {user?.id && user.id !== post?.authorId && (
+            <FollowButton userId={post?.authorId} />
+          )}
+
           <div className="flex flex-col">
             <strong className="text-xs text-muted-foreground">JOINED</strong>
             <p>{format(new Date(post?.author.createdAt), "MMM dd, yyyy")}</p>
