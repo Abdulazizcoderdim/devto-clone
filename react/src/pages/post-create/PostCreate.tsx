@@ -400,14 +400,14 @@ const PostCreate: React.FC = () => {
         >
           {isSubmitting ? "Publishing..." : "Publish Post"}
         </Button>
-        <Button
+        {/* <Button
           variant="outline"
           onClick={handleSaveDraft}
           disabled={isSubmitting}
           size="lg"
         >
           {isSubmitting ? "Saving..." : "Save as Draft"}
-        </Button>
+        </Button> */}
         <Button
           variant="ghost"
           className="ml-auto text-red-500 hover:text-red-600 hover:bg-red-50"
