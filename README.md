@@ -4,6 +4,7 @@ This project is a clone of the popular developer community platform **Dev.to**. 
 
 ## Features
 
+
 - User authentication and authorization (using NextAuth or similar solutions)
 - Post creation, editing, and deletion
 - Commenting system
