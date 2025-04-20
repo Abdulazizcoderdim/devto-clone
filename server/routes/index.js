@@ -4,6 +4,7 @@ const followController = require("../controllers/follow.controller");
 const postController = require("../controllers/post.controller");
 const reactionController = require("../controllers/reaction.controller");
 const sumController = require("../controllers/sum.controller");
+const tagController = require("../controllers/tag.controller");
 const userController = require("../controllers/user.controller");
 const authMiddleware = require("../middlewares/auth.middleware");
 
@@ -28,6 +29,7 @@ router.group("/posts", (router) => {
   router.delete("/:id", authMiddleware, postController.delete);
   router.post("/like", authMiddleware, postController.like);
   router.get("/tags/filter", authMiddleware, postController.filterByTag);
+  router.get("/tags/:tagName", postController.getPostsByTagName);
   router.post("/:id/summarize", authMiddleware, postController.summarize);
 });
 
@@ -42,6 +44,10 @@ router.group("/comments", (router) => {
   router.put("/:id", authMiddleware, commentController.update);
   router.delete("/:id", authMiddleware, commentController.delete);
   router.get("/active-discussions", commentController.getActiveDiscussions);
+});
+
+router.group("/tags", (router) => {
+  router.get("/:id", tagController.getById);
 });
 
 router.group("/users", (router) => {

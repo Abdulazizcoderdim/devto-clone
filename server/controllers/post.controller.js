@@ -373,6 +373,81 @@ class PostController {
       next(error);
     }
   }
+
+  async getPostsByTagName(req, res, next) {
+    try {
+      const { tagName } = req.params;
+      const { page = 1, size = 10 } = req.query;
+
+      const pageNumber = parseInt(page);
+      const pageSize = parseInt(size);
+      const skip = (pageNumber - 1) * pageSize;
+
+      const posts = await prisma.post.findMany({
+        where: {
+          tags: {
+            some: {
+              tag: {
+                name: tagName,
+              },
+            },
+          },
+        },
+        skip,
+        take: pageSize,
+        select: {
+          id: true,
+          coverImageLink: true,
+          title: true,
+          slug: true,
+          createdAt: true,
+        },
+        include: {
+          _count: {
+            select: {
+              comments: true,
+              reaction: true,
+            },
+          },
+          author: {
+            select: {
+              name: true,
+            },
+          },
+          tags: {
+            include: {
+              tag: true,
+            },
+          },
+        },
+      });
+
+      const totalElements = await prisma.post.count({
+        where: {
+          tags: {
+            some: {
+              tag: {
+                name: tagName,
+              },
+            },
+          },
+        },
+      });
+      const totalPages = Math.ceil(totalElements / pageSize);
+
+      return res.status(200).json({
+        content: posts,
+        page: {
+          number: pageNumber,
+          size: pageSize,
+          totalElements,
+          totalPages,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new PostController();
