@@ -381,7 +381,7 @@ class PostController {
 
       const pageNumber = parseInt(page);
       const pageSize = parseInt(size);
-      const skip = (pageNumber - 1) * pageSize;
+      const skip = parseInt((pageNumber - 1) * pageSize);
 
       const posts = await prisma.post.findMany({
         where: {
@@ -394,32 +394,57 @@ class PostController {
           },
         },
         skip,
+        orderBy: {
+          score: "desc",
+        },
         take: pageSize,
         select: {
-          id: true,
-          coverImageLink: true,
-          title: true,
-          slug: true,
+          content: true,
+          author: {
+            select: {
+              name: true,
+            },
+          },
           createdAt: true,
-        },
-        include: {
+          coverImageLink: true,
+          id: true,
+          score: true,
+          slug: true,
+          tags: {
+            select: {
+              tag: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
+          title: true,
           _count: {
             select: {
               comments: true,
               reaction: true,
             },
           },
-          author: {
-            select: {
-              name: true,
-            },
-          },
-          tags: {
-            include: {
-              tag: true,
-            },
-          },
         },
+        // include: {
+        //   author: {
+        //     select: {
+        //       name: true,
+        //     },
+        //   },
+        //   _count: {
+        //     select: {
+        //       comments: true,
+        //       reaction: true,
+        //     },
+        //   },
+        //   tags: {
+        //     include: {
+        //       tag: true,
+        //     },
+        //   },
+        // },
       });
 
       const totalElements = await prisma.post.count({
@@ -433,6 +458,7 @@ class PostController {
           },
         },
       });
+
       const totalPages = Math.ceil(totalElements / pageSize);
 
       return res.status(200).json({

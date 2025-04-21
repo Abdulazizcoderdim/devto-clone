@@ -109,13 +109,13 @@ export function ItemBlog({
         </Link>
 
         <div className="flex flex-wrap gap-2 mb-4 mt-2">
-          {tags.map((tag) => (
+          {tags.map((tag, i) => (
             <Badge
-              key={tag}
+              key={i}
               variant="outline"
               className="text-sm hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
             >
-              <Link to={`/blog/tag/${formatTag(tag)}`} className="text-sm">
+              <Link to={`/t/${tag}`} className="text-sm">
                 #{tag}
               </Link>
             </Badge>

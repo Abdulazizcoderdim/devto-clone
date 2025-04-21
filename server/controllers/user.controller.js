@@ -27,12 +27,14 @@ class UserController {
             skip,
             take: pageSize,
             select: {
+              content: true,
               slug: true,
               coverImageLink: true,
               title: true,
               createdAt: true,
               _count: {
                 select: {
+                  reaction: true,
                   comments: true,
                 },
               },

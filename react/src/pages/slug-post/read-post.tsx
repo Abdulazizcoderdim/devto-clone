@@ -6,7 +6,7 @@ import { Comment, Post } from "@/types";
 import { formatDistanceToNow } from "date-fns";
 import { MessageSquare } from "lucide-react";
 import CommentForm from "./comment-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ReadPost = ({
   post,
@@ -115,9 +115,15 @@ const ReadPost = ({
         <div>
           <h1 className="text-3xl font-bold tracking-tight">{post.title}</h1>
           <div className="flex gap-2 mt-4">
-            {post.tags.map(({ tag }) => (
-              <Badge key={tag.id} variant="secondary">
-                {tag.name}
+            {post.tags.map(({ tag }, i) => (
+              <Badge
+                key={i}
+                variant="outline"
+                className="text-sm hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
+              >
+                <Link to={`/t/${tag.name}`} className="text-sm">
+                  #{tag.name}
+                </Link>
               </Badge>
             ))}
           </div>

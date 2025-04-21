@@ -38,6 +38,7 @@ import FollowButton from "@/components/shared/follow-button";
 import { useAuthStore } from "@/hooks/auth-store";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
+import { readingTime } from "@/lib/reading-time";
 
 // interface ApiPost {
 //   posts: Post[];
@@ -269,9 +270,6 @@ const AuthorPage = () => {
               <p className="text-muted-foreground text-center">No posts</p>
             ) : (
               posts.map((post, i) => {
-                const wordCount = post?.content?.split(/\s+/).length;
-                const readingTime = `${Math.ceil(wordCount / 200)} min`;
-
                 return (
                   <Card key={i}>
                     <CardContent className="px-6">
@@ -327,10 +325,7 @@ const AuthorPage = () => {
                             variant="outline"
                             className="text-sm hover:bg-accent hover:text-accent-foreground transition-colors duration-200"
                           >
-                            <Link
-                              to={`/blog/tag/${tag.tag.name}`}
-                              className="text-sm"
-                            >
+                            <Link to={`/t/${tag.tag.name}`} className="text-sm">
                               #{tag.tag.name}
                             </Link>
                           </Badge>
@@ -345,7 +340,9 @@ const AuthorPage = () => {
                             className="flex items-center gap-2"
                           >
                             <Heart className="h-5 w-5 text-red-500" />
-                            <span className="text-sm">{2} Reactions</span>
+                            <span className="text-sm">
+                              {post._count.reaction} Reactions
+                            </span>
                           </Button>
                           <Button
                             onClick={() =>
@@ -356,13 +353,15 @@ const AuthorPage = () => {
                           >
                             <MessageCircle className="h-5 w-5" />
                             <span className="text-sm">
-                              {post._count.comments} Comments
+                              {post._count.comments == 0
+                                ? "Add comment"
+                                : post._count.comments + " Comments"}
                             </span>
                           </Button>
                         </div>
                         <div className="flex items-center gap-4">
                           <span className="text-sm text-muted-foreground">
-                            {readingTime} read
+                            {readingTime(post)} read
                           </span>
                           <Button
                             variant="ghost"

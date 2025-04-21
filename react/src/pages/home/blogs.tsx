@@ -95,13 +95,15 @@ const Blogs = () => {
     <>
       <div className="flex flex-col gap-3">
         <QuickCreatePost />
-        {isLoading && posts.length === 0 ? (
-          <LoadingPost />
-        ) : (
-          posts.map((post) => {
-            return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
-          })
-        )}
+        {isLoading && posts.length === 0
+          ? Array.from({ length: 10 }).map((_, i) => (
+              <div key={i}>
+                <LoadingPost />
+              </div>
+            ))
+          : posts.map((post) => {
+              return <ItemBlog key={post.id} {...formatPostForDisplay(post)} />;
+            })}
       </div>
 
       {posts.length === 0 && !isLoading && (
