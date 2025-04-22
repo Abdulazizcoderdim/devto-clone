@@ -427,24 +427,6 @@ class PostController {
             },
           },
         },
-        // include: {
-        //   author: {
-        //     select: {
-        //       name: true,
-        //     },
-        //   },
-        //   _count: {
-        //     select: {
-        //       comments: true,
-        //       reaction: true,
-        //     },
-        //   },
-        //   tags: {
-        //     include: {
-        //       tag: true,
-        //     },
-        //   },
-        // },
       });
 
       const totalElements = await prisma.post.count({
@@ -456,6 +438,96 @@ class PostController {
               },
             },
           },
+        },
+      });
+
+      const totalPages = Math.ceil(totalElements / pageSize);
+
+      return res.status(200).json({
+        content: posts,
+        page: {
+          number: pageNumber,
+          size: pageSize,
+          totalElements,
+          totalPages,
+        },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async getFollowingPosts(req, res, next) {
+    try {
+      const userId = req.user?.id;
+      console.log(userId);
+
+      const { page = 1, size = 10 } = req.query;
+
+      const pageNumber = parseInt(page);
+      const pageSize = parseInt(size);
+      const skip = parseInt((pageNumber - 1) * pageSize);
+
+      if (!userId) {
+        return next(BaseError.BadRequest("Unauthorized"));
+      }
+
+      const following = await prisma.userFollow.findMany({
+        where: { followerId: userId },
+        select: { followingId: true },
+      });
+
+      const followingIds = following.map((f) => f.followingId);
+
+      if (followingIds.length === 0) {
+        return res.status(200).json({
+          content: [],
+          page: {
+            number: pageNumber,
+            size: pageSize,
+            totalElements: 0,
+            totalPages: 0,
+          },
+        });
+      }
+
+      const posts = await prisma.post.findMany({
+        where: {
+          authorId: { in: followingIds },
+        },
+        skip,
+        take: pageSize,
+        orderBy: {
+          score: "desc",
+        },
+        include: {
+          author: { select: { name: true } },
+          tags: {
+            select: {
+              tag: { select: { name: true } },
+            },
+          },
+          comments: {
+            orderBy: {
+              createdAt: "desc",
+            },
+            take: 3,
+            include: {
+              user: { select: { name: true } },
+            },
+          },
+          _count: {
+            select: {
+              comments: true,
+              reaction: true,
+            },
+          },
+        },
+      });
+
+      const totalElements = await prisma.post.count({
+        where: {
+          authorId: { in: followingIds },
         },
       });
 

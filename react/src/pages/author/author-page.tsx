@@ -55,16 +55,8 @@ import { readingTime } from "@/lib/reading-time";
 // }
 
 const AuthorPage = () => {
-  // const [user, setUser] = useState<{
-  //   id: string;
-  //   createdAt: string;
-  //   followers: number;
-  //   following: number;
-  // } | null>(null);
   const { author } = useParams();
   const navigate = useNavigate();
-  // const [userPosts, setUserPosts] = useState<Post[]>([]);
-  // const [loading, setLoading] = useState(false);
   const { user: currentUser } = useAuthStore();
   const [pagination, setPagination] = useState({
     number: 1,
@@ -72,36 +64,6 @@ const AuthorPage = () => {
     totalElements: 0,
     totalPages: 0,
   });
-
-  // useEffect(() => {
-  //   fetchUserPosts();
-  // }, [pagination.number]);
-
-  // const fetchUserPosts = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const res = await api.get<ApiPost>(
-  //       `/users/${author}?page=${pagination?.number}&size=${pagination?.size}`
-  //     );
-
-  //     if (!res.data) {
-  //       throw new Error("User not found");
-  //     }
-
-  //     setUser({
-  //       id: res.data.id,
-  //       createdAt: res.data.createdAt,
-  //       followers: res.data.followers,
-  //       following: res.data.following,
-  //     });
-  //     setPagination(res.data.page);
-  //     setUserPosts(res.data.posts);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const { data, isLoading, error } = useSWR(
     author

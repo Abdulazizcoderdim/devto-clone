@@ -31,6 +31,7 @@ router.group("/posts", (router) => {
   router.get("/tags/filter", authMiddleware, postController.filterByTag);
   router.get("/tags/:tagName", postController.getPostsByTagName);
   router.post("/:id/summarize", authMiddleware, postController.summarize);
+  router.get("/following", authMiddleware, postController.getFollowingPosts);
 });
 
 router.group("/reactions", (router) => {
