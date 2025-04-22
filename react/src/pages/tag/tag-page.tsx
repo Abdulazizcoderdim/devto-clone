@@ -166,9 +166,11 @@ const TagPage = () => {
             </div>
           )}
         </div>
-        <div className="w-full max-w-sm">
-          <ThreePanel />
-        </div>
+        {data?.content?.length !== 0 && (
+          <div className="w-full max-w-sm">
+            <ThreePanel />
+          </div>
+        )}
       </div>
     </div>
   );

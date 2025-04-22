@@ -1,14 +1,6 @@
 import { Button } from "@/components/ui/button";
-import {
-  Ellipsis,
-  Facebook,
-  Instagram,
-  TableCellsMerge,
-  Twitter,
-} from "lucide-react";
+import { Ellipsis } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Link } from "react-router-dom";
-import UserSelectedTopics from "./user-selected-topic";
 import PopularTags from "./popular-tags";
 
 const FirstPanel = () => {
@@ -27,10 +19,10 @@ const FirstPanel = () => {
       </Card>
 
       {/* user selected topics  */}
-      <UserSelectedTopics />
+      {/* <UserSelectedTopics /> */}
 
       {/* socials */}
-      <div className="flex items-center my-4 gap-2">
+      {/* <div className="flex items-center my-4 gap-2">
         <Link
           to={"#"}
           className="p-2 hover:bg-blue-200 hover:text-blue-700 rounded-md"
@@ -55,7 +47,7 @@ const FirstPanel = () => {
         >
           <Facebook size={25} />
         </Link>
-      </div>
+      </div> */}
 
       {/* popular tags */}
       <PopularTags />
