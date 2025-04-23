@@ -22,6 +22,7 @@ This project is a clone of the popular developer community platform **Dev.to**. 
 
 ## Installation
 
+
 To set up the project locally, follow these steps:
 
 1. Clone the repository:
