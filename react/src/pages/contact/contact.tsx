@@ -32,10 +32,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 type FormSchema = z.infer<typeof contactFormSchema>;
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(false);
   const form = useForm<FormSchema>({
     resolver: zodResolver(contactFormSchema),
     defaultValues: {
@@ -48,11 +52,71 @@ export default function ContactPage() {
     },
   });
 
-  const onSubmit = (data: FormSchema) => {
-    console.log(data);
+  const onSubmit = async (data: FormSchema) => {
+    try {
+      setLoading(true);
+      const message = formatMessage(data);
+      await sendMessageToTelegram(message);
+      toast.success("Xabaring muvafaqiyatli yuborildi");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+      form.reset();
+    }
+  };
 
-    // bu yerda API chaqiruv qilsa bo'ladi, masalan:
-    // fetch('/api/contact', { method: 'POST', body: JSON.stringify(data) })
+  const formatMessage = (values: FormSchema) => {
+    return `
+📩 Yangi xabar!
+
+👤 Ism: ${values.firstName}
+👥 Familiya: ${values.lastName}
+📧 Email: ${values.email}
+🏷️ Mavzu: ${formatSubject(values.subject)}
+📝 Xabar: 
+${values.message}
+
+${
+  values.newsletter
+    ? "✅ Yangiliklarga obuna bo'lish istagi bor."
+    : "❌ Yangiliklarga obuna bo'lish istagi yo'q."
+}
+  `;
+  };
+
+  const formatSubject = (subject: FormSchema["subject"]) => {
+    switch (subject) {
+      case "general":
+        return "Umumiy so'rov";
+      case "support":
+        return "Texnik yordam";
+      case "feedback":
+        return "Fikr-mulohaza";
+      case "partnership":
+        return "Hamkorlik";
+      case "other":
+        return "Boshqa";
+      default:
+        return subject;
+    }
+  };
+
+  const sendMessageToTelegram = async (message: string) => {
+    try {
+      const TELEGRAM_BOT_TOKEN = import.meta.env.VITE_PUBLIC_TELEGRAM_BOT_TOKEN;
+      const TELEGRAM_CHAT_ID = import.meta.env.VITE_PUBLIC_CHAT_ID;
+
+      const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+      await axios.post(url, {
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+        parse_mode: "HTML",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -313,9 +377,19 @@ export default function ContactPage() {
                     )}
                   />
 
-                  <Button type="submit" className="w-full">
-                    Xabarni yuborish
-                  </Button>
+                  {loading ? (
+                    <Button
+                      type="submit"
+                      disabled
+                      className="w-full animate-pulse text-muted-foreground cursor-not-allowed"
+                    >
+                      Loading
+                    </Button>
+                  ) : (
+                    <Button type="submit" className="w-full">
+                      Xabarni yuborish
+                    </Button>
+                  )}
                 </form>
               </Form>
             </CardContent>
