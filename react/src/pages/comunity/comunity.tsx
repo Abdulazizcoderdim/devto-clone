@@ -34,27 +34,27 @@ export default function CommunityPage() {
   return (
     <div className="container max-w-6xl pb-10 pt-16 px-4 mx-auto">
       <div className="space-y-8">
-        {/* Hero Section */}
+        {/* Asosiy Qism */}
         <div className="relative rounded-xl overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary to-primary/60 mix-blend-multiply" />
           <div className="relative z-10 px-6 py-16 md:py-24 md:px-10 flex flex-col items-center text-center">
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-white mb-4">
-              Join Our Developer Community
+              Dasturchilar Hamjamiyatiga Qo'shiling
             </h1>
             <p className="text-lg text-white/90 max-w-2xl mb-6">
-              Connect with fellow developers, share knowledge, participate in
-              discussions, and grow together in a supportive environment.
+              Hamkasblaringiz bilan bog'laning, bilim almashing, muhokamalarda
+              qatnashing va qo'llab-quvvatlovchi muhitda birga rivojlanmiz.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button size="lg" variant="secondary">
-                Join Now
+                Hozir Ro'yxatdan O'ting
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="bg-white/10 text-white border-white/20 hover:bg-white/20"
               >
-                Explore Groups
+                Guruhlarni Ko'rish
               </Button>
             </div>
             <div className="flex items-center gap-1 mt-8">
@@ -63,27 +63,27 @@ export default function CommunityPage() {
                   <Avatar key={i} className="border-2 border-primary">
                     <AvatarImage
                       src={`/placeholder.svg?height=40&width=40&text=${i}`}
-                      alt="Community member"
+                      alt="Hamjamiyat a'zosi"
                     />
                     <AvatarFallback>U{i}</AvatarFallback>
                   </Avatar>
                 ))}
               </div>
               <span className="text-white/90 ml-4">
-                Join 25,000+ developers
+                25,000+ dasturchiga qo'shiling
               </span>
             </div>
           </div>
         </div>
 
-        {/* Stats Section */}
+        {/* Statistika */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="bg-muted/50">
             <CardContent className="pt-6">
               <div className="flex flex-col items-center text-center">
                 <Users className="h-8 w-8 text-primary mb-2" />
                 <span className="text-2xl font-bold">25K+</span>
-                <span className="text-sm text-muted-foreground">Members</span>
+                <span className="text-sm text-muted-foreground">A'zolar</span>
               </div>
             </CardContent>
           </Card>
@@ -93,7 +93,7 @@ export default function CommunityPage() {
                 <MessageSquare className="h-8 w-8 text-primary mb-2" />
                 <span className="text-2xl font-bold">150K+</span>
                 <span className="text-sm text-muted-foreground">
-                  Discussions
+                  Muhokamalar
                 </span>
               </div>
             </CardContent>
@@ -103,7 +103,7 @@ export default function CommunityPage() {
               <div className="flex flex-col items-center text-center">
                 <Tag className="h-8 w-8 text-primary mb-2" />
                 <span className="text-2xl font-bold">500+</span>
-                <span className="text-sm text-muted-foreground">Topics</span>
+                <span className="text-sm text-muted-foreground">Mavzular</span>
               </div>
             </CardContent>
           </Card>
@@ -112,104 +112,104 @@ export default function CommunityPage() {
               <div className="flex flex-col items-center text-center">
                 <Calendar className="h-8 w-8 text-primary mb-2" />
                 <span className="text-2xl font-bold">30+</span>
-                <span className="text-sm text-muted-foreground">
-                  Events/Month
-                </span>
+                <span className="text-sm text-muted-foreground">Tadbir/Oy</span>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Search and Filter */}
+        {/* Qidiruv va Filtrlash */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search discussions, topics, or members..."
+              placeholder="Muhokamalar, mavzular yoki a'zolarni qidirish..."
               className="pl-10"
             />
           </div>
           <div className="flex gap-2">
             <Button variant="outline">
               <Tag className="mr-2 h-4 w-4" />
-              Topics
+              Mavzular
             </Button>
             <Button variant="outline">
               <Users className="mr-2 h-4 w-4" />
-              People
+              A'zolar
             </Button>
             <Button variant="outline">
               <TrendingUp className="mr-2 h-4 w-4" />
-              Trending
+              Trendlar
             </Button>
           </div>
         </div>
 
-        {/* Main Content */}
+        {/* Asosiy Kontent */}
         <Tabs defaultValue="discussions" className="space-y-6">
           <TabsList className="grid grid-cols-3 md:grid-cols-5 h-auto">
             <TabsTrigger value="discussions" className="py-2">
-              Discussions
+              Muhokamalar
             </TabsTrigger>
             <TabsTrigger value="members" className="py-2">
-              Members
+              A'zolar
             </TabsTrigger>
             <TabsTrigger value="groups" className="py-2">
-              Groups
+              Guruhlar
             </TabsTrigger>
             <TabsTrigger value="events" className="py-2">
-              Events
+              Tadbirlar
             </TabsTrigger>
             <TabsTrigger value="leaderboard" className="py-2">
-              Leaderboard
+              Reyting
             </TabsTrigger>
           </TabsList>
 
-          {/* Discussions Tab */}
+          {/* Muhokamalar Tab */}
           <TabsContent value="discussions" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Recent Discussions</h2>
+              <h2 className="text-2xl font-bold">So'nggi Muhokamalar</h2>
               <Button variant="outline" asChild>
-                <Link to="/new-discussion">Start Discussion</Link>
+                <Link to="/new-discussion">Muhokama Boshlash</Link>
               </Button>
             </div>
 
             <div className="space-y-4">
               {[
                 {
-                  title: "Best practices for React performance optimization",
+                  title:
+                    "React dasturlarini tezlashtirish bo'yicha eng yaxshi amaliyotlar",
                   author: "Jane Smith",
                   avatar: "JS",
                   replies: 24,
                   likes: 47,
-                  time: "2 hours ago",
+                  time: "2 soat oldin",
                   tags: ["React", "Performance", "JavaScript"],
                 },
                 {
-                  title: "How to structure a large Next.js application?",
+                  title: "Katta Next.js loyihalarini qanday tuzish kerak?",
                   author: "Mark Davis",
                   avatar: "MD",
                   replies: 18,
                   likes: 32,
-                  time: "5 hours ago",
-                  tags: ["Next.js", "Architecture", "TypeScript"],
+                  time: "5 soat oldin",
+                  tags: ["Next.js", "Arxitektura", "TypeScript"],
                 },
                 {
-                  title: "Debugging memory leaks in Node.js applications",
+                  title: "Node.js dasturlaridagi xotira oqimlarini tuzatish",
                   author: "Aisha Lee",
                   avatar: "AL",
                   replies: 15,
                   likes: 29,
-                  time: "Yesterday",
+                  time: "Kecha",
                   tags: ["Node.js", "Debugging", "Performance"],
                 },
                 {
-                  title: "Comparing state management solutions in 2023",
+                  title:
+                    "2023 yilda holatni boshqarish yechimlarini solishtirish",
                   author: "Raj Kumar",
                   avatar: "RK",
                   replies: 42,
                   likes: 76,
-                  time: "2 days ago",
+                  time: "2 kun oldin",
                   tags: ["React", "State Management", "Redux", "Zustand"],
                 },
               ].map((discussion, index) => (
@@ -249,15 +249,15 @@ export default function CommunityPage() {
                         <div className="flex items-center gap-4 pt-2">
                           <div className="flex items-center text-sm text-muted-foreground">
                             <MessageCircle className="mr-1 h-4 w-4" />
-                            <span>{discussion.replies} replies</span>
+                            <span>{discussion.replies} javob</span>
                           </div>
                           <div className="flex items-center text-sm text-muted-foreground">
                             <ThumbsUp className="mr-1 h-4 w-4" />
-                            <span>{discussion.likes} likes</span>
+                            <span>{discussion.likes} like</span>
                           </div>
                           <Button variant="ghost" size="sm" className="ml-auto">
                             <Bookmark className="h-4 w-4" />
-                            <span className="sr-only">Bookmark</span>
+                            <span className="sr-only">Saqlash</span>
                           </Button>
                         </div>
                       </div>
@@ -268,15 +268,15 @@ export default function CommunityPage() {
             </div>
 
             <div className="flex justify-center">
-              <Button variant="outline">Load More Discussions</Button>
+              <Button variant="outline">Ko'proq Muhokamalar</Button>
             </div>
           </TabsContent>
 
-          {/* Members Tab */}
+          {/* A'zolar Tab */}
           <TabsContent value="members" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Community Members</h2>
-              <Button variant="outline">Filter Members</Button>
+              <h2 className="text-2xl font-bold">Hamjamiyat A'zolari</h2>
+              <Button variant="outline">A'zolarni Filtrlash</Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -285,55 +285,55 @@ export default function CommunityPage() {
                   name: "Jane Smith",
                   username: "@janesmith",
                   avatar: "JS",
-                  role: "Full Stack Developer",
+                  role: "Full Stack Dasturchi",
                   contributions: 156,
-                  joined: "1 year ago",
+                  joined: "1 yil oldin",
                   badges: ["Top Contributor", "Mentor"],
                 },
                 {
                   name: "Mark Davis",
                   username: "@markdavis",
                   avatar: "MD",
-                  role: "Frontend Engineer",
+                  role: "Frontend Muhandis",
                   contributions: 132,
-                  joined: "2 years ago",
-                  badges: ["Article Writer"],
+                  joined: "2 yil oldin",
+                  badges: ["Maqola Muallifi"],
                 },
                 {
                   name: "Aisha Lee",
                   username: "@aishalee",
                   avatar: "AL",
-                  role: "DevOps Specialist",
+                  role: "DevOps Mutaxassisi",
                   contributions: 98,
-                  joined: "8 months ago",
-                  badges: ["Rising Star"],
+                  joined: "8 oy oldin",
+                  badges: ["Yulduzcha"],
                 },
                 {
                   name: "Raj Kumar",
                   username: "@rajkumar",
                   avatar: "RK",
-                  role: "Backend Developer",
+                  role: "Backend Dasturchi",
                   contributions: 87,
-                  joined: "1.5 years ago",
-                  badges: ["Problem Solver"],
+                  joined: "1.5 yil oldin",
+                  badges: ["Muammo Yechuvchi"],
                 },
                 {
                   name: "Sofia Garcia",
                   username: "@sofiagarcia",
                   avatar: "SG",
-                  role: "Mobile Developer",
+                  role: "Mobil Dasturchi",
                   contributions: 76,
-                  joined: "10 months ago",
-                  badges: ["Mobile Expert"],
+                  joined: "10 oy oldin",
+                  badges: ["Mobile Mutaxassisi"],
                 },
                 {
                   name: "James Wilson",
                   username: "@jameswilson",
                   avatar: "JW",
-                  role: "UI/UX Designer",
+                  role: "UI/UX Dizayner",
                   contributions: 64,
-                  joined: "6 months ago",
-                  badges: ["Design Guru"],
+                  joined: "6 oy oldin",
+                  badges: ["Dizayn Ustasi"],
                 },
               ].map((member, index) => (
                 <Card key={index}>
@@ -374,7 +374,7 @@ export default function CommunityPage() {
                   </CardContent>
                   <CardFooter className="px-6 py-3 border-t bg-muted/30">
                     <Button variant="ghost" size="sm" className="text-xs">
-                      View Profile
+                      Profilni Ko'rish
                     </Button>
                     <Button
                       variant="ghost"
@@ -389,68 +389,68 @@ export default function CommunityPage() {
             </div>
 
             <div className="flex justify-center">
-              <Button variant="outline">View All Members</Button>
+              <Button variant="outline">Barcha A'zolar</Button>
             </div>
           </TabsContent>
 
-          {/* Groups Tab */}
+          {/* Guruhlar Tab */}
           <TabsContent value="groups" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Community Groups</h2>
+              <h2 className="text-2xl font-bold">Hamjamiyat Guruhlari</h2>
               <Button variant="outline" asChild>
-                <Link to="/new-group">Create Group</Link>
+                <Link to="/new-group">Guruh Yaratish</Link>
               </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
-                  name: "React Developers",
+                  name: "React Dasturchilari",
                   description:
-                    "Discussions about React, React Native, and the React ecosystem.",
+                    "React, React Native va React ekotizimi haqida muhokamalar.",
                   members: 3240,
                   posts: 8765,
-                  tags: ["React", "JavaScript", "Web Development"],
+                  tags: ["React", "JavaScript", "Web Dasturlash"],
                 },
                 {
-                  name: "DevOps Practitioners",
+                  name: "DevOps Amaliyotchilari",
                   description:
-                    "Share experiences and best practices in DevOps, CI/CD, and cloud infrastructure.",
+                    "DevOps, CI/CD va bulut infratuzilmasi bo'yicha tajriba va eng yaxshi amaliyotlar.",
                   members: 2180,
                   posts: 5432,
                   tags: ["DevOps", "Cloud", "CI/CD"],
                 },
                 {
-                  name: "Data Science & ML",
+                  name: "Ma'lumotlar Fanlari & ML",
                   description:
-                    "Explore data science, machine learning, and AI topics with fellow enthusiasts.",
+                    "Ma'lumotlar fanlari, mashina o'rganishi va AI mavzulari bo'yicha muhokamalar.",
                   members: 1950,
                   posts: 4321,
                   tags: ["Data Science", "Machine Learning", "AI"],
                 },
                 {
-                  name: "Backend Developers",
+                  name: "Backend Dasturchilar",
                   description:
-                    "Discussions about server-side technologies, databases, and APIs.",
+                    "Server texnologiyalari, ma'lumotlar bazalari va API lar haqida muhokamalar.",
                   members: 2760,
                   posts: 6543,
-                  tags: ["Backend", "API", "Databases"],
+                  tags: ["Backend", "API", "Ma'lumotlar Bazalari"],
                 },
                 {
-                  name: "UI/UX Design",
+                  name: "UI/UX Dizayn",
                   description:
-                    "Share design tips, get feedback, and discuss UX best practices.",
+                    "Dizayn maslahatlari, fikrlar va UX bo'yicha eng yaxshi amaliyotlar.",
                   members: 1540,
                   posts: 3210,
-                  tags: ["Design", "UI", "UX"],
+                  tags: ["Dizayn", "UI", "UX"],
                 },
                 {
-                  name: "Career Development",
+                  name: "Kasbiy Rivojlanish",
                   description:
-                    "Navigate your tech career with advice on job hunting, interviews, and growth.",
+                    "Texnologiya sohasidagi karyerangizni rivojlantirish bo'yicha maslahatlar.",
                   members: 3120,
                   posts: 7654,
-                  tags: ["Career", "Jobs", "Interviews"],
+                  tags: ["Karyera", "Ishlar", "Intervyular"],
                 },
               ].map((group, index) => (
                 <Card key={index}>
@@ -475,17 +475,17 @@ export default function CommunityPage() {
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center">
                         <Users className="mr-1 h-4 w-4" />
-                        <span>{group.members.toLocaleString()} members</span>
+                        <span>{group.members.toLocaleString()} a'zo</span>
                       </div>
                       <div className="flex items-center">
                         <MessageSquare className="mr-1 h-4 w-4" />
-                        <span>{group.posts.toLocaleString()} posts</span>
+                        <span>{group.posts.toLocaleString()} post</span>
                       </div>
                     </div>
                   </CardContent>
                   <CardFooter className="border-t pt-4">
                     <Button variant="outline" size="sm" className="w-full">
-                      Join Group
+                      Guruhga Qo'shilish
                     </Button>
                   </CardFooter>
                 </Card>
@@ -493,16 +493,16 @@ export default function CommunityPage() {
             </div>
 
             <div className="flex justify-center">
-              <Button variant="outline">Explore All Groups</Button>
+              <Button variant="outline">Barcha Guruhlar</Button>
             </div>
           </TabsContent>
 
-          {/* Events Tab */}
+          {/* Tadbirlar Tab */}
           <TabsContent value="events" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Upcoming Events</h2>
+              <h2 className="text-2xl font-bold">Rejadagi Tadbirlar</h2>
               <Button variant="outline" asChild>
-                <Link to="/events/calendar">View Calendar</Link>
+                <Link to="/events/calendar">Kalendarni Ko'rish</Link>
               </Button>
             </div>
 
@@ -511,42 +511,42 @@ export default function CommunityPage() {
                 {
                   title: "React Advanced Workshop",
                   description:
-                    "Deep dive into advanced React patterns, performance optimization, and state management.",
-                  date: "June 15, 2023",
-                  time: "10:00 AM - 2:00 PM",
+                    "React ning ilg'or namunalari, ishlash optimallashtirish va holat boshqaruvini chuqur o'rganish.",
+                  date: "15 Iyun, 2023",
+                  time: "10:00 - 14:00",
                   location: "Online",
                   attendees: 156,
                   tags: ["React", "Workshop", "Advanced"],
                 },
                 {
-                  title: "Building Scalable APIs with Node.js",
+                  title: "Node.js bilan Masshtablanuvchi API lar qurish",
                   description:
-                    "Learn how to design and build scalable, maintainable APIs using Node.js and Express.",
-                  date: "June 22, 2023",
-                  time: "1:00 PM - 3:00 PM",
+                    "Node.js va Express yordamida masshtablanuvchi, qo'llab-quvvatlanadigan API larni loyihalash va qurishni o'rganing.",
+                  date: "22 Iyun, 2023",
+                  time: "13:00 - 15:00",
                   location: "Online",
                   attendees: 132,
                   tags: ["Node.js", "API", "Backend"],
                 },
                 {
-                  title: "DevOps Automation Masterclass",
+                  title: "DevOps Avtomatlashtirish Masterklassi",
                   description:
-                    "Automate your development workflow with CI/CD pipelines and infrastructure as code.",
-                  date: "July 5, 2023",
-                  time: "11:00 AM - 1:00 PM",
+                    "CI/CD quvurlari va infratuzilmani kod sifatida yozish orqali ishlash jarayonini avtomatlashtiring.",
+                  date: "5 Iyul, 2023",
+                  time: "11:00 - 13:00",
                   location: "San Francisco, CA",
                   attendees: 98,
-                  tags: ["DevOps", "Automation", "CI/CD"],
+                  tags: ["DevOps", "Avtomatlashtirish", "CI/CD"],
                 },
                 {
-                  title: "Web Accessibility Fundamentals",
+                  title: "Veb Dostoplik Asoslari",
                   description:
-                    "Make your web applications accessible to everyone with these essential techniques.",
-                  date: "July 12, 2023",
-                  time: "2:00 PM - 4:00 PM",
+                    "Veb ilovalaringizni hamma uchun qulay qilish uchun zarur bo'lgan usullarni o'rganing.",
+                  date: "12 Iyul, 2023",
+                  time: "14:00 - 16:00",
                   location: "Online",
                   attendees: 87,
-                  tags: ["Accessibility", "Web", "Inclusive Design"],
+                  tags: ["Dostoplik", "Veb", "Inklyuziv Dizayn"],
                 },
               ].map((event, index) => (
                 <Card key={index}>
@@ -594,7 +594,7 @@ export default function CommunityPage() {
                           </div>
                           <div className="flex items-center">
                             <Users className="mr-1 h-4 w-4" />
-                            <span>{event.attendees} attending</span>
+                            <span>{event.attendees} ishtirokchi</span>
                           </div>
                         </div>
                       </div>
@@ -602,29 +602,29 @@ export default function CommunityPage() {
                   </CardContent>
                   <CardFooter className="px-6 py-3 border-t flex justify-between">
                     <Button variant="outline" size="sm">
-                      Learn More
+                      Batafsil
                     </Button>
-                    <Button size="sm">Register</Button>
+                    <Button size="sm">Ro'yxatdan O'tish</Button>
                   </CardFooter>
                 </Card>
               ))}
             </div>
 
             <div className="flex justify-center">
-              <Button variant="outline">View All Events</Button>
+              <Button variant="outline">Barcha Tadbirlar</Button>
             </div>
           </TabsContent>
 
-          {/* Leaderboard Tab */}
+          {/* Reyting Tab */}
           <TabsContent value="leaderboard" className="space-y-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-bold">Community Leaderboard</h2>
+              <h2 className="text-2xl font-bold">Hamjamiyat Reytingi</h2>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-muted-foreground">
-                  Time Period:
+                  Vaqt oraligi:
                 </span>
                 <Button variant="outline" size="sm">
-                  This Month
+                  Bu Oy
                 </Button>
               </div>
             </div>
@@ -633,7 +633,7 @@ export default function CommunityPage() {
               <CardContent className="p-6">
                 <div className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Top 3 Contributors */}
+                    {/* Eng Yaxshi 3 Hissa Qo'shuvchi */}
                     <Card className="bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-800">
                       <CardContent className="p-6 flex flex-col items-center text-center">
                         <div className="relative mb-4">
@@ -652,20 +652,20 @@ export default function CommunityPage() {
                         </p>
                         <div className="mt-4 space-y-2 w-full">
                           <div className="flex justify-between text-sm">
-                            <span>Articles</span>
+                            <span>Maqolalar</span>
                             <span className="font-medium">24</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Comments</span>
+                            <span>Izohlar</span>
                             <span className="font-medium">156</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Likes Received</span>
+                            <span>Olingan Like</span>
                             <span className="font-medium">892</span>
                           </div>
                         </div>
                         <Badge className="mt-4 bg-yellow-500 hover:bg-yellow-600">
-                          Top Contributor
+                          Top Hissa Qo'shuvchi
                         </Badge>
                       </CardContent>
                     </Card>
@@ -688,20 +688,20 @@ export default function CommunityPage() {
                         </p>
                         <div className="mt-4 space-y-2 w-full">
                           <div className="flex justify-between text-sm">
-                            <span>Articles</span>
+                            <span>Maqolalar</span>
                             <span className="font-medium">18</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Comments</span>
+                            <span>Izohlar</span>
                             <span className="font-medium">132</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Likes Received</span>
+                            <span>Olingan Like</span>
                             <span className="font-medium">743</span>
                           </div>
                         </div>
                         <Badge className="mt-4 bg-gray-500 hover:bg-gray-600">
-                          Silver Contributor
+                          Kumush Hissa Qo'shuvchi
                         </Badge>
                       </CardContent>
                     </Card>
@@ -724,20 +724,20 @@ export default function CommunityPage() {
                         </p>
                         <div className="mt-4 space-y-2 w-full">
                           <div className="flex justify-between text-sm">
-                            <span>Articles</span>
+                            <span>Maqolalar</span>
                             <span className="font-medium">15</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Comments</span>
+                            <span>Izohlar</span>
                             <span className="font-medium">98</span>
                           </div>
                           <div className="flex justify-between text-sm">
-                            <span>Likes Received</span>
+                            <span>Olingan Like</span>
                             <span className="font-medium">621</span>
                           </div>
                         </div>
                         <Badge className="mt-4 bg-amber-700 hover:bg-amber-800">
-                          Bronze Contributor
+                          Bronza Hissa Qo'shuvchi
                         </Badge>
                       </CardContent>
                     </Card>
@@ -745,9 +745,11 @@ export default function CommunityPage() {
 
                   <Separator />
 
-                  {/* Other Top Contributors */}
+                  {/* Boshqa Top Hissa Qo'shuvchilar */}
                   <div className="space-y-4">
-                    <h3 className="font-medium">Other Top Contributors</h3>
+                    <h3 className="font-medium">
+                      Boshqa Top Hissa Qo'shuvchilar
+                    </h3>
                     <div className="space-y-2">
                       {[
                         {
@@ -824,7 +826,7 @@ export default function CommunityPage() {
                           </div>
                           <div className="flex items-center gap-4">
                             <div className="text-sm font-medium">
-                              {contributor.points} points
+                              {contributor.points} ball
                             </div>
                             <Button variant="ghost" size="sm">
                               <Heart className="h-4 w-4 mr-1" />
@@ -837,72 +839,81 @@ export default function CommunityPage() {
                   </div>
                 </div>
               </CardContent>
-              <CardFooter>
-                <Button variant="outline" className="w-full">
-                  View Complete Leaderboard
+              <CardFooter className="flex justify-center">
+                <Button
+                  disabled
+                  variant="outline"
+                  className="w-fit cursor-not-allowed"
+                >
+                  To'liq Reyting
                 </Button>
               </CardFooter>
             </Card>
           </TabsContent>
         </Tabs>
 
-        {/* Community Guidelines */}
+        {/* Hamjamiyat Qoidalari */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center">
               <Globe className="mr-2 h-5 w-5" />
-              Community Guidelines
+              Hamjamiyat Qoidalari
             </CardTitle>
             <CardDescription>
-              Our community thrives on respect, inclusivity, and constructive
-              communication.
+              Bizning hamjamiyatimiz hurmat, inklyuzivlik va konstruktiv
+              muloqotga asoslangan.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <h3 className="font-medium">Be Respectful</h3>
+                  <h3 className="font-medium">Hurmatli Bo'ling</h3>
                   <p className="text-sm text-muted-foreground">
-                    Treat others with respect and kindness. Disagreements are
-                    natural, but always focus on the ideas, not the person.
+                    Boshqalarga hurmat va mehribonlik bilan munosabatda bo'ling.
+                    Ixtiloflar tabiiy, lekin har doim shaxsga emas, g'oyalarga
+                    e'tibor qarating.
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-medium">Stay On Topic</h3>
+                  <h3 className="font-medium">Mavzuda Qoling</h3>
                   <p className="text-sm text-muted-foreground">
-                    Keep discussions relevant to the topic at hand. This helps
-                    maintain the quality of conversations.
+                    Muhokamalarni tegishli mavzuda ushlab turing. Bu
+                    suhbatlarning sifatini saqlashga yordam beradi.
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-medium">No Harassment</h3>
+                  <h3 className="font-medium">Taqiqsiz Muhit</h3>
                   <p className="text-sm text-muted-foreground">
-                    Harassment, hate speech, and personal attacks are not
-                    tolerated under any circumstances.
+                    Ta'qib qilish, nafratli nutq va shaxsiy hujumlar har qanday
+                    sharoitda qabul qilinmaydi.
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-medium">Give Credit</h3>
+                  <h3 className="font-medium">Manbalarni Ko'rsating</h3>
                   <p className="text-sm text-muted-foreground">
-                    Always attribute sources and respect intellectual property
-                    when sharing content or code.
+                    Kontent yoki kod ulashayotganda manbalarni to'g'ri
+                    ko'rsating va intellektual mulkni hurmat qiling.
                   </p>
                 </div>
               </div>
             </div>
           </CardContent>
           <CardFooter>
-            <Button variant="link" asChild className="mx-auto">
-              <Link to="/guidelines">Read Full Community Guidelines</Link>
+            <Button
+              disabled
+              variant="link"
+              className="mx-auto cursor-not-allowed text-muted-foreground"
+            >
+              <Link to="/guidelines">To'liq Hamjamiyat Qoidalari</Link>
             </Button>
           </CardFooter>
         </Card>
 
-        {/* Call to Action */}
+        {/* Chaqiruv */}
         <div className="bg-primary text-primary-foreground rounded-lg p-8 text-center">
           <h2 className="text-2xl font-bold mb-4">
-            Ready to join our community?
+            Hamjamiyatga qo'shilishga tayormisiz?
           </h2>
           <p className="text-primary-foreground/90 max-w-2xl mx-auto mb-6">
             Connect with fellow developers, share your knowledge, and grow your
