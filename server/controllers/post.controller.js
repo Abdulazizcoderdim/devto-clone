@@ -459,8 +459,8 @@ class PostController {
 
   async getFollowingPosts(req, res, next) {
     try {
-      const userId = req.user?.id;
-      console.log(userId);
+      const userId = req.user.id;
+      console.log("req.user:", req.user);
 
       const { page = 1, size = 10 } = req.query;
 
@@ -543,6 +543,8 @@ class PostController {
         },
       });
     } catch (error) {
+      console.error(error); // log qilish muhim
+
       next(error);
     }
   }

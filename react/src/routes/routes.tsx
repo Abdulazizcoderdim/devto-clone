@@ -1,7 +1,11 @@
 import Layout from "@/layout/layout";
+import NotFound from "@/pages/404/NotFound";
 import SignIn from "@/pages/auth/sign-in";
 import SignUp from "@/pages/auth/sign-up";
 import AuthorPage from "@/pages/author/author-page";
+import CommunityPage from "@/pages/comunity/comunity";
+import ContactLoading from "@/pages/contact/contact";
+import ContributePage from "@/pages/contribut/contribution";
 import Home from "@/pages/home/home";
 import PostCreate from "@/pages/post-create/PostCreate";
 import SlugPost from "@/pages/slug-post/slug-post";
@@ -40,6 +44,22 @@ export const router = createBrowserRouter([
       {
         path: "new",
         element: <PostCreate />,
+      },
+      {
+        path: "/404",
+        element: <NotFound />,
+      },
+      {
+        path: "/contact",
+        element: <ContactLoading />,
+      },
+      {
+        path: "/contribute",
+        element: <ContributePage />,
+      },
+      {
+        path: "/community",
+        element: <CommunityPage />,
       },
     ],
   },

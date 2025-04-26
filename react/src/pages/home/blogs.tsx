@@ -7,6 +7,7 @@ import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import FollowingPosts from "@/components/shared/following-posts";
+import { useAuthStore } from "@/hooks/auth-store";
 
 const Blogs = () => {
   const [pagination, setPagination] = useState({
@@ -15,7 +16,8 @@ const Blogs = () => {
     totalElements: 0,
     totalPages: 0,
   });
-
+  const [activeTab, setActiveTab] = useState("discover");
+  const { isAuth } = useAuthStore();
   const { data, error, isLoading } = useSWR(
     `/posts?page=${pagination.number}&size=${pagination.size}`,
     fetcher
@@ -71,26 +73,31 @@ const Blogs = () => {
 
       <div className="w-full mt-2">
         <div className="flex items-center justify-between mb-4">
-          <Tabs defaultValue="discover" className="w-full">
-            <div className="flex items-center justify-between">
-              {/* TabsList ichida Discover va Following */}
-              <TabsList className="bg-transparent p-0 space-x-2">
-                <TabsTrigger
-                  value="discover"
-                  className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
-                >
-                  Discover
-                </TabsTrigger>
-                <TabsTrigger
-                  value="following"
-                  className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
-                >
-                  Following
-                </TabsTrigger>
-              </TabsList>
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full"
+          >
+            {isAuth && (
+              <div className="flex items-center justify-between">
+                {/* TabsList ichida Discover va Following */}
+                <TabsList className="bg-transparent p-0 space-x-2">
+                  <TabsTrigger
+                    value="discover"
+                    className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
+                  >
+                    Discover
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="following"
+                    className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
+                  >
+                    Following
+                  </TabsTrigger>
+                </TabsList>
 
-              {/* Filter menu */}
-              {/* <DropdownMenu>
+                {/* Filter menu */}
+                {/* <DropdownMenu>
                 <DropdownMenuTrigger>
                   <Button
                     variant="ghost"
@@ -109,8 +116,8 @@ const Blogs = () => {
                   <DropdownMenuItem>Latest</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu> */}
-            </div>
-
+              </div>
+            )}
             {/* Tabs content */}
             <TabsContent value="discover">
               <div className="flex flex-col gap-3">
@@ -132,7 +139,7 @@ const Blogs = () => {
             </TabsContent>
 
             <TabsContent value="following">
-              <FollowingPosts />
+              <FollowingPosts activeTab={activeTab} />
             </TabsContent>
           </Tabs>
         </div>

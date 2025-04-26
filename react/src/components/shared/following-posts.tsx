@@ -3,13 +3,15 @@ import useSWR from "swr";
 import LoadingPost from "./loading-post";
 import { useEffect, useState } from "react";
 
-const FollowingPosts = () => {
+const FollowingPosts = ({ activeTab }: { activeTab: string }) => {
   const [pagination, setPagination] = useState({
     number: 1,
     size: 10,
     totalElements: 0,
     totalPages: 0,
   });
+
+  console.log("FollowingPosts rendered");
 
   const { data, error, isLoading } = useSWR(
     `/posts/following?page=${pagination.number}&size=${pagination.size}`,
@@ -22,8 +24,8 @@ const FollowingPosts = () => {
     }
   }, [data]);
 
-  if (isLoading) return <LoadingPost />;
   if (error) return <div>Error</div>;
+  if (isLoading) return <LoadingPost />;
 
   console.log(data);
   console.log("er>>>>>>>>>>>>>>>", error);

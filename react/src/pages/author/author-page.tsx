@@ -29,30 +29,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { format } from "date-fns";
-import { Post } from "@/types";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import LoadingPost from "@/components/shared/loading-post";
 import FollowButton from "@/components/shared/follow-button";
 import { useAuthStore } from "@/hooks/auth-store";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
+import { format } from "date-fns";
+import { Post } from "@/types";
+import toast from "react-hot-toast";
 import { readingTime } from "@/lib/reading-time";
-
-// interface ApiPost {
-//   posts: Post[];
-//   id: string;
-//   createdAt: string;
-//   followers: number;
-//   following: number;
-//   page: {
-//     number: number;
-//     size: number;
-//     totalElements: number;
-//     totalPages: number;
-//   };
-// }
 
 const AuthorPage = () => {
   const { author } = useParams();
@@ -73,25 +59,41 @@ const AuthorPage = () => {
   );
 
   useEffect(() => {
+    // Update pagination when data changes
     if (data) {
       setPagination(data.page);
     }
   }, [data]);
 
-  const user = data
-    ? {
-        id: data.id,
-        createdAt: data.createdAt,
-        followers: data.followers,
-        following: data.following,
+  // Handle 404 error
+  useEffect(() => {
+    if (error) {
+      if (error.status === 404) {
+        toast.error("User not found");
+        navigate("/404");
+      } else {
+        // Handle other errors
+        toast.error("Error loading user data");
       }
-    : null;
+    }
+  }, [error, navigate]);
 
-  const posts: Post[] = data ? data.posts : [];
-
-  if (error) {
-    console.error(error);
+  // Early return for loading state
+  if (isLoading) {
+    return (
+      <div className="max-w-3xl pt-20 mx-auto">
+        <LoadingPost />
+      </div>
+    );
   }
+
+  // Don't try to render if there's an error or no data
+  if (error || !data) {
+    return null; // Will redirect via the useEffect
+  }
+
+  const { id, createdAt, followers, following } = data;
+  const posts: Post[] = data.posts || [];
 
   return (
     <div className="flex min-h-screen pt-14 flex-col bg-gray-50 dark:bg-gray-900">
@@ -111,13 +113,7 @@ const AuthorPage = () => {
             <CardDescription className="max-w-2xl text-center text-base"></CardDescription>
             <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              <span>
-                {user ? (
-                  format(new Date(user.createdAt), "MMM dd, yyyy")
-                ) : (
-                  <Skeleton className="h-4 w-16" />
-                )}
-              </span>
+              <span>{format(new Date(createdAt), "MMM dd, yyyy")}</span>
               <Separator orientation="vertical" className="mx-2 h-4" />
               <Link
                 to="#"
@@ -140,9 +136,7 @@ const AuthorPage = () => {
             </div>
           </CardHeader>
           <CardFooter className="flex justify-center pb-6">
-            {user?.id && currentUser?.id !== user?.id && (
-              <FollowButton userId={user?.id} />
-            )}
+            {currentUser?.id !== id && <FollowButton userId={id} />}
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button variant="ghost" size="icon">
@@ -208,7 +202,7 @@ const AuthorPage = () => {
                       <Users className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="font-medium">{user?.followers} members</p>
+                      <p className="font-medium">{followers} members</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -216,7 +210,7 @@ const AuthorPage = () => {
                       <Users className="h-4 w-4" />
                     </div>
                     <div>
-                      <p className="font-medium">{user?.following} following</p>
+                      <p className="font-medium">{following} following</p>
                     </div>
                   </div>
                 </div>
