@@ -27,15 +27,17 @@ export default function ContactPage() {
       <div className="grid gap-10 md:grid-cols-2">
         <div className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight">Contact Us</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Biz bilan bog'laning
+            </h1>
             <p className="text-muted-foreground mt-2">
-              Have a question, suggestion, or just want to say hello? We'd love
-              to hear from you.
+              Savolingiz, taklifingiz yoki shunchaki salom aytishni istaysizmi?
+              Sizdan xabar olishdan mamnun bo'lamiz.
             </p>
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Connect with us</h2>
+            <h2 className="text-xl font-semibold">Biz bilan aloqa</h2>
             <div className="flex flex-wrap gap-4">
               <Button variant="outline" size="icon" asChild>
                 <Link
@@ -77,30 +79,30 @@ export default function ContactPage() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">Quick support</h2>
+            <h2 className="text-xl font-semibold">Tezkor yordam</h2>
             <div className="space-y-2">
               <div className="flex items-start gap-2">
                 <MessageSquare className="h-5 w-5 mt-0.5 text-muted-foreground" />
                 <div>
-                  <h3 className="font-medium">Community support</h3>
+                  <h3 className="font-medium">Hamjamiyat yordami</h3>
                   <p className="text-sm text-muted-foreground">
-                    Get help from our community of developers in our forums.
+                    Forumlarimizda dasturchilar hamjamiyatidan yordam oling.
                   </p>
                   <Link
                     to="/community"
                     className="text-sm text-primary hover:underline"
                   >
-                    Visit forums
+                    Forumga o'tish
                   </Link>
                 </div>
               </div>
               <div className="flex items-start gap-2">
                 <Mail className="h-5 w-5 mt-0.5 text-muted-foreground" />
                 <div>
-                  <h3 className="font-medium">Email support</h3>
+                  <h3 className="font-medium">Elektron pochta orqali yordam</h3>
                   <p className="text-sm text-muted-foreground">
-                    For urgent matters, email us directly at
-                    abdulazizkxon19@gmail.com
+                    Favqulodda masalalar uchun to'g'ridan-to'g'ri elektron
+                    pochta orqali yozing: abdulazizkxon19@gmail.com
                   </p>
                 </div>
               </div>
@@ -108,84 +110,83 @@ export default function ContactPage() {
           </div>
 
           <div className="space-y-4">
-            <h2 className="text-xl font-semibold">FAQ</h2>
+            <h2 className="text-xl font-semibold">
+              Ko'p so'raladigan savollar
+            </h2>
             <div className="space-y-2">
               <div>
                 <h3 className="font-medium">
-                  How long does it take to get a response?
+                  Javob olish uchun qancha vaqt ketadi?
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  We typically respond within 24-48 hours on business days.
+                  Odatda, biz ish kunlarida 24-48 soat ichida javob beramiz.
                 </p>
               </div>
               <div>
                 <h3 className="font-medium">
-                  Can I contribute to the platform?
+                  Platformaga hissa qo'shishim mumkinmi?
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Yes! Check out our{" "}
+                  Albatta! Bizning{" "}
                   <Link
                     to="/contribute"
                     className="text-primary hover:underline"
                   >
-                    contribution guidelines
+                    hissa qo'shish yo'riqnomalarimiz
                   </Link>
-                  .
+                  ni ko'rib chiqing.
                 </p>
               </div>
             </div>
-            {/* <Link to="/faq" className="text-sm text-primary hover:underline">
-              View all FAQs
-            </Link> */}
           </div>
         </div>
 
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Send us a message</CardTitle>
+              <CardTitle>Bizga xabar yuboring</CardTitle>
               <CardDescription>
-                Fill out the form below and we'll get back to you as soon as
-                possible.
+                Quyidagi shaklni to'ldiring va biz sizga imkon qadar tezroq
+                javob beramiz.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form action="/api/contact" className="space-y-4">
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="first-name">First name</Label>
+                    <Label htmlFor="first-name">Ism</Label>
                     <Input id="first-name" name="first-name" required />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="last-name">Last name</Label>
+                    <Label htmlFor="last-name">Familiya</Label>
                     <Input id="last-name" name="last-name" required />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">Elektron pochta</Label>
                   <Input id="email" name="email" type="email" required />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="subject">Subject</Label>
+                  <Label htmlFor="subject">Mavzu</Label>
                   <Select name="subject">
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a subject" />
+                      <SelectValue placeholder="Mavzuni tanlang" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="general">General Inquiry</SelectItem>
-                      <SelectItem value="support">Technical Support</SelectItem>
-                      <SelectItem value="feedback">Feedback</SelectItem>
-                      <SelectItem value="partnership">Partnership</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="general">Umumiy so'rov</SelectItem>
+                      <SelectItem value="support">Texnik yordam</SelectItem>
+                      <SelectItem value="feedback">Fikr-mulohaza</SelectItem>
+                      <SelectItem value="partnership">Hamkorlik</SelectItem>
+                      <SelectItem value="other">Boshqa</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="message">Message</Label>
+                  <Label htmlFor="message">Xabar</Label>
                   <Textarea
                     id="message"
                     name="message"
-                    placeholder="Tell us how we can help..."
+                    placeholder="Bizga qanday yordam bera olishimizni aytib bering..."
                     className="min-h-32"
                     required
                   />
@@ -197,8 +198,8 @@ export default function ContactPage() {
                       htmlFor="newsletter"
                       className="text-sm font-normal leading-snug text-muted-foreground"
                     >
-                      Subscribe to our developer newsletter for tips, tutorials,
-                      and updates.
+                      Maslahatlar, darsliklar va yangiliklardan xabardor bo'lish
+                      uchun dasturchilar yangiliklar byulleteniga obuna bo'ling.
                     </Label>
                   </div>
                 </div>
@@ -206,7 +207,7 @@ export default function ContactPage() {
             </CardContent>
             <CardFooter>
               <Button type="submit" className="w-full">
-                Send Message
+                Xabarni yuborish
               </Button>
             </CardFooter>
           </Card>
