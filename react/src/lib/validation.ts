@@ -62,3 +62,20 @@ export const signUpSchema = z.object({
   }),
   remember: z.boolean().optional(),
 });
+
+export const contactFormSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, { message: "Ism kamida 2 ta belgidan iborat bo‘lishi kerak." }),
+  lastName: z.string().min(2, {
+    message: "Familiya kamida 2 ta belgidan iborat bo‘lishi kerak.",
+  }),
+  email: z.string().email({ message: "Elektron pochta manzili noto‘g‘ri." }),
+  subject: z.enum(["general", "support", "feedback", "partnership", "other"], {
+    required_error: "Mavzuni tanlang",
+  }),
+  message: z
+    .string()
+    .min(10, { message: "Xabar kamida 10 ta belgidan iborat bo‘lishi kerak." }),
+  newsletter: z.boolean().optional(),
+});

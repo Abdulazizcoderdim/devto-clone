@@ -20,8 +20,41 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Github, Twitter, Linkedin, Mail, MessageSquare } from "lucide-react";
 import { Link } from "react-router-dom";
+import { contactFormSchema } from "@/lib/validation";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
+type FormSchema = z.infer<typeof contactFormSchema>;
 
 export default function ContactPage() {
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(contactFormSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      subject: undefined,
+      message: "",
+      newsletter: false,
+    },
+  });
+
+  const onSubmit = (data: FormSchema) => {
+    console.log(data);
+
+    // bu yerda API chaqiruv qilsa bo'ladi, masalan:
+    // fetch('/api/contact', { method: 'POST', body: JSON.stringify(data) })
+  };
+
   return (
     <div className="container max-w-5xl pb-10 pt-20 px-4 mx-auto">
       <div className="grid gap-10 md:grid-cols-2">
@@ -151,65 +184,141 @@ export default function ContactPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action="/api/contact" className="space-y-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="first-name">Ism</Label>
-                    <Input id="first-name" name="first-name" required />
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <FormField
+                      control={form.control}
+                      name="firstName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Ism</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Ismingiz" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="lastName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Familiya</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Familiyangiz" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="last-name">Familiya</Label>
-                    <Input id="last-name" name="last-name" required />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="email">Elektron pochta</Label>
-                  <Input id="email" name="email" type="email" required />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="subject">Mavzu</Label>
-                  <Select name="subject">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Mavzuni tanlang" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="general">Umumiy so'rov</SelectItem>
-                      <SelectItem value="support">Texnik yordam</SelectItem>
-                      <SelectItem value="feedback">Fikr-mulohaza</SelectItem>
-                      <SelectItem value="partnership">Hamkorlik</SelectItem>
-                      <SelectItem value="other">Boshqa</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="message">Xabar</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder="Bizga qanday yordam bera olishimizni aytib bering..."
-                    className="min-h-32"
-                    required
+
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Elektron pochta</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="you@example.com"
+                            type="email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </div>
-                <div className="flex items-start space-x-2">
-                  <Checkbox id="newsletter" name="newsletter" />
-                  <div className="grid gap-1.5 leading-none">
-                    <Label
-                      htmlFor="newsletter"
-                      className="text-sm font-normal leading-snug text-muted-foreground"
-                    >
-                      Maslahatlar, darsliklar va yangiliklardan xabardor bo'lish
-                      uchun dasturchilar yangiliklar byulleteniga obuna bo'ling.
-                    </Label>
-                  </div>
-                </div>
-              </form>
+
+                  <FormField
+                    control={form.control}
+                    name="subject"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Mavzu</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Mavzuni tanlang" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="general">
+                                Umumiy so'rov
+                              </SelectItem>
+                              <SelectItem value="support">
+                                Texnik yordam
+                              </SelectItem>
+                              <SelectItem value="feedback">
+                                Fikr-mulohaza
+                              </SelectItem>
+                              <SelectItem value="partnership">
+                                Hamkorlik
+                              </SelectItem>
+                              <SelectItem value="other">Boshqa</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="message"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Xabar</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Bizga qanday yordam bera olishimizni aytib bering..."
+                            className="min-h-32"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="newsletter"
+                    render={({ field }) => (
+                      <FormItem className="flex items-start space-x-2">
+                        <FormControl>
+                          <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                        <div className="grid gap-1.5 leading-none">
+                          <FormLabel className="text-sm font-normal leading-snug text-muted-foreground">
+                            Maslahatlar, darsliklar va yangiliklardan xabardor
+                            bo'lish uchun dasturchilar yangiliklar byulleteniga
+                            obuna bo'ling.
+                          </FormLabel>
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+
+                  <Button type="submit" className="w-full">
+                    Xabarni yuborish
+                  </Button>
+                </form>
+              </Form>
             </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full">
-                Xabarni yuborish
-              </Button>
-            </CardFooter>
           </Card>
         </div>
       </div>
