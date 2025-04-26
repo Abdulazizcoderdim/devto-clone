@@ -22,6 +22,7 @@ This project is a clone of the popular developer community platform **Dev.to**. 
 
 ## Installation
 
+
 To set up the project locally, follow these steps:
 
 1. Clone the repository:
@@ -79,6 +80,7 @@ Contributions are welcome! To contribute:
 5. Open a pull request.
 
 ## Author
+
 
 - **Abdulaziz** - [Abdulazizcoderdim](https://github.com/Abdulazizcoderdim)
 
