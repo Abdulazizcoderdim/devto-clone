@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 interface Props {
   isSaved: boolean;
-  toggle: (isSaved: boolean) => void;
+  toggle: () => void; // argument yo‘q
 }
 
 export const useSave = create<Props>((set) => ({

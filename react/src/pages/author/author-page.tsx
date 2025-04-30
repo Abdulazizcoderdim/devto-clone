@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Bookmark,
+  BookmarkCheck,
   BookmarkIcon,
   Calendar,
   ExternalLink,
@@ -39,6 +40,7 @@ import { format } from "date-fns";
 import { Post } from "@/types";
 import toast from "react-hot-toast";
 import { readingTime } from "@/lib/reading-time";
+import { useSave } from "@/hooks/save";
 
 const AuthorPage = () => {
   const { author } = useParams();
@@ -50,6 +52,7 @@ const AuthorPage = () => {
     totalElements: 0,
     totalPages: 0,
   });
+  const { isSaved, toggle } = useSave();
 
   const { data, isLoading, error } = useSWR(
     author
@@ -319,12 +322,18 @@ const AuthorPage = () => {
                           <span className="text-sm text-muted-foreground">
                             {readingTime(post)} read
                           </span>
+
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8"
+                            className="h-8 w-8 cursor-pointer"
+                            onClick={toggle}
                           >
-                            <Bookmark className="h-5 w-5" />
+                            {isSaved ? (
+                              <BookmarkCheck className="h-5 w-5 text-blue-600" />
+                            ) : (
+                              <Bookmark className="h-5 w-5" />
+                            )}
                           </Button>
                         </div>
                       </div>
