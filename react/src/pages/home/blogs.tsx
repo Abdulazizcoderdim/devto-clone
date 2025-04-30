@@ -5,9 +5,6 @@ import { ItemBlog } from "./item-blog";
 import LoadingPost from "@/components/shared/loading-post";
 import useSWR from "swr";
 import { fetcher } from "@/lib/fetcher";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import FollowingPosts from "@/components/shared/following-posts";
-import { useAuthStore } from "@/hooks/auth-store";
 
 const Blogs = () => {
   const [pagination, setPagination] = useState({
@@ -16,8 +13,6 @@ const Blogs = () => {
     totalElements: 0,
     totalPages: 0,
   });
-  const [activeTab, setActiveTab] = useState("discover");
-  const { isAuth } = useAuthStore();
   const { data, error, isLoading } = useSWR(
     `/posts?page=${pagination.number}&size=${pagination.size}`,
     fetcher
@@ -73,75 +68,19 @@ const Blogs = () => {
 
       <div className="w-full mt-2">
         <div className="flex items-center justify-between mb-4">
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            {isAuth && (
-              <div className="flex items-center justify-between">
-                {/* TabsList ichida Discover va Following */}
-                <TabsList className="bg-transparent p-0 space-x-2">
-                  <TabsTrigger
-                    value="discover"
-                    className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
-                  >
-                    Discover
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="following"
-                    className="data-[state=active]:bg-muted rounded-full px-4 py-1 cursor-pointer"
-                  >
-                    Following
-                  </TabsTrigger>
-                </TabsList>
-
-                {/* Filter menu */}
-                {/* <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Button
-                    variant="ghost"
-                    className="cursor-pointer"
-                    size="icon"
-                  >
-                    <MoreHorizontal className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem>Relevant</DropdownMenuItem>
-                  <DropdownMenuItem>Top this Week</DropdownMenuItem>
-                  <DropdownMenuItem>Top this Month</DropdownMenuItem>
-                  <DropdownMenuItem>Top this Year</DropdownMenuItem>
-                  <DropdownMenuItem>Top this Infinity</DropdownMenuItem>
-                  <DropdownMenuItem>Latest</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
-              </div>
-            )}
-            {/* Tabs content */}
-            <TabsContent value="discover">
-              <div className="flex flex-col gap-3">
-                {isLoading && posts.length === 0
-                  ? Array.from({ length: 10 }).map((_, i) => (
-                      <div key={i}>
-                        <LoadingPost />
-                      </div>
-                    ))
-                  : posts.map((post) => {
-                      return (
-                        <ItemBlog
-                          key={post.id}
-                          {...formatPostForDisplay(post)}
-                        />
-                      );
-                    })}
-              </div>
-            </TabsContent>
-
-            <TabsContent value="following">
-              <FollowingPosts activeTab={activeTab} />
-            </TabsContent>
-          </Tabs>
+          <div className="flex flex-col gap-3 w-full">
+            {isLoading && posts.length === 0
+              ? Array.from({ length: 10 }).map((_, i) => (
+                  <div key={i}>
+                    <LoadingPost className="w-full" />
+                  </div>
+                ))
+              : posts.map((post) => {
+                  return (
+                    <ItemBlog key={post.id} {...formatPostForDisplay(post)} />
+                  );
+                })}
+          </div>
         </div>
       </div>
 

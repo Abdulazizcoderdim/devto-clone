@@ -43,14 +43,14 @@ export function ItemBlog({
 }: BlogPostProps) {
   const navigate = useNavigate();
 
-  const formatTag = (tag: string) => {
-    return tag
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-");
-  };
+  // const formatTag = (tag: string) => {
+  //   return tag
+  //     .toLowerCase()
+  //     .trim()
+  //     .replace(/[^a-z0-9\s-]/g, "")
+  //     .replace(/\s+/g, "-")
+  //     .replace(/-+/g, "-");
+  // };
 
   const formatDate = (date: string) => {
     // Mar 30
