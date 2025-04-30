@@ -3,6 +3,7 @@ const commentController = require("../controllers/comment.controller");
 const followController = require("../controllers/follow.controller");
 const postController = require("../controllers/post.controller");
 const reactionController = require("../controllers/reaction.controller");
+const searchController = require("../controllers/search.controller");
 const sumController = require("../controllers/sum.controller");
 const tagController = require("../controllers/tag.controller");
 const userController = require("../controllers/user.controller");
@@ -65,6 +66,10 @@ router.group("/", (router) => {
   router.get("/following", authMiddleware, followController.getFollowing);
   router.get("/followers", authMiddleware, followController.getFollowers);
   router.get("/follow/:userId", authMiddleware, followController.checkFollow);
+});
+
+router.group("/search", (router) => {
+  router.get("/", searchController.searchPosts);
 });
 
 router.group("/summarize", (router) => {
