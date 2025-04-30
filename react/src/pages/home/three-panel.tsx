@@ -42,7 +42,7 @@ const ThreePanel = () => {
   return (
     <Card className="w-full rounded-md">
       <CardHeader>
-        <CardTitle className="text-xl font-bold">Active discussions</CardTitle>
+        <CardTitle className="text-xl font-bold">Faol muhokamalar</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {data.map((discussion) => (
