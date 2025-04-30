@@ -12,46 +12,49 @@ class PostController {
       const pageSize = parseInt(size);
       const skip = (pageNumber - 1) * pageSize;
 
-      const posts = await prisma.post.findMany({
-        skip,
-        take: pageSize,
-        orderBy: {
-          score: "desc",
-        },
-        include: {
-          author: {
-            select: {
-              name: true,
-            },
+      const [posts, totalElements] = await Promise.all([
+        prisma.post.findMany({
+          skip,
+          take: pageSize,
+          orderBy: {
+            score: "desc",
           },
-          _count: {
-            select: {
-              comments: true,
-              reaction: true,
+          include: {
+            author: {
+              select: {
+                name: true,
+              },
             },
-          },
-          comments: {
-            take: 3,
-            orderBy: {
-              createdAt: "desc",
+            _count: {
+              select: {
+                comments: true,
+                reaction: true,
+              },
             },
-            include: {
-              user: {
-                select: {
-                  name: true,
+            comments: {
+              take: 3,
+              orderBy: {
+                createdAt: "desc",
+              },
+              include: {
+                user: {
+                  select: {
+                    name: true,
+                  },
                 },
               },
             },
-          },
-          tags: {
-            include: {
-              tag: true,
+            tags: {
+              take: 5,
+              include: {
+                tag: true,
+              },
             },
           },
-        },
-      });
+        }),
+        prisma.post.count(),
+      ]);
 
-      const totalElements = await prisma.post.count();
       const totalPages = Math.ceil(totalElements / pageSize);
 
       res.json({

@@ -70,6 +70,7 @@ router.group("/", (router) => {
 
 router.group("/search", (router) => {
   router.get("/", searchController.searchPosts);
+  router.get("/suggestions", searchController.getSearchSuggestions);
 });
 
 router.group("/summarize", (router) => {
