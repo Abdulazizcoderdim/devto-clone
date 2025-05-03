@@ -160,7 +160,7 @@ const PostCreate: React.FC = () => {
     setCoverImageLink("");
   };
 
-  const createPost = async (isDraft = false) => {
+  const createPost = async () => {
     try {
       if (!title.trim()) {
         toast.error("Title is required");
@@ -219,8 +219,8 @@ const PostCreate: React.FC = () => {
     }
   };
 
-  const handlePublish = () => createPost(false);
-  const handleSaveDraft = () => createPost(true);
+  const handlePublish = () => createPost();
+  // const handleSaveDraft = () => createPost();
 
   const handleRevertChanges = () => {
     if (

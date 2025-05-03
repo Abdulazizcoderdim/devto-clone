@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 
 const QuickCreatePost = () => {
   const [content, setContent] = useState<string>("");
-  const { user, isAuth } = useAuthStore();
+  const { isAuth } = useAuthStore();
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setContent(e.target.value);

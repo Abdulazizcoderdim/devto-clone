@@ -40,7 +40,7 @@ const fetchReactions = async (postId: string) => {
 
 const LikesPost = ({
   postId,
-  mutate: mutatePost,
+  // mutate: mutatePost,
 }: {
   postId: string;
   mutate: any;
