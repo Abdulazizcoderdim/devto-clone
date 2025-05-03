@@ -2,7 +2,6 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Bookmark,
-  BookmarkCheck,
   BookmarkIcon,
   Calendar,
   ExternalLink,
@@ -40,7 +39,6 @@ import { format } from "date-fns";
 import { Post } from "@/types";
 import toast from "react-hot-toast";
 import { readingTime } from "@/lib/reading-time";
-import { useSave } from "@/hooks/save";
 
 const AuthorPage = () => {
   const { author } = useParams();
@@ -52,7 +50,6 @@ const AuthorPage = () => {
     totalElements: 0,
     totalPages: 0,
   });
-  const { isSaved, toggle } = useSave();
 
   const { data, isLoading, error } = useSWR(
     author
@@ -160,31 +157,6 @@ const AuthorPage = () => {
           {/* Left sidebar */}
           <div className="space-y-6">
             {/* Meet the team card */}
-            {/* <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-medium">
-                  Meet the team
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex -space-x-2">
-                  <Avatar className="border-2 border-background">
-                    <AvatarImage
-                      src="/placeholder.svg?height=40&width=40"
-                      alt="Team member"
-                    />
-                    <AvatarFallback>TM</AvatarFallback>
-                  </Avatar>
-                  <Avatar className="border-2 border-background">
-                    <AvatarImage
-                      src="/placeholder.svg?height=40&width=40"
-                      alt="Team member"
-                    />
-                    <AvatarFallback>TM</AvatarFallback>
-                  </Avatar>
-                </div>
-              </CardContent>
-            </Card> */}
 
             {/* Stats card */}
             <Card>
@@ -326,14 +298,10 @@ const AuthorPage = () => {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="h-8 w-8 cursor-pointer"
-                            onClick={toggle}
+                            className="h-8 w-8 cursor-not-allowed opacity-50"
+                            disabled
                           >
-                            {isSaved ? (
-                              <BookmarkCheck className="h-5 w-5 text-blue-600" />
-                            ) : (
-                              <Bookmark className="h-5 w-5" />
-                            )}
+                            <Bookmark className="h-5 w-5 cursor-not-allowed" />
                           </Button>
                         </div>
                       </div>

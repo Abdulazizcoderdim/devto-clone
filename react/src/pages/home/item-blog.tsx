@@ -2,9 +2,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Bookmark, BookmarkCheck, Heart, MessageCircle } from "lucide-react";
+import { Bookmark, Heart, MessageCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSave } from "@/hooks/save";
 
 interface Comment {
   id: string;
@@ -43,7 +42,6 @@ export function ItemBlog({
   coverImageLink,
 }: BlogPostProps) {
   const navigate = useNavigate();
-  const { isSaved, toggle } = useSave();
 
   // const formatTag = (tag: string) => {
   //   return tag
@@ -150,14 +148,10 @@ export function ItemBlog({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 cursor-pointer"
-              onClick={toggle}
+              className="h-8 w-8 cursor-not-allowed opacity-50"
+              disabled
             >
-              {isSaved ? (
-                <BookmarkCheck className="h-5 w-5 text-blue-600" />
-              ) : (
-                <Bookmark className="h-5 w-5" />
-              )}
+              <Bookmark className="h-5 w-5" />
             </Button>
           </div>
         </div>

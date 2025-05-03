@@ -131,7 +131,7 @@ const ReadPost = ({
       </CardHeader>
       <CardContent className="space-y-8">
         <div
-          className="prose max-w-none text-lg leading-relaxed"
+          className="prose prose-lg max-w-none dark:prose-invert"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
