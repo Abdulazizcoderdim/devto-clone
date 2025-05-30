@@ -1,3 +1,4 @@
+import KeepAlive from "@/components/KeepLive";
 import Header from "@/components/shared/header";
 import AuthProvider from "@/provider/auth-provider";
 import { Toaster } from "react-hot-toast";
@@ -11,6 +12,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <Toaster />
+      <KeepAlive />
     </AuthProvider>
   );
 };

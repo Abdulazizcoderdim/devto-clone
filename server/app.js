@@ -20,6 +20,9 @@ app.use(cookieParser({}));
 
 // Routes
 app.use("/api", require("./routes/index"));
+app.use("/api/health", (req, res) => {
+  res.status(200).send("Healthy");
+});
 
 app.use(errorMiddleware);
 
