@@ -14,6 +14,17 @@ const router = require("express").Router();
 require("express-group-routes");
 
 router.group("/auth", (router) => {
+  /**
+   * @openapi
+   * /register:
+   *  get:
+   *    tag:
+   *      - Register
+   *      description: Register a new user
+   *      responses:
+   *        200:
+   *          description: Success!
+   */
   router.post("/register", authController.register);
   router.post("/login", authController.login);
   router.post("/verify", authController.verify);

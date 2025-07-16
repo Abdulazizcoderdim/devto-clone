@@ -6,6 +6,7 @@ const morgan = require("morgan");
 const errorMiddleware = require("./middlewares/error.middleware");
 const app = express();
 const cookieParser = require("cookie-parser");
+const swaggerDocs = require("./utils/swagger.js");
 
 // Middleware
 app.use(
@@ -30,6 +31,8 @@ const bootstrap = async () => {
   try {
     const PORT = process.env.PORT || 6000;
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+
+    swaggerDocs(app, PORT);
   } catch (error) {
     console.error(error);
   }
