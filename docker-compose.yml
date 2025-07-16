@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  client:
+    build:
+      context: ./react
+    ports:
+      - "4173:4173"
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+  server:
+    build:
+      context: ./server
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./server/.env
+    networks:
+      - app-network
+
+networks:
+  app-network:
