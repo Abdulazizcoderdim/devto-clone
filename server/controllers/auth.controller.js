@@ -47,9 +47,20 @@ class AuthController {
         },
       });
 
-      await mailService.sendOtp(newUser.email);
+      const userDto = new UserDto(newUser);
 
-      return res.status(200).json({ email: newUser.email });
+      const tokens = tokenService.generateToken({ ...userDto });
+      await tokenService.saveToken(userDto.id, tokens.refreshToken);
+
+      res.cookie("refreshToken", tokens.refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+      });
+
+      return res
+        .status(200)
+        .json({ email: newUser.email, accessToken: tokens.accessToken });
     } catch (error) {
       next(error);
     }

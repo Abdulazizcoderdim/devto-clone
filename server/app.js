@@ -11,7 +11,7 @@ const swaggerDocs = require("./utils/swagger.js");
 // Middleware
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL.split(","),
     credentials: true,
   })
 );

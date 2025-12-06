@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Form,
   FormControl,
@@ -8,17 +7,20 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useAuth } from "@/hooks/use-auth";
+import { Input } from "@/components/ui/input";
+import { useAuthStore } from "@/hooks/auth-store";
 import api from "@/http/axios";
 import { signUpSchema } from "@/lib/validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FileLock, Mail, PersonStanding } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 
 export default function SignUpPage() {
-  const { setEmail, setStep } = useAuth();
+  const { setIsAuth, checkAuth } = useAuthStore();
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -37,15 +39,18 @@ export default function SignUpPage() {
         throw new Error("Registration error");
       }
 
-      setEmail(data.email);
-      setStep("verify");
+      localStorage.setItem("accessToken", data.accessToken);
+      setIsAuth(true);
 
-      toast.success("Verification code sent to your email.");
+      navigate("/");
+      toast.success("Welcome to DevTo Clone 👋");
     } catch (error: any) {
       toast.error(
         error.response?.data?.message + " 😢" || "Registration error"
       );
       console.error(error);
+    } finally {
+      await checkAuth();
     }
   };
 
