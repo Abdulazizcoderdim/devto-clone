@@ -25,6 +25,8 @@ app.use("/api/health", (_, res) => {
   res.status(200).send("Healthy");
 });
 
+console.log("Some like");
+
 app.use(errorMiddleware);
 
 const bootstrap = async () => {
